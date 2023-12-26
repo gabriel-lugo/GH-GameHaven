@@ -1,0 +1,42 @@
+footer {
+  min-height: 28.5rem;
+  border-top: 1rem solid var(--nav-text-color);
+  background-color: var(--tertiary-background-color);
+  color: var(--nav-text-color);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-container {
+  width: 60%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.overview-section,
+.follow-us-section,
+.igdb-api-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.overview-items {
+  flex-direction: column;
+}
+
+footer a {
+  color: var(--nav-text-color);
+  text-decoration: none;
+  margin: 0 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.footer-divider {
+  color: var(--nav-text-color);
+}

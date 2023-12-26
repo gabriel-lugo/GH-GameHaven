@@ -1,16 +1,21 @@
-import { Container, Title } from "@mantine/core";
+import { Title } from "@mantine/core";
 import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
+import Layout from "./components/Layout";
 import "./css/App.css";
 
 function App() {
   return (
     <>
-      <Container>
-        <Header />
-        <Title order={1}>Gamehaven</Title>
-        <Outlet />
-      </Container>
+      {/* <Flex> */}
+      <Header />
+      <Layout className="container-layout">
+        <main>
+          <Title order={1}>Gamehaven</Title>
+          <Outlet />
+        </main>
+      </Layout>
+      {/* </Flex> */}
     </>
   );
 }

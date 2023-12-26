@@ -1,4 +1,4 @@
-import { Container, Divider, Group, Title } from "@mantine/core";
+import { Container, Divider, Flex, Group, Text, Title } from "@mantine/core";
 import { NavLink } from "react-router-dom";
 import "../css/Footer.css";
 
@@ -19,27 +19,36 @@ const overviewItems = overviewLinks.map((link) => (
 export function Footer() {
   return (
     <footer>
-      <Title>GameHaven</Title>
+      <Title order={2} mt={"lg"} mb={"lg"}>
+        GameHaven
+      </Title>
       <Container size={"xl"} className="footer-container">
         <div className="overview-section">
-          <Title>Overview</Title>
+          <Title order={3}>Overview</Title>
           <Group className="overview-items">{overviewItems}</Group>
         </div>
 
         <Divider orientation="vertical" color="var(--nav-text-color)" />
 
         <div className="follow-us-section">
-          <Title>Follow Us</Title>
-          <NavLink to={"https://www.facebook.com/"}>Facebook</NavLink>
+          <Title order={3}>Follow Us</Title>
+          <Flex>
+            <NavLink to={"https://www.facebook.com/"}>💾</NavLink>
+            <NavLink to={"https://www.instagram.com/"}>🖥️</NavLink>
+            <NavLink to={"https://www.facebook.com/"}>🔥</NavLink>
+          </Flex>
         </div>
 
         <Divider orientation="vertical" color="var(--nav-text-color)" />
 
         <div className="igdb-api-section">
-          <Title>IGDB API</Title>
+          <Title order={3}>IGDB API</Title>
           <NavLink to={"https://www.igdb.com/"}>Learn More</NavLink>
         </div>
       </Container>
+      <Text size="xs" mb={"md"} mt={"md"}>
+        © 2023 GH: GameHaven, INC. ALL RIGHTS RESERVED.
+      </Text>
     </footer>
   );
 }

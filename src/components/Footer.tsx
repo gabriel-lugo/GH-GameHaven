@@ -1,8 +1,17 @@
-import { Container, Divider, Flex, Group, Text, Title } from "@mantine/core";
+import {
+  Container,
+  Divider,
+  Flex,
+  Group,
+  Image,
+  Text,
+  Title,
+} from "@mantine/core";
 import { FaExternalLinkAlt, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { FiFacebook } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
+import logo from "../assets/GH-logo.png";
 import "../css/Footer.css";
 
 const overviewLinks = [
@@ -22,12 +31,13 @@ const overviewItems = overviewLinks.map((link) => (
 export function Footer() {
   return (
     <footer>
-      <Title order={2} mt={"lg"} mb={"lg"}>
-        GameHaven
-      </Title>
+      <NavLink to={"/"}>
+        <Image src={logo} alt="GameHaven logo" w={140} />
+      </NavLink>
+
       <Container size={"xl"} className="footer-container">
         <div className="overview-section">
-          <Title order={3} mb={"lg"}>
+          <Title order={3} mb={"lg"} mt={"md"}>
             Overview
           </Title>
           <Group className="overview-items">{overviewItems}</Group>
@@ -45,7 +55,7 @@ export function Footer() {
         />
 
         <div className="follow-us-section">
-          <Title order={3} mb={"lg"}>
+          <Title order={3} mb={"lg"} mt={"md"}>
             Follow Us
           </Title>
           <Flex>
@@ -66,10 +76,14 @@ export function Footer() {
           color="var(--nav-text-color)"
           className="divider-horizontal"
         />
-        <Divider orientation="vertical" color="var(--nav-text-color)" />
+        <Divider
+          orientation="vertical"
+          color="var(--nav-text-color)"
+          className="divider-vertical"
+        />
 
         <div className="igdb-api-section">
-          <Title order={3} mb={"lg"}>
+          <Title order={3} mb={"lg"} mt={"md"}>
             IGDB API
           </Title>
           <NavLink to={"https://www.igdb.com/"} target="blank">

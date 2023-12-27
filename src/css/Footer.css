@@ -1,12 +1,14 @@
+@import "variables.css";
+
 footer {
-  border-top: 1rem solid var(--nav-text-color);
-  background-color: var(--tertiary-background-color);
-  color: var(--nav-text-color);
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  border-top: 1rem solid var(--nav-text-color);
+  background-color: var(--tertiary-background-color);
+  color: var(--nav-text-color);
+  text-align: center;
 }
 
 .footer-container {
@@ -17,6 +19,10 @@ footer {
 
 .divider-horizontal {
   display: none;
+}
+
+.divider-vertical {
+  margin-top: -8rem;
 }
 
 @media screen and (max-width: 768px) {

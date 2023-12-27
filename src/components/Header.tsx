@@ -1,15 +1,17 @@
 import {
   Burger,
+  Button,
   Container,
   Group,
   Paper,
-  Title,
   Transition,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import logo from "../assets/GH-logo.png";
 import "../css/Header.css";
+import Search from "./Search";
 
 const links = [
   { link: "/games", label: "Games" },
@@ -53,11 +55,13 @@ function Header() {
     <>
       <header>
         <Container size="md" className="inner">
-          <Title order={2}>GH-GameHaven</Title>
+          <img src={logo} alt="Gh logo" width="75px" />
           <Group gap={5} className={`header-links ${opened ? "opened" : ""}`}>
             {" "}
             {items}
           </Group>
+          <Search />
+          <Button className="button-color">Login</Button>
           <Burger
             color="#F2C341"
             opened={opened}

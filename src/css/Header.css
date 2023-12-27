@@ -9,6 +9,11 @@ header {
   position: relative;
 }
 
+.button-color {
+  background-color: var(--button-primary-background-color);
+  color: var(--heading-color);
+}
+
 .inner {
   max-width: 1200px;
   width: 100%;

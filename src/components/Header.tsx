@@ -2,6 +2,7 @@ import {
   Burger,
   Button,
   Container,
+  Divider,
   Group,
   Paper,
   Transition,
@@ -86,6 +87,7 @@ function Header() {
           />
         </Container>
       </header>
+      <Divider color="var(--nav-text-color)" size="xl" />
       <Transition transition="pop-top-right" duration={200} mounted={opened}>
         {(styles) => (
           <Paper className="dropdown" withBorder style={styles}>

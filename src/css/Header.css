@@ -101,7 +101,7 @@ header {
 
 .burger {
   display: none;
-  margin-left: auto;
+  /* margin-left: auto; */
   z-index: 20;
 }
 
@@ -120,5 +120,10 @@ header {
   .button-color {
     margin-right: 1rem;
     margin-left: 1rem;
+  }
+  .inner {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
   }
 }

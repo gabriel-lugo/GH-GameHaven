@@ -1,4 +1,4 @@
-import { Box, Input } from "@mantine/core";
+import { Box, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { RxCrossCircled } from "react-icons/rx";
@@ -29,23 +29,18 @@ function Search() {
     setIsInputVisible(!isInputVisible);
   };
 
-  const LeftIcon = () => (
-    <RxCrossCircled
-      size={25}
-      onClick={toggleInputVisibility}
-      style={{ cursor: "pointer" }}
-    />
-  );
-
   return (
     <Box className={`container-style ${isInputVisible ? "input-visible" : ""}`}>
       {isInputVisible ? (
-        <Input
-          leftSection={isScreenWidthSmall ? <LeftIcon /> : null}
+        <TextInput
           rightSection={
-            <Box className="icon-wrapper">
+            isScreenWidthSmall ? (
+              <Box className="icon-wrapper" onClick={toggleInputVisibility}>
+                <RxCrossCircled size={25} />
+              </Box>
+            ) : (
               <IoIosSearch size={25} />
-            </Box>
+            )
           }
           type="search"
           placeholder="Search for a game.."

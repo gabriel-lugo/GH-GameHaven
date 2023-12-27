@@ -2,16 +2,32 @@
 
 header {
   height: 80px;
-  margin-bottom: rem(120px);
   background-color: var(--tertiary-background-color);
   display: flex;
   justify-content: center;
   color: var(--nav-text-color);
+  position: relative;
+}
+
+.button-color {
+  color: var(--nav-text-color);
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.button-color:hover {
+  background-color: var(--button-primary-background-color);
+  color: var(--heading-color);
+}
+
+.button-color.active {
+  background-color: var(--button-primary-background-color);
+  color: var(--heading-color);
 }
 
 .inner {
-  max-width: 1200px;
-  margin: "0 auto";
+  width: 100%;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,15 +35,90 @@ header {
 
 .link {
   line-height: 1;
-  padding: rem(8px) rem(12px);
+  padding: 0.5rem 0.75rem;
   border-radius: var(--mantine-radius-sm);
   text-decoration: none;
-  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
-  font-size: var(--mantine-font-size-sm);
+  color: var(--nav-text-color);
   font-weight: 500;
 }
 
-[data-mantine-color-scheme] &[data-active] {
-  background-color: var(--mantine-color-blue-filled);
-  color: var(--mantine-color-white);
+.link.active,
+.link:hover {
+  background-color: var(--button-primary-background-color);
+  color: var(--body-text-color);
+}
+
+.link-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-links {
+  color: var(--nav-text-color);
+}
+
+.link-active {
+  background-color: var(--button-primary-background-color);
+  color: var(--mantine-color-black);
+}
+
+.header-links.opened {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--tertiary-background-color);
+  width: 100%;
+  z-index: 10;
+  height: auto;
+}
+
+.header-links.opened .link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 1rem;
+  border: 1px solid rgb(75, 74, 74);
+}
+
+.dropdown {
+  display: none;
+}
+
+.dropdown.opened {
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--tertiary-background-color);
+  z-index: 10;
+  border-radius: var(--mantine-radius-sm);
+}
+
+.burger {
+  display: none;
+  margin-left: auto;
+  z-index: 20;
+}
+
+@media (max-width: 970px) {
+  .burger {
+    display: block;
+  }
+
+  .header-links {
+    display: none;
+  }
+
+  .header-links.opened {
+    display: block;
+  }
+  .button-color {
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
 }

@@ -1,0 +1,49 @@
+.container-style {
+  width: 300px;
+  position: relative;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.icon-wrapper,
+.icon-only {
+  cursor: pointer;
+}
+
+.icon-only {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .container-style {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+  }
+
+  .input-style {
+    display: none;
+  }
+
+  .icon-only {
+    display: flex;
+  }
+  .input-visible {
+    position: absolute;
+    top: 38%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    width: 100%;
+  }
+}

@@ -3,19 +3,16 @@
   position: relative;
 }
 
-.input-style {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 8px;
-  width: 100%;
-  outline-color: var(--nav-text-color);
-}
-
 .icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 1rem;
+}
+
+.icon-wrapper,
+.icon-only {
+  cursor: pointer;
 }
 
 .icon-only {
@@ -26,12 +23,27 @@
   cursor: pointer;
 }
 
-/* Media query for smaller screens */
 @media (max-width: 768px) {
+  .container-style {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+  }
+
   .input-style {
     display: none;
   }
+
   .icon-only {
     display: flex;
+  }
+  .input-visible {
+    position: absolute;
+    top: 40%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    width: 100%;
   }
 }

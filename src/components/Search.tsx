@@ -36,7 +36,7 @@ function Search() {
           rightSection={
             isScreenWidthSmall ? (
               <Box className="icon-wrapper" onClick={toggleInputVisibility}>
-                <RxCrossCircled size={25} />
+                <RxCrossCircled className="cross-icon" size={25} />
               </Box>
             ) : (
               <IoIosSearch size={25} />

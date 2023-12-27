@@ -10,7 +10,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useEffect } from "react";
 import { FaEnvelope, FaHeart, FaInfoCircle, FaUser } from "react-icons/fa";
 import { IoLogoGameControllerA } from "react-icons/io";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import logo from "../assets/GH-logo.png";
 import "../css/Header.css";
 import Search from "./Search";
@@ -39,7 +39,7 @@ function Header() {
   }, [close]);
 
   const items = links.map((link) => (
-    <Link
+    <NavLink
       key={link.label}
       to={link.link}
       className={`link ${isActive(link.link) ? "link-active" : ""}`}
@@ -53,20 +53,22 @@ function Header() {
         {link.icon}
         {link.label}
       </span>
-    </Link>
+    </NavLink>
   ));
 
   return (
     <>
       <header>
         <Container size="md" className="inner">
-          <img src={logo} alt="Gh logo" width="75px" />
+          <NavLink to={"/"}>
+            <img src={logo} alt="Gh logo" width="75px" />
+          </NavLink>
           <Group gap={5} className={`header-links ${opened ? "opened" : ""}`}>
             {" "}
             {items}
           </Group>
           <Search />
-          <Link to="/signin">
+          <NavLink to="/signin">
             <Button
               variant="transparent"
               leftSection={<FaUser size={18} />}
@@ -74,7 +76,7 @@ function Header() {
             >
               Login
             </Button>
-          </Link>
+          </NavLink>
           <Burger
             color="#F2C341"
             opened={opened}

@@ -59,7 +59,7 @@ function Header() {
   return (
     <>
       <header>
-        <Container size="md" className="inner">
+        <Container size="xl" className="inner">
           <NavLink to={"/"}>
             <img src={logo} alt="Gh logo" width="75px" />
           </NavLink>

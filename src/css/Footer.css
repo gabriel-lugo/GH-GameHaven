@@ -1,0 +1,92 @@
+@import "variables.css";
+
+footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1rem solid var(--nav-text-color);
+  background-color: var(--tertiary-background-color);
+  color: var(--nav-text-color);
+  text-align: center;
+}
+
+.footer-container {
+  display: flex;
+  gap: 4rem;
+  justify-content: space-between;
+}
+
+.divider-horizontal {
+  display: none;
+}
+
+.divider-vertical {
+  margin-top: -8rem;
+}
+
+@media screen and (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .divider-horizontal {
+    display: block;
+  }
+
+  .divider-vertical {
+    display: none;
+  }
+}
+
+.overview-section,
+.follow-us-section,
+.igdb-api-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.overview-items {
+  flex-direction: column;
+}
+
+footer a {
+  color: var(--nav-text-color);
+  text-decoration: none;
+  margin: 0 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.5s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+footer a:hover {
+  filter: drop-shadow(0 0 2px rgba(242, 195, 65, 0.8));
+  border-bottom: 2px solid var(--nav-text-color);
+}
+
+.follow-us-section a {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.igdb-api-section a {
+  display: flex;
+}
+
+.igdb-api-section span {
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+}
+
+.footer-divider {
+  color: var(--nav-text-color);
+}

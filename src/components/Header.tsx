@@ -8,16 +8,18 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect } from "react";
+import { FaEnvelope, FaHeart, FaInfoCircle, FaUser } from "react-icons/fa";
+import { IoLogoGameControllerA } from "react-icons/io";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/GH-logo.png";
 import "../css/Header.css";
 import Search from "./Search";
 
 const links = [
-  { link: "/games", label: "Games" },
-  { link: "/favorites", label: "Favorites" },
-  { link: "/contact", label: "Contact" },
-  { link: "/about", label: "About" },
+  { link: "/games", icon: <IoLogoGameControllerA size={18} />, label: "Games" },
+  { link: "/favorites", icon: <FaHeart size={18} />, label: "Favorites" },
+  { link: "/contact", icon: <FaEnvelope size={18} />, label: "Contact" },
+  { link: "/about", icon: <FaInfoCircle size={18} />, label: "About" },
 ];
 
 function Header() {
@@ -47,7 +49,10 @@ function Header() {
         }
       }}
     >
-      {link.label}
+      <span className="link-content">
+        {link.icon}
+        {link.label}
+      </span>
     </Link>
   ));
 
@@ -61,7 +66,15 @@ function Header() {
             {items}
           </Group>
           <Search />
-          <Button className="button-color">Login</Button>
+          <Link to="/signin">
+            <Button
+              variant="transparent"
+              leftSection={<FaUser size={18} />}
+              className={`button-color ${isActive("/signin") ? "active" : ""}`}
+            >
+              Login
+            </Button>
+          </Link>
           <Burger
             color="#F2C341"
             opened={opened}

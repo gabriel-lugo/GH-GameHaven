@@ -1,5 +1,6 @@
 .container-style {
-  max-width: 300px;
+  width: 300px;
+  position: relative;
 }
 
 .input-style {
@@ -7,6 +8,30 @@
   font-size: 16px;
   border-radius: 8px;
   width: 100%;
-  box-sizing: border-box;
   outline-color: var(--nav-text-color);
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.icon-only {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .input-style {
+    display: none;
+  }
+  .icon-only {
+    display: flex;
+  }
 }

@@ -1,5 +1,4 @@
 .container-style {
-  width: 300px;
   position: relative;
 }
 
@@ -53,5 +52,23 @@
     right: 0;
     z-index: 5;
     width: 100%;
+  }
+}
+
+@media (max-width: 971px) {
+  .input-width {
+    width: 28rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .input-width {
+    width: 15rem;
+  }
+}
+
+@media (min-width: 1090px) {
+  .input-width {
+    width: 25rem;
   }
 }

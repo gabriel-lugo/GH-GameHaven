@@ -33,6 +33,8 @@ function Search() {
     <Box className={`container-style ${isInputVisible ? "input-visible" : ""}`}>
       {isInputVisible ? (
         <TextInput
+          variant="filled"
+          className="input-width"
           rightSection={
             isScreenWidthSmall ? (
               <Box className="icon-wrapper" onClick={toggleInputVisibility}>

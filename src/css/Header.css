@@ -33,7 +33,6 @@ header {
 
 .inner {
   width: 100%;
-  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -107,7 +106,6 @@ header {
 
 .burger {
   display: none;
-  z-index: 20;
 }
 
 @media (max-width: 970px) {
@@ -122,13 +120,7 @@ header {
   .header-links.opened {
     display: block;
   }
-  .button-color {
-    margin-right: 1rem;
-    margin-left: 1rem;
-  }
   .inner {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
   }
 }

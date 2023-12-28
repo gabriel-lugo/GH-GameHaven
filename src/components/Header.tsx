@@ -87,31 +87,36 @@ function Header() {
     <>
       <header className={headerClass} style={{ transform: headerTransform }}>
         <Container size="xl" className="inner">
-          <NavLink to={"/"}>
-            <img src={logo} alt="Gh logo" width="75px" />
-          </NavLink>
-          <Group gap={5} className={`header-links ${opened ? "opened" : ""}`}>
-            {" "}
-            {items}
+          <Group>
+            <NavLink to={"/"}>
+              <img src={logo} alt="Gh logo" width="75px" />
+            </NavLink>
+            <Group gap={5} className={`header-links ${opened ? "opened" : ""}`}>
+              {" "}
+              {items}
+            </Group>
           </Group>
-          <Search />
-          <NavLink to="/signin">
-            <Button
-              variant="transparent"
-              leftSection={<FaUser size={18} />}
-              className={`button-color ${isActive("/signin") ? "active" : ""}`}
-            >
-              Login
-            </Button>
-          </NavLink>
-
-          <Burger
-            color="#F2C341"
-            opened={opened}
-            onClick={toggle}
-            className="burger"
-            size="md"
-          />
+          <Group>
+            <Search />
+            <NavLink to="/signin">
+              <Button
+                variant="transparent"
+                leftSection={<FaUser size={18} />}
+                className={`button-color ${
+                  isActive("/signin") ? "active" : ""
+                }`}
+              >
+                Login
+              </Button>
+            </NavLink>
+            <Burger
+              color="#F2C341"
+              opened={opened}
+              onClick={toggle}
+              className="burger"
+              size="md"
+            />
+          </Group>
         </Container>
       </header>
       <Divider color="var(--nav-text-color)" size="xl" />

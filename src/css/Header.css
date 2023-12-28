@@ -1,12 +1,18 @@
 @import "variables.css";
 
 header {
-  height: 80px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 88px;
+  width: 100%;
+  z-index: 10;
   background-color: var(--tertiary-background-color);
   display: flex;
   justify-content: center;
   color: var(--nav-text-color);
-  position: relative;
+  border-bottom: 0.3rem solid var(--nav-text-color);
 }
 
 .button-color {
@@ -27,7 +33,6 @@ header {
 
 .inner {
   width: 100%;
-  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -101,8 +106,6 @@ header {
 
 .burger {
   display: none;
-  margin-left: auto;
-  z-index: 20;
 }
 
 @media (max-width: 970px) {
@@ -117,8 +120,7 @@ header {
   .header-links.opened {
     display: block;
   }
-  .button-color {
-    margin-right: 1rem;
-    margin-left: 1rem;
+  .inner {
+    display: flex;
   }
 }

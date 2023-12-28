@@ -1,12 +1,18 @@
 @import "variables.css";
 
 header {
-  height: 80px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 88px;
+  width: 100%;
+  z-index: 10;
   background-color: var(--tertiary-background-color);
   display: flex;
   justify-content: center;
   color: var(--nav-text-color);
-  position: relative;
+  border-bottom: 0.3rem solid var(--nav-text-color);
 }
 
 .button-color {
@@ -101,7 +107,6 @@ header {
 
 .burger {
   display: none;
-  /* margin-left: auto; */
   z-index: 20;
 }
 

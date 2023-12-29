@@ -1,6 +1,6 @@
 import { Title } from "@mantine/core";
 import { useEffect } from "react";
-import { getTopRatedGames, searchGames } from "../api/igdbApi";
+import { getNewGames, getTopRatedGames, searchGames } from "../api/igdbApi";
 
 function HomePage() {
   useEffect(() => {
@@ -22,6 +22,18 @@ function HomePage() {
       .then((topRatedGames) => {
         // Log the top-rated games information to the console
         console.log("Top Rated Games:", topRatedGames);
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error("Error:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    getNewGames("pc")
+      .then((newGames) => {
+        // Log the newest games information to the console
+        console.log("Newest Games:", newGames);
       })
       .catch((error) => {
         // Handle errors

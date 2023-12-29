@@ -1,49 +1,80 @@
-// import axiosClient from './axiosClient';
+import axiosClient from "./axiosClient";
 
-// export const category: { [key: string]: string } = {
-//   game: 'games',
-// };
+const platformIds: { [key: string]: number } = {
+  pc: 6, // Platform ID for PC
+  playstation: 48, // Platform ID for PlayStation
+  xbox: 49, // Platform ID for Xbox
+  // Add more platforms as needed
+};
 
-// export const gameType: { [key: string]: string } = {
-//   upcoming: 'upcoming',
-//   popular: 'popular',
-//   top_rated: 'top_rated',
-// };
+export const searchGames = async (query: string, platform: string) => {
+  const endpoint = "games/";
+  const url = `${endpoint}`;
 
-// interface IgdbApi {
-//   getMoviesList(type: string, params: object): Promise<any>;
-//   getTrailers(cate: string, id: number): Promise<any>;
-//   search(cate: string, params: object): Promise<any>;
-//   detail(cate: string, id: number, params: object): Promise<any>;
-//   credits(cate: string, id: number): Promise<any>;
-//   similar(cate: string, id: number): Promise<any>;
-// }
+  const platformId = platformIds[platform.toLowerCase()];
+  if (platformId === undefined) {
+    throw new Error(`Unsupported platform: ${platform}`);
+  }
 
-// const igdbApi: IgdbApi = {
-//   getMoviesList: (type: string, params: object) => {
-//     const url = 'games/' + gameType[type];
-//     return axiosClient.get(url, { params: params });
-//   },
-//   getTrailers: (cate: string, id: number) => {
-//     const url = category[cate] + '/' + id + '/trailers';
-//     return axiosClient.get(url, { params: {} });
-//   },
-//   search: (cate: string, params: object) => {
-//     const url = 'search/' + category[cate];
-//     return axiosClient.get(url, params);
-//   },
-//   detail: (cate: string, id: number, params: object) => {
-//     const url = category[cate] + '/' + id;
-//     return axiosClient.get(url, params);
-//   },
-//   credits: (cate: string, id: number) => {
-//     const url = category[cate] + '/' + id + '/credits';
-//     return axiosClient.get(url, { params: {} });
-//   },
-//   similar: (cate: string, id: number) => {
-//     const url = category[cate] + '/' + id + '/similar';
-//     return axiosClient.get(url, { params: {} });
-//   },
-// };
+  const requestBody = `fields name, summary; where name = "${query}" & platforms = ${platformId};`;
 
-// export default igdbApi;
+  try {
+    const response = await axiosClient.post(url, requestBody);
+    return response.data;
+  } catch (error) {
+    console.error("Error making request:", error);
+    throw error;
+  }
+};
+
+export const getTopRatedGames = async (platform: string) => {
+  const endpoint = "games/";
+  const url = `${endpoint}?fields=name,rating,cover.image_id&order=rating:desc&limit=10 & platforms = ${
+    platformIds[platform.toLowerCase()] || platformIds.pc
+  };`;
+
+  try {
+    const response = await axiosClient.get(url);
+    const topRatedGames = response.data;
+
+    // Fetch covers for each top-rated game
+    const coversPromises = topRatedGames.map(async (game: any) => {
+      const cover = await getGameCoverUrl(game.cover.image_id);
+      return { ...game, cover };
+    });
+
+    // Wait for all covers to be fetched
+    const gamesWithCovers = await Promise.all(coversPromises);
+
+    console.log("Top Rated Games with Covers:", gamesWithCovers);
+    return gamesWithCovers;
+  } catch (error) {
+    console.error("Error making request:", error);
+    throw error;
+  }
+};
+
+export const getGameCoverUrl = (imageId: string) => {
+  return `https://images.igdb.com/igdb/image/upload/t_cover_big/${imageId}.png`;
+};
+
+export const getGameCover = async (imageId: string) => {
+  const endpoint = `covers/${imageId}`;
+  const url = `${endpoint}?fields=image_id`;
+
+  try {
+    const response = await axiosClient.get(url);
+    return getGameCoverUrl(response.data.image_id);
+  } catch (error) {
+    console.error("Error making request:", error);
+    throw error;
+  }
+};
+
+// Add more functions for other IGDB API calls
+
+export default {
+  searchGames,
+  getTopRatedGames,
+  // Add more functions here if needed
+};

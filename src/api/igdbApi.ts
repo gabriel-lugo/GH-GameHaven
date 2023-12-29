@@ -11,11 +11,14 @@ const platformIds: { [key: string]: number } = {
 // game_videos
 // screenshots
 
+const defaultMinRating = 90;
+const defaultMinRatingCount = 20;
+
 export const getGameCoverUrl = (imageId: string) => {
   return `https://images.igdb.com/igdb/image/upload/t_cover_big/${imageId}.png`;
 };
 
-const fetchGameCovers = async (games: any[]) => {
+const fetchGameCovers = async (games: any[], platform: string) => {
   const coversPromises = games.map(async (game: any) => {
     let cover;
 
@@ -30,6 +33,8 @@ const fetchGameCovers = async (games: any[]) => {
       cover =
         "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6";
     }
+
+    console.log(`Fetching cover for game on platform ${platform}:`, game);
 
     return { ...game, cover };
   });
@@ -58,20 +63,28 @@ export const searchGames = async (query: string, platform: string) => {
   }
 };
 
-export const getTopRatedGames = async (platform: string) => {
+export const getTopRatedGames = async (
+  platform: string,
+  minRating: number = defaultMinRating,
+  minRatingCount: number = defaultMinRatingCount,
+  limit: number = 10
+) => {
   const endpoint = "games/";
-  const url = `${endpoint}?fields=name,rating,cover.image_id&order=rating:desc&limit=10 & platforms = ${
+  const url = `${endpoint}?fields=name,rating,rating_count,cover.image_id&order=rating:desc&limit=${limit}&platforms=${
     platformIds[platform.toLowerCase()] || platformIds.pc
-  };`;
+  }&filter[rating][gt]=${minRating}&filter[rating_count][gt]=${minRatingCount};`;
 
   try {
     const response = await axiosClient.get(url);
     const topRatedGames = response.data;
 
     // Fetch covers for each top-rated game
-    const gamesWithCovers = await fetchGameCovers(topRatedGames);
+    const gamesWithCovers = await fetchGameCovers(topRatedGames, platform);
 
-    console.log("Top Rated Games with Covers:", gamesWithCovers);
+    console.log(
+      `Top Rated Games with Covers (Rating > ${minRating}, Rating Count > ${minRatingCount}):`,
+      gamesWithCovers
+    );
     return gamesWithCovers;
   } catch (error) {
     console.error("Error making request:", error);
@@ -103,7 +116,7 @@ export const getNewGames = async (platform: string, limit: number = 10) => {
     const newGames = response.data;
 
     // Fetch covers for each new game
-    const gamesWithCovers = await fetchGameCovers(newGames);
+    const gamesWithCovers = await fetchGameCovers(newGames, platform);
 
     console.log(`Newest Games (${limit} games) with Covers:`, gamesWithCovers);
     return gamesWithCovers;

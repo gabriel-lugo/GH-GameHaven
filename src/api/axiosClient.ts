@@ -1,37 +1,30 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import apiConfig from "./apiConfig";
 
-const axiosClient = axios.create({
-  baseURL: apiConfig.baseUrl,
-  headers: {
-     Accept: "application/json",
-    "Access-Control-Allow-Origin": "*",
-    'Client-ID': apiConfig.clientID,
-    'Authorization': `Bearer ${apiConfig.authorization}`,
-    "Content-Type": "application/json",
-  },
-//   params: {
-//     api_key: apiConfig.apiKey,
-//   },
-} as AxiosRequestConfig);
+export const searchGames = async (query: string) => {
+  const endpoint = "games/";
+  const url = `${apiConfig.baseUrl}${endpoint}`;
 
-// fields name,summary;
-// where name = "Super Mario Bros. Wonder";
+  const requestBody = `fields name, summary; where name = "${query}";`;
 
+  try {
+    const response = await axios.post(url, requestBody, {
+      headers: {
+        "Client-ID": apiConfig.clientID,
+        Authorization: `Bearer ${apiConfig.authorization}`,
+        "Content-Type": "text/plain",
+      },
+    });
 
-// axiosClient.interceptors.request.use(async (config) => config);
+    const gameData = response.data;
 
-export const marioTest = async () => {
-    const endpoint = "games";
-    const body = `fields name, summary; where name = "Super Mario Bros. Wonder";`;
-  
-    try {
-      const response = await axiosClient.post(endpoint, body);
-      console.log(response);
-    } catch (error) {
-      console.error('Error making request:', error);
-    }
+    console.log("Game Information:", gameData);
+
+    return gameData;
+  } catch (error) {
+    console.error("Error making request:", error);
+    throw error;
   }
+};
 
-
-export default axiosClient;
+export default searchGames;

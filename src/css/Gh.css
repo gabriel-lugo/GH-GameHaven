@@ -6,13 +6,17 @@
     rgba(194, 154, 43, 1) 0%,
     rgba(242, 195, 65, 1) 0%
   );
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
 .button-style {
   background-color: var(--button-primary-background-color);
   color: var(--body-text-color);
+}
+
+.button-style:hover {
+  filter: drop-shadow(0 0 2px rgba(117, 87, 6, 0.8));
 }
 
 .content-container {
@@ -23,7 +27,7 @@
 }
 
 .image-style {
-  width: 35%;
+  width: 18rem;
 }
 
 .divider-container {

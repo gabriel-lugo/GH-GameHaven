@@ -8,9 +8,9 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import "../css/Gh.css";
+import "../css/GhInfo.css";
 
-function Gh() {
+function GhInfo() {
   return (
     <Container className="gh-container" size="xl">
       <Box className="content-container">
@@ -30,7 +30,7 @@ function Gh() {
           <Text>
             Our goal is to create a space where you as a gamer can search and
             find your next game. You should be able to share these games with
-            your friends and bookmark them as you please.
+            your friends and mark them as favorites as you please.
           </Text>
           <Button className="button-style" mt="lg" fullWidth>
             Learn More
@@ -41,4 +41,4 @@ function Gh() {
   );
 }
 
-export default Gh;
+export default GhInfo;

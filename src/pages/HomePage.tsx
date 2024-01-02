@@ -1,6 +1,7 @@
 import { Title } from "@mantine/core";
 import { useEffect } from "react";
 import { getNewGames, getTopRatedGames, searchGames } from "../api/igdbApi";
+import GhInfo from "../components/GhInfo";
 
 function HomePage() {
   useEffect(() => {
@@ -41,7 +42,12 @@ function HomePage() {
       });
   }, []);
 
-  return <Title order={2}>Homepage</Title>;
+  return (
+    <>
+      <Title order={2}>Homepage</Title>
+      <GhInfo />
+    </>
+  );
 }
 
 export default HomePage;

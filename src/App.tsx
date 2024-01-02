@@ -1,4 +1,4 @@
-import { Container, Title } from "@mantine/core";
+import { Container } from "@mantine/core";
 import { Outlet } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -8,9 +8,8 @@ function App() {
   return (
     <>
       <Header />
-      <Container size={"xl"} className="container-layout">
+      <Container size={"xl"} className="container-layout" p={0}>
         <main>
-          <Title order={1}>Gamehaven</Title>
           <Outlet />
         </main>
       </Container>

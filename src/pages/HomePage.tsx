@@ -1,12 +1,14 @@
-import { SimpleGrid, Title } from "@mantine/core";
+import { Container, SimpleGrid, Title } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { getNewGames, getTopRatedGames, searchGames } from "../api/igdbApi";
+import GhInfo from "../components/GhInfo";
 import Thumbnail from "../components/Thumbnail";
 
 interface Game {
   id: number;
   name: string;
   cover: string;
+  rating: number;
 }
 
 function HomePage() {
@@ -56,23 +58,27 @@ function HomePage() {
 
   return (
     <>
-      <Title order={2} mb={"md"}>
-        Top Rated Games
-      </Title>
-      <SimpleGrid cols={{ base: 1, xs: 4, sm: 4, lg: 6 }} mb={"xl"}>
-        {topRatedGames.map((game) => (
-          <Thumbnail key={game.id} game={game} />
-        ))}
-      </SimpleGrid>
-
-      <Title order={2} mb={"md"}>
-        Newest Games
-      </Title>
-      <SimpleGrid cols={{ base: 1, xs: 4, sm: 4, lg: 6 }} mb={"xl"}>
-        {newestGames.map((game) => (
-          <Thumbnail key={game.id} game={game} />
-        ))}
-      </SimpleGrid>
+      <Container size={"xl"}>
+        <Title order={2} mb={"md"}>
+          Top Rated Games
+        </Title>
+        <SimpleGrid cols={{ base: 1, xs: 4, sm: 4, lg: 6 }} mb={"xl"}>
+          {topRatedGames.map((game) => (
+            <Thumbnail key={game.id} game={game} />
+          ))}
+        </SimpleGrid>
+      </Container>
+      <GhInfo />
+      <Container size={"xl"}>
+        <Title order={2} mb={"md"}>
+          Newest Games
+        </Title>
+        <SimpleGrid cols={{ base: 1, xs: 4, sm: 4, lg: 6 }} mb={"xl"}>
+          {newestGames.map((game) => (
+            <Thumbnail key={game.id} game={game} />
+          ))}
+        </SimpleGrid>
+      </Container>
     </>
   );
 }

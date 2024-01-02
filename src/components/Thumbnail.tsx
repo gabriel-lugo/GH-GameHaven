@@ -24,6 +24,16 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
     }
   };
 
+  const getRatingText = (rating: number) => {
+    if (rating >= 75) {
+      return "Acclaimed";
+    } else if (rating >= 50) {
+      return "Average";
+    } else {
+      return "Unfavorable";
+    }
+  };
+
   const handleHeartClick = () => {
     setIsHeartCrowned(!isHeartCrowned);
   };
@@ -53,9 +63,14 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
       <Title mb="sm" order={5}>
         {game.name}
       </Title>
-      <Text className={`rating ${getRatingClass(game.rating)}`}>
-        {Math.round(game.rating)}
-      </Text>
+      <Box className="rating-content">
+        <Text className={`rating ${getRatingClass(game.rating)}`}>
+          {Math.round(game.rating)}
+        </Text>
+        <Text className="rating-text" ml="xs">
+          {getRatingText(game.rating)}
+        </Text>
+      </Box>
     </Box>
     // </Card>
   );

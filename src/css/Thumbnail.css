@@ -65,8 +65,18 @@
   color: #fff;
 }
 
-.rating {
+.rating-content {
   margin-top: auto;
+  text-align: left;
+}
+
+.rating,
+.rating-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.rating {
   font-weight: bold;
   padding: 4px 8px;
   border-radius: 4px;

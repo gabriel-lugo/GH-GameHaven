@@ -14,13 +14,17 @@ const platformIds: { [key: string]: number } = {
 const defaultMinRating = 90;
 const defaultMinRatingCount = 20;
 
+export const getGameScreenshotUrl = (imageId: string) => {
+  return `https://images.igdb.com/igdb/image/upload/t_screenshot_big/${imageId}.png`;
+};
+
 export const getGameCoverUrl = (imageId: string) => {
   return `https://images.igdb.com/igdb/image/upload/t_cover_big/${imageId}.png`;
 };
 
-const fetchGameCovers = async (games: any[], platform: string) => {
-  const coversPromises = games.map(async (game: any) => {
-    let cover;
+const fetchGameCoversAndScreenshots = async (games: any[], platform: string) => {
+  const promises = games.map(async (game: any) => {
+    let cover, screenshots = [];
 
     if (game.cover && game.cover.image_id) {
       // If the game has a cover with a valid image_id, use it
@@ -36,11 +40,16 @@ const fetchGameCovers = async (games: any[], platform: string) => {
 
     console.log(`Fetching cover for game on platform ${platform}:`, game);
 
-    return { ...game, cover };
+    if (game.screenshots && game.screenshots.length > 0) {
+      screenshots = game.screenshots.map((ss: any) => getGameScreenshotUrl(ss.image_id));
+    }
+
+    console.log(`Fetching cover and screenshots for game on platform ${platform}:`, game);
+
+    return { ...game, cover, screenshots };
   });
 
-  // Wait for all covers to be fetched
-  return Promise.all(coversPromises);
+  return Promise.all(promises);
 };
 
 export const searchGames = async (query: string, platform: string) => {
@@ -79,7 +88,7 @@ export const getTopRatedGames = async (
     const topRatedGames = response.data;
 
     // Fetch covers for each top-rated game
-    const gamesWithCovers = await fetchGameCovers(topRatedGames, platform);
+    const gamesWithCovers = await fetchGameCoversAndScreenshots(topRatedGames, platform);
 
     console.log(
       `Top Rated Games with Covers (Rating > ${minRating}, Rating Count > ${minRatingCount}):`,
@@ -107,19 +116,17 @@ export const getGameCover = async (imageId: string) => {
 
 export const getNewGames = async (platform: string, limit: number = 10) => {
   const endpoint = "games/";
-  const url = `${endpoint}?fields=name,rating,release_dates.date,cover.image_id&order=release_dates.date:desc&limit=${limit} & platforms = ${
-    platformIds[platform.toLowerCase()] || platformIds.pc
-  };`;
+  const url = `${endpoint}?fields=name,rating,release_dates.date,cover.image_id,screenshots.image_id&order=release_dates.date:desc&limit=${limit}&platforms=${platformIds[platform.toLowerCase()] || platformIds.pc};`;
 
   try {
     const response = await axiosClient.get(url);
     const newGames = response.data;
 
     // Fetch covers for each new game
-    const gamesWithCovers = await fetchGameCovers(newGames, platform);
+    const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(newGames, platform);
 
-    console.log(`Newest Games (${limit} games) with Covers:`, gamesWithCovers);
-    return gamesWithCovers;
+    console.log(`Newest Games (${limit} games) with Covers:`, gamesWithCoversAndScreenshots);
+    return gamesWithCoversAndScreenshots;
   } catch (error) {
     console.error("Error making request:", error);
     throw error;

@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { getNewGames, getTopRatedGames, searchGames } from "../api/igdbApi";
 import GhInfo from "../components/GhInfo";
 import Thumbnail from "../components/Thumbnail";
+import HeroSlide from "../components/HeroSlide";
 
 interface Game {
   id: number;
   name: string;
   cover: string;
   rating: number;
+  screenshots: string[];
 }
 
 function HomePage() {
@@ -58,6 +60,7 @@ function HomePage() {
 
   return (
     <>
+      <HeroSlide games={newestGames} />
       <Container size={"xl"}>
         <Title order={2} mb={"md"}>
           Top Rated Games

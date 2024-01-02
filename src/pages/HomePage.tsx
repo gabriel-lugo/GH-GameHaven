@@ -72,6 +72,9 @@ function HomePage() {
           ))}
         </SimpleGrid>
       </Container>
+      <Title order={2} pl={"md"} mb={"md"}>
+        Top Rated Games
+      </Title>
       <Carousel games={topRatedGames} />
       <GhInfo />
       <Container size={"xl"}>

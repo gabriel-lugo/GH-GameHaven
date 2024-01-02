@@ -1,8 +1,15 @@
-.card-container {
+.thumbnail-card-container {
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  max-width: 13rem;
+  min-height: 25rem;
+}
+
+.thumbnail-content-container {
+  flex: 1;
+  justify-content: start;
 }
 
 .thumbnail-image {

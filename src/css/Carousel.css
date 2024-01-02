@@ -1,0 +1,4 @@
+.carousel-container .swiper-slide {
+  width: auto;
+  flex-shrink: 0;
+}

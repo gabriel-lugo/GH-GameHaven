@@ -1,3 +1,4 @@
+import { Box } from "@mantine/core";
 import SwiperCore from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -16,19 +17,21 @@ SwiperCore.use([Navigation]);
 
 function Carousel({ games }: CarouselProps) {
   return (
-    <Swiper
-      slidesPerView={"auto"}
-      spaceBetween={16}
-      className="carousel-container"
-      navigation={true}
-      loop={true}
-    >
-      {games.map((game) => (
-        <SwiperSlide key={game.id}>
-          <Thumbnail game={game} />
-        </SwiperSlide>
-      ))}
-    </Swiper>
+    <Box mt={"lg"} mb={"lg"}>
+      <Swiper
+        slidesPerView={"auto"}
+        spaceBetween={16}
+        className="carousel-container"
+        navigation={true}
+        loop={true}
+      >
+        {games.map((game) => (
+          <SwiperSlide key={game.id}>
+            <Thumbnail game={game} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </Box>
   );
 }
 

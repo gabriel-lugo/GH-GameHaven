@@ -28,7 +28,7 @@ function DetailsPage() {
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
 
   useEffect(() => {
-    const query = "Super Mario Sunshine";
+    const query = "The Witcher 3: Wild Hunt - Game of the Year Edition";
     const platform = "pc";
 
     searchGames(query, platform)
@@ -53,7 +53,7 @@ function DetailsPage() {
         <Box>
           <Box className="details-hero">
             <Box className="details-title">
-              <Title pl={10} order={2}>
+              <Title className="title-size" pl={10} order={2}>
                 {gameDetails.name}
               </Title>
             </Box>

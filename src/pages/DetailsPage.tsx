@@ -24,7 +24,7 @@ function DetailsPage() {
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
 
   useEffect(() => {
-    const query = "The Witcher 3: Wild Hunt";
+    const query = "Super Mario Sunshine";
     const platform = "pc";
 
     searchGames(query, platform)
@@ -58,7 +58,15 @@ function DetailsPage() {
                 <iframe
                   width="100%"
                   height="100%"
-                  src={`https://www.youtube.com/embed/${gameDetails.videos[1].video_id}?autoplay=1&mute=1&loop=1&playlist=${gameDetails.videos[1].video_id}`}
+                  src={`https://www.youtube.com/embed/${
+                    gameDetails.videos[1]
+                      ? gameDetails.videos[1].video_id
+                      : gameDetails.videos[0].video_id
+                  }?autoplay=1&mute=1&loop=1&playlist=${
+                    gameDetails.videos[1]
+                      ? gameDetails.videos[1].video_id
+                      : gameDetails.videos[0].video_id
+                  }`}
                   title="Gameplay Video"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -1,7 +1,9 @@
 import { Box, Container, Loader, Spoiler, Text, Title } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { searchGames } from "../api/igdbApi";
+import Carousel from "../components/Carousel";
 import "../css/DetailsPage.css";
+import { Game } from "./HomePage";
 
 interface GameDetails {
   name: string;
@@ -18,6 +20,8 @@ interface GameDetails {
   total_rating: number;
   total_rating_count: number;
   platforms: Array<{ name: string }>;
+  similar_games: Array<Game>;
+  cover: string;
 }
 
 function DetailsPage() {
@@ -125,6 +129,13 @@ function DetailsPage() {
               ))}
             </Box>
           )}
+          {gameDetails.similar_games &&
+            gameDetails.similar_games.length > 0 && (
+              <Box>
+                <Title order={2}>Similar Games:</Title>
+                <Carousel games={gameDetails.similar_games} />
+              </Box>
+            )}
         </Box>
       ) : (
         <Box>

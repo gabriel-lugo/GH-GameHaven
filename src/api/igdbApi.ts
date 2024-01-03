@@ -22,9 +22,13 @@ export const getGameCoverUrl = (imageId: string) => {
   return `https://images.igdb.com/igdb/image/upload/t_cover_big/${imageId}.png`;
 };
 
-const fetchGameCoversAndScreenshots = async (games: any[], platform: string) => {
+const fetchGameCoversAndScreenshots = async (
+  games: any[],
+  platform: string
+) => {
   const promises = games.map(async (game: any) => {
-    let cover, screenshots = [];
+    let cover,
+      screenshots = [];
 
     if (game.cover && game.cover.image_id) {
       // If the game has a cover with a valid image_id, use it
@@ -41,10 +45,15 @@ const fetchGameCoversAndScreenshots = async (games: any[], platform: string) => 
     console.log(`Fetching cover for game on platform ${platform}:`, game);
 
     if (game.screenshots && game.screenshots.length > 0) {
-      screenshots = game.screenshots.map((ss: any) => getGameScreenshotUrl(ss.image_id));
+      screenshots = game.screenshots.map((ss: any) =>
+        getGameScreenshotUrl(ss.image_id)
+      );
     }
 
-    console.log(`Fetching cover and screenshots for game on platform ${platform}:`, game);
+    console.log(
+      `Fetching cover and screenshots for game on platform ${platform}:`,
+      game
+    );
 
     return { ...game, cover, screenshots };
   });
@@ -61,7 +70,7 @@ export const searchGames = async (query: string, platform: string) => {
     throw new Error(`Unsupported platform: ${platform}`);
   }
 
-  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, involved_companies.company.name, game_modes.name, artworks.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name; where name = "${query}";`;
+  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, involved_companies.company.name, game_modes.name, artworks.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*; where name = "${query}";`;
 
   try {
     const response = await axiosClient.post(url, requestBody);
@@ -88,7 +97,10 @@ export const getTopRatedGames = async (
     const topRatedGames = response.data;
 
     // Fetch covers for each top-rated game
-    const gamesWithCovers = await fetchGameCoversAndScreenshots(topRatedGames, platform);
+    const gamesWithCovers = await fetchGameCoversAndScreenshots(
+      topRatedGames,
+      platform
+    );
 
     console.log(
       `Top Rated Games with Covers (Rating > ${minRating}, Rating Count > ${minRatingCount}):`,
@@ -116,16 +128,24 @@ export const getGameCover = async (imageId: string) => {
 
 export const getNewGames = async (platform: string, limit: number = 10) => {
   const endpoint = "games/";
-  const url = `${endpoint}?fields=name,total_rating,release_dates.date,cover.image_id,screenshots.image_id&order=release_dates.date:desc&limit=${limit}&platforms=${platformIds[platform.toLowerCase()] || platformIds.pc};`;
+  const url = `${endpoint}?fields=name,total_rating,release_dates.date,cover.image_id,screenshots.image_id&order=release_dates.date:desc&limit=${limit}&platforms=${
+    platformIds[platform.toLowerCase()] || platformIds.pc
+  };`;
 
   try {
     const response = await axiosClient.get(url);
     const newGames = response.data;
 
     // Fetch covers for each new game
-    const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(newGames, platform);
+    const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(
+      newGames,
+      platform
+    );
 
-    console.log(`Newest Games (${limit} games) with Covers:`, gamesWithCoversAndScreenshots);
+    console.log(
+      `Newest Games (${limit} games) with Covers:`,
+      gamesWithCoversAndScreenshots
+    );
     return gamesWithCoversAndScreenshots;
   } catch (error) {
     console.error("Error making request:", error);

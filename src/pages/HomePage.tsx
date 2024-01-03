@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { getNewGames, getTopRatedGames, searchGames } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import GhInfo from "../components/GhInfo";
-import Thumbnail from "../components/Thumbnail";
 import HeroSlide from "../components/HeroSlide";
+import Thumbnail from "../components/Thumbnail";
 
 export interface Game {
   id: number;

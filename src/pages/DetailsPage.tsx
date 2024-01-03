@@ -1,24 +1,130 @@
-import { Title } from "@mantine/core";
-import { useEffect } from "react";
+import { Box, Container, Loader, Spoiler, Text, Title } from "@mantine/core";
+import { useEffect, useState } from "react";
 import { searchGames } from "../api/igdbApi";
+import "../css/DetailsPage.css";
+
+interface GameDetails {
+  name: string;
+  summary: string;
+  themes: Array<{ name: string }>;
+  franchises: Array<{ name: string }>;
+  release_dates: Array<{ date: string }>;
+  involved_companies: Array<{ company: { name: string } }>;
+  game_modes: Array<{ name: string }>;
+  artworks: Array<any>;
+  genres: Array<{ name: string }>;
+  websites: Array<any>;
+  videos: Array<any>;
+  total_rating: number;
+  total_rating_count: number;
+  platforms: Array<{ name: string }>;
+}
 
 function DetailsPage() {
+  const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
+
   useEffect(() => {
-    const query = "The Elder Scrolls IV: Oblivion";
+    const query = "The Witcher 3: Wild Hunt";
     const platform = "pc";
 
     searchGames(query, platform)
       .then((gameData) => {
-        // Log the game information to the console
-        console.log("Game Information:", gameData);
+        const game = gameData[0];
+        setGameDetails(game);
+        console.log("Game Information:", game);
       })
       .catch((error) => {
-        // Handle errors
         console.error("Error:", error);
       });
   }, []);
 
-  return <Title order={2}>Details</Title>;
+  function convertTimestampToDate(timestamp: any) {
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleDateString();
+  }
+
+  return (
+    <Container className="details-container" p={0} size="xl">
+      {gameDetails ? (
+        <Box>
+          <Box className="details-hero">
+            <Box className="details-title">
+              <Title pl={10} order={2}>
+                {gameDetails.name}
+              </Title>
+            </Box>
+            <Box className="video-container">
+              {gameDetails.videos && gameDetails.videos.length > 0 && (
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={`https://www.youtube.com/embed/${gameDetails.videos[1].video_id}?autoplay=1&mute=1&loop=1&playlist=${gameDetails.videos[1].video_id}`}
+                  title="Gameplay Video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              )}
+              <Box className="video-overlay"></Box>
+            </Box>
+            {gameDetails.release_dates &&
+              gameDetails.release_dates.length > 0 && (
+                <Box className="game-release-date">
+                  <Text size="lg">
+                    First Release Date:{" "}
+                    {convertTimestampToDate(gameDetails.release_dates[0].date)}
+                  </Text>
+                </Box>
+              )}
+
+            {gameDetails.involved_companies &&
+              gameDetails.involved_companies.length > 0 && (
+                <Box className="game-companies">
+                  <Text>{gameDetails.involved_companies[0].company.name}</Text>
+                </Box>
+              )}
+          </Box>
+          <Box className="center-content">
+            {gameDetails.genres && gameDetails.genres.length > 0 && (
+              <Box className="detail-section">
+                <Title order={4}>Genres:</Title>
+                {gameDetails.genres.map((genre, index) => (
+                  <Text key={index}>{genre.name}</Text>
+                ))}
+              </Box>
+            )}
+            {gameDetails.platforms && gameDetails.platforms.length > 0 && (
+              <Box className="detail-section">
+                <Title order={4}>Platforms:</Title>
+                {gameDetails.platforms.map((platform, index) => (
+                  <Text key={index}>{platform.name}</Text>
+                ))}
+              </Box>
+            )}
+          </Box>
+          <Box pl={10}>
+            <Spoiler maxHeight={55} showLabel="Read More" hideLabel="Hide">
+              <Text>{gameDetails.summary}</Text>
+            </Spoiler>
+          </Box>
+          {gameDetails.platforms && gameDetails.platforms.length > 0 && (
+            <Box pl={10}>
+              <Title order={2} size="lg">
+                Themes:
+              </Title>
+              {gameDetails.themes.map((theme, index) => (
+                <Text key={index}>{theme.name}</Text>
+              ))}
+            </Box>
+          )}
+        </Box>
+      ) : (
+        <Box>
+          <Loader color="orange" size="xl" type="dots" />
+        </Box>
+      )}
+    </Container>
+  );
 }
 
 export default DetailsPage;

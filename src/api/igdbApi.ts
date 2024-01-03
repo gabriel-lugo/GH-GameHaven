@@ -61,7 +61,7 @@ export const searchGames = async (query: string, platform: string) => {
     throw new Error(`Unsupported platform: ${platform}`);
   }
 
-  const requestBody = `fields name, summary; where name = "${query}" & platforms = ${platformId};`;
+  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, involved_companies.company.name, game_modes.name, artworks.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name; where name = "${query}";`;
 
   try {
     const response = await axiosClient.post(url, requestBody);
@@ -79,7 +79,7 @@ export const getTopRatedGames = async (
   limit: number = 10
 ) => {
   const endpoint = "games/";
-  const url = `${endpoint}?fields=name,rating,rating_count,cover.image_id&order=rating:desc&limit=${limit}&platforms=${
+  const url = `${endpoint}?fields=name,total_rating,total_rating_count,cover.image_id&order=rating:desc&limit=${limit}&platforms=${
     platformIds[platform.toLowerCase()] || platformIds.pc
   }&filter[rating][gt]=${minRating}&filter[rating_count][gt]=${minRatingCount};`;
 
@@ -116,7 +116,7 @@ export const getGameCover = async (imageId: string) => {
 
 export const getNewGames = async (platform: string, limit: number = 10) => {
   const endpoint = "games/";
-  const url = `${endpoint}?fields=name,rating,release_dates.date,cover.image_id,screenshots.image_id&order=release_dates.date:desc&limit=${limit}&platforms=${platformIds[platform.toLowerCase()] || platformIds.pc};`;
+  const url = `${endpoint}?fields=name,total_rating,release_dates.date,cover.image_id,screenshots.image_id&order=release_dates.date:desc&limit=${limit}&platforms=${platformIds[platform.toLowerCase()] || platformIds.pc};`;
 
   try {
     const response = await axiosClient.get(url);

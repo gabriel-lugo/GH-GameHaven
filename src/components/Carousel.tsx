@@ -1,4 +1,5 @@
 import { Box } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import SwiperCore from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -16,11 +17,13 @@ interface CarouselProps {
 SwiperCore.use([FreeMode, Navigation]);
 
 function Carousel({ games }: CarouselProps) {
+  const isSmallScreen = useMediaQuery("(max-width: 768px)");
+
   return (
     <Box mt={"lg"} mb={"lg"}>
       <Swiper
+        centeredSlides={isSmallScreen}
         slidesPerView={"auto"}
-        freeMode={true}
         spaceBetween={16}
         className="carousel-container"
         modules={[FreeMode, Navigation]}

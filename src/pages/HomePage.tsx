@@ -62,7 +62,7 @@ function HomePage() {
   return (
     <>
       <HeroSlide games={newestGames} />
-      <Container size={"xl"}>
+      {/* <Container size={"xl"}>
         <Title order={2} mb={"md"}>
           Top Rated Games
         </Title>
@@ -71,7 +71,7 @@ function HomePage() {
             <Thumbnail key={game.id} game={game} />
           ))}
         </SimpleGrid>
-      </Container>
+      </Container> */}
       <Title order={2} pl={"md"} mb={"md"}>
         Top Rated Games
       </Title>

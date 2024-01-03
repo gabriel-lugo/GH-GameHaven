@@ -2,14 +2,15 @@ import { Container, SimpleGrid, Title } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { getNewGames, getTopRatedGames, searchGames } from "../api/igdbApi";
 import GhInfo from "../components/GhInfo";
-import Thumbnail from "../components/Thumbnail";
 import HeroSlide from "../components/HeroSlide";
+import Thumbnail from "../components/Thumbnail";
 
 interface Game {
   id: number;
   name: string;
   cover: string;
   rating: number;
+  total_rating: number;
   screenshots: string[];
 }
 

@@ -7,6 +7,7 @@ import App from "./App.tsx";
 import "./css/main.css";
 import AboutPage from "./pages/AboutPage.tsx";
 import ContactPage from "./pages/ContactPage.tsx";
+import DetailsPage from "./pages/DetailsPage.tsx";
 import ErrorPage from "./pages/ErrorPage.tsx";
 import FavoritesPage from "./pages/FavoritesPage.tsx";
 import GamesPage from "./pages/GamesPage.tsx";
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
       { path: "/about", element: <AboutPage /> },
       { path: "/signin", element: <SigninPage /> },
       { path: "/register", element: <RegisterPage /> },
+      { path: "/details", element: <DetailsPage /> },
       { path: "*", element: <ErrorPage /> },
     ],
   },

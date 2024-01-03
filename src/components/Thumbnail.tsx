@@ -9,6 +9,7 @@ interface Game {
   name: string;
   cover: string;
   rating: number;
+  total_rating: number;
 }
 
 const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
@@ -64,11 +65,11 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
         {game.name}
       </Title>
       <Box className="rating-content">
-        <Text className={`rating ${getRatingClass(game.rating)}`}>
-          {Math.round(game.rating)}
+        <Text className={`rating ${getRatingClass(game.total_rating)}`}>
+          {Math.round(game.total_rating)}
         </Text>
         <Text className="rating-text" ml="xs">
-          {getRatingText(game.rating)}
+          {getRatingText(game.total_rating)}
         </Text>
       </Box>
     </Box>

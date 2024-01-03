@@ -4,7 +4,6 @@ import { getNewGames, getTopRatedGames, searchGames } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import GhInfo from "../components/GhInfo";
 import HeroSlide from "../components/HeroSlide";
-import Thumbnail from "../components/Thumbnail";
 
 export interface Game {
   id: number;

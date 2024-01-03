@@ -38,9 +38,9 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
   const handleHeartClick = () => {
     setIsHeartCrowned(!isHeartCrowned);
   };
+
   return (
-    // <Card radius="md" shadow="sm" className="card-container">
-    <Box className="card-container">
+    <Box className="thumbnail-card-container">
       <Box className="thumbnail-image">
         <Image src={game.cover} alt={game.name} />
         <Box className="hover-content">
@@ -56,14 +56,16 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
           </Title>
         </Box>
       </Box>
-      {isHeartCrowned ? (
-        <GiCrownedHeart className="heart-icon" onClick={handleHeartClick} />
-      ) : (
-        <IoHeartOutline className="heart-icon" onClick={handleHeartClick} />
-      )}
-      <Title mb="sm" order={5}>
-        {game.name}
-      </Title>
+      <Box className="thumbnail-content-container">
+        {isHeartCrowned ? (
+          <GiCrownedHeart className="heart-icon" onClick={handleHeartClick} />
+        ) : (
+          <IoHeartOutline className="heart-icon" onClick={handleHeartClick} />
+        )}
+        <Title mb="sm" order={5}>
+          {game.name}
+        </Title>
+      </Box>
       <Box className="rating-content">
         <Text className={`rating ${getRatingClass(game.total_rating)}`}>
           {Math.round(game.total_rating)}
@@ -73,7 +75,6 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
         </Text>
       </Box>
     </Box>
-    // </Card>
   );
 };
 

@@ -36,7 +36,6 @@ function HeroSlide({ games }: HeroSlideProps) {
             <Box className="hero-slide-container">
               <Box aria-label="new games" className="is-new-label">
                 Screenshot from: <b>{game.name}</b>
-                {game.rating}
               </Box>
               <Image src={screenshot} alt={`Screenshot of ${game.name}`} />
             </Box>

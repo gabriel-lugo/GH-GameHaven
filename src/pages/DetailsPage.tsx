@@ -27,6 +27,23 @@ interface GameDetails {
 function DetailsPage() {
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
 
+  function renderWebsites(websites: any) {
+    if (!websites || websites.length === 0) {
+      return <Text>No websites available.</Text>;
+    }
+
+    return websites.map((website: any, index: any) => (
+      <a
+        href={website.url}
+        key={index}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Text>{website.name || website.url}</Text>
+      </a>
+    ));
+  }
+
   useEffect(() => {
     const query = "The Witcher 3: Wild Hunt - Game of the Year Edition";
     const platform = "pc";
@@ -114,10 +131,16 @@ function DetailsPage() {
               </Box>
             )}
           </Box>
-          <Box pl={10}>
+          <Box mt="md" pl={10}>
             <Spoiler maxHeight={55} showLabel="Read More" hideLabel="Hide">
               <Text>{gameDetails.summary}</Text>
             </Spoiler>
+            {gameDetails.websites && (
+              <Box className="detail-section">
+                <Title order={4}>Websites:</Title>
+                {renderWebsites(gameDetails.websites)}
+              </Box>
+            )}
           </Box>
           {gameDetails.platforms && gameDetails.platforms.length > 0 && (
             <Box pl={10}>

@@ -1,4 +1,13 @@
-import { Box, Container, Loader, Spoiler, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Container,
+  Image,
+  Loader,
+  Spoiler,
+  Text,
+  Title,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import { searchGames } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
@@ -44,8 +53,20 @@ function DetailsPage() {
     ));
   }
 
+  const getRatingClass = (rating: number) => {
+    if (rating === null || rating === undefined) {
+      return "rating-tbd";
+    } else if (rating >= 75) {
+      return "rating-high";
+    } else if (rating >= 50) {
+      return "rating-medium";
+    } else {
+      return "rating-low";
+    }
+  };
+
   useEffect(() => {
-    const query = "The Witcher";
+    const query = "The Witcher 3: Wild Hunt";
     const platform = "pc";
 
     searchGames(query, platform)
@@ -69,6 +90,14 @@ function DetailsPage() {
       {gameDetails ? (
         <Box>
           <Box className="details-hero">
+            <Box className="cover-image-container">
+              <Image
+                src={gameDetails.cover}
+                alt={`Cover of ${gameDetails.name}`}
+                className="game-cover-img"
+              />
+              <Button className="cover-img-btn">Favorite</Button>
+            </Box>
             <Box className="details-title">
               <Title className="title-size" pl={10} order={2}>
                 {gameDetails.name}
@@ -113,23 +142,71 @@ function DetailsPage() {
                 </Box>
               )}
           </Box>
-          <Box className="center-content">
-            {gameDetails.genres && gameDetails.genres.length > 0 && (
-              <Box className="detail-section">
-                <Title order={4}>Genres:</Title>
-                {gameDetails.genres.map((genre, index) => (
-                  <Text key={index}>{genre.name}</Text>
-                ))}
-              </Box>
-            )}
-            {gameDetails.platforms && gameDetails.platforms.length > 0 && (
-              <Box className="detail-section">
-                <Title order={4}>Platforms:</Title>
-                {gameDetails.platforms.map((platform, index) => (
-                  <Text key={index}>{platform.name}</Text>
-                ))}
-              </Box>
-            )}
+          <Box className="top-game-content">
+            <Box className="game-modes-section">
+              {gameDetails.game_modes && gameDetails.game_modes.length > 0 && (
+                <Box className="detail-section">
+                  <Box className="left-margin" pl={10}>
+                    <Title order={4}>Game Modes:</Title>
+                    {gameDetails.game_modes.map((mode, index) => (
+                      <Text key={index}>{mode.name}</Text>
+                    ))}
+                  </Box>
+
+                  {gameDetails.platforms &&
+                    gameDetails.platforms.length > 0 && (
+                      <Box className="left-margin" pl={10}>
+                        <Title order={4}>Themes:</Title>
+                        {gameDetails.themes.map((theme, index) => (
+                          <Text key={index}>{theme.name}</Text>
+                        ))}
+                      </Box>
+                    )}
+
+                  {gameDetails.franchises &&
+                    gameDetails.franchises.length > 0 && (
+                      <Box className="left-margin" pl={10}>
+                        <Title order={4}>Franchises:</Title>
+                        {gameDetails.franchises.map((franchise, index) => (
+                          <Text key={index}>{franchise.name}</Text>
+                        ))}
+                      </Box>
+                    )}
+                </Box>
+              )}
+            </Box>
+            <Box className="detail-section">
+              {gameDetails.genres && gameDetails.genres.length > 0 && (
+                <Box className="responsive-style" pl={10}>
+                  <Title order={4}>Genres:</Title>
+                  {gameDetails.genres.map((genre, index) => (
+                    <Text key={index}>{genre.name}</Text>
+                  ))}
+                </Box>
+              )}
+              {gameDetails.platforms && gameDetails.platforms.length > 0 && (
+                <Box className="responsive-style" pl={10}>
+                  <Title order={4}>Platforms:</Title>
+                  {gameDetails.platforms.map((platform, index) => (
+                    <Text key={index}>{platform.name}</Text>
+                  ))}
+                </Box>
+              )}
+            </Box>
+
+            <Box className="rating-section">
+              <Text
+                className={`rating ${getRatingClass(gameDetails.total_rating)}`}
+              >
+                {gameDetails.total_rating === null ||
+                gameDetails.total_rating === undefined
+                  ? "TBD"
+                  : Math.round(gameDetails.total_rating)}
+              </Text>
+              <Text size="sm">
+                Based on {gameDetails.total_rating_count} ratings
+              </Text>
+            </Box>
           </Box>
           <Box mt="md" pl={10}>
             <Spoiler maxHeight={55} showLabel="Read More" hideLabel="Hide">
@@ -142,26 +219,7 @@ function DetailsPage() {
               </Box>
             )}
           </Box>
-          {gameDetails.platforms && gameDetails.platforms.length > 0 && (
-            <Box pl={10}>
-              <Title order={2} size="lg">
-                Themes:
-              </Title>
-              {gameDetails.themes.map((theme, index) => (
-                <Text key={index}>{theme.name}</Text>
-              ))}
-            </Box>
-          )}
-          {gameDetails.franchises && gameDetails.franchises.length > 0 && (
-            <Box pl={10}>
-              <Title order={2} size="lg">
-                Franchises:
-              </Title>
-              {gameDetails.franchises.map((franchise, index) => (
-                <Text key={index}>{franchise.name}</Text>
-              ))}
-            </Box>
-          )}
+
           {gameDetails.similar_games &&
             gameDetails.similar_games.length > 0 && (
               <Box>

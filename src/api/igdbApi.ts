@@ -70,11 +70,28 @@ export const searchGames = async (query: string, platform: string) => {
     throw new Error(`Unsupported platform: ${platform}`);
   }
 
-  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, involved_companies.company.name, game_modes.name, artworks.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*; where name = "${query}";`;
+  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, cover.image_id, involved_companies.company.name, game_modes.name, artworks.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*, similar_games.cover.image_id; where name = "${query}";`;
 
   try {
     const response = await axiosClient.post(url, requestBody);
-    return response.data;
+    const gameDetails = response.data;
+
+    const gameWithCover = await fetchGameCoversAndScreenshots(
+      gameDetails,
+      platform
+    );
+
+    // Process similar games' cover data to match Thumbnail component's expectations
+    const similarGamesWithCovers = gameWithCover[0].similar_games.map(
+      (similarGame: any) => ({
+        ...similarGame,
+        cover: similarGame.cover.image_id
+          ? getGameCoverUrl(similarGame.cover.image_id)
+          : "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6",
+      })
+    );
+
+    return [{ ...gameWithCover[0], similar_games: similarGamesWithCovers }];
   } catch (error) {
     console.error("Error making request:", error);
     throw error;

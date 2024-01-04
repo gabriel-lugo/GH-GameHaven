@@ -8,13 +8,13 @@ import {
   Spoiler,
   Text,
   Title,
-} from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
-import { useEffect, useState } from 'react';
-import { searchGames } from '../api/igdbApi';
-import Carousel from '../components/Carousel';
-import '../css/DetailsPage.css';
-import { Game } from './HomePage';
+} from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { useEffect, useState } from "react";
+import { searchGames } from "../api/igdbApi";
+import Carousel from "../components/Carousel";
+import "../css/DetailsPage.css";
+import { Game } from "./HomePage";
 
 interface GameDetails {
   name: string;
@@ -37,7 +37,7 @@ interface GameDetails {
 
 function DetailsPage() {
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   function renderWebsites(websites: any) {
     if (!websites || websites.length === 0) {
@@ -58,28 +58,28 @@ function DetailsPage() {
 
   const getRatingClass = (rating: number) => {
     if (rating === null || rating === undefined) {
-      return 'rating-tbd';
+      return "rating-color-tbd";
     } else if (rating >= 75) {
-      return 'rating-high';
+      return "rating-color-high";
     } else if (rating >= 50) {
-      return 'rating-medium';
+      return "rating-color-medium";
     } else {
-      return 'rating-low';
+      return "rating-color-low";
     }
   };
 
   useEffect(() => {
-    const query = 'The Witcher 3: Wild Hunt';
-    const platform = 'pc';
+    const query = "World of Warcraft";
+    const platform = "pc";
 
     searchGames(query, platform)
       .then((gameData) => {
         const game = gameData[0];
         setGameDetails(game);
-        console.log('Game Information:', game);
+        console.log("Game Information:", game);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error("Error:", error);
       });
   }, []);
 
@@ -132,7 +132,7 @@ function DetailsPage() {
               gameDetails.release_dates.length > 0 && (
                 <Box className="game-release-date">
                   <Text size="lg">
-                    First Release Date:{' '}
+                    First Release Date:{" "}
                     {convertTimestampToDate(gameDetails.release_dates[0].date)}
                   </Text>
                 </Box>
@@ -149,7 +149,7 @@ function DetailsPage() {
             <Box className="game-modes-section">
               {gameDetails.game_modes && gameDetails.game_modes.length > 0 && (
                 <Box className="detail-section">
-                  <Box className="left-margin" pl={10}>
+                  <Box mb="sm" className="left-margin" pl={10}>
                     <Title order={4}>Game Modes</Title>
                     {gameDetails.game_modes.map((mode, index) => (
                       <Text key={index}>{mode.name}</Text>
@@ -158,7 +158,7 @@ function DetailsPage() {
 
                   {gameDetails.platforms &&
                     gameDetails.platforms.length > 0 && (
-                      <Box className="left-margin" pl={10}>
+                      <Box mb="sm" className="left-margin" pl={10}>
                         <Title order={4}>Themes</Title>
                         {gameDetails.themes.map((theme, index) => (
                           <Text key={index}>{theme.name}</Text>
@@ -179,13 +179,15 @@ function DetailsPage() {
               )}
             </Box>
             <Divider
-              className={isMobile ? 'divider-horizontal' : ''}
-              orientation={isMobile ? 'horizontal' : 'vertical'}
+              mt="sm"
+              mb="sm"
+              className={isMobile ? "divider-h" : ""}
+              orientation={isMobile ? "horizontal" : "vertical"}
               color="var(--nav-text-color)"
             />
             <Box className="detail-section">
               {gameDetails.genres && gameDetails.genres.length > 0 && (
-                <Box className="responsive-style" pl={10}>
+                <Box mb="sm" className="responsive-style" pl={10}>
                   <Title order={4}>Genres</Title>
                   {gameDetails.genres.map((genre, index) => (
                     <Text key={index}>{genre.name}</Text>
@@ -203,27 +205,31 @@ function DetailsPage() {
             </Box>
 
             <Divider
-              className={isMobile ? 'divider-horizontal' : ''}
-              orientation={isMobile ? 'horizontal' : 'vertical'}
+              mt="sm"
+              mb="sm"
+              className={isMobile ? "divider-h" : ""}
+              orientation={isMobile ? "horizontal" : "vertical"}
               color="var(--nav-text-color)"
             />
 
             <Box className="rating-section">
               <Text
-                className={`rating ${getRatingClass(gameDetails.total_rating)}`}
+                className={`rating-color ${getRatingClass(
+                  gameDetails.total_rating
+                )}`}
               >
                 {gameDetails.total_rating === null ||
                 gameDetails.total_rating === undefined
-                  ? 'TBD'
+                  ? "TBD"
                   : Math.round(gameDetails.total_rating)}
               </Text>
-              <Text size="sm">
+              <Text mt="sm" size="sm">
                 Based on {gameDetails.total_rating_count} ratings
               </Text>
             </Box>
           </Box>
           <Box className="centered-content" mt="md" pl={10}>
-            <Box style={{ width: '70%', margin: '0 auto' }}>
+            <Box style={{ width: "70%", margin: "0 auto" }}>
               <Title order={4}>Summary</Title>
               <Spoiler maxHeight={70} showLabel="Read More" hideLabel="Hide">
                 <Text>{gameDetails.summary}</Text>

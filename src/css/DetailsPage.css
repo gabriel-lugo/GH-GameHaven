@@ -33,6 +33,15 @@
   z-index: 5;
 }
 
+.gh-mascot-img {
+  width: 40%;
+}
+
+.website-img-layout {
+  display: flex;
+  justify-content: space-between;
+}
+
 .cover-img-btn {
   width: 14rem;
   position: absolute;
@@ -63,6 +72,13 @@
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
+}
+
+.centered-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 iframe,
@@ -133,6 +149,16 @@ iframe,
 .game-companies {
   top: 50%;
   padding-left: 10px;
+}
+
+@media (max-width: 1000px) {
+  .website-img-layout {
+    flex-direction: column;
+    align-items: center;
+  }
+  .gh-mascot-img {
+    margin-top: 2rem;
+  }
 }
 
 @media (max-width: 768px) {

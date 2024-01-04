@@ -147,7 +147,7 @@ function DetailsPage() {
               {gameDetails.game_modes && gameDetails.game_modes.length > 0 && (
                 <Box className="detail-section">
                   <Box className="left-margin" pl={10}>
-                    <Title order={4}>Game Modes:</Title>
+                    <Title order={4}>Game Modes</Title>
                     {gameDetails.game_modes.map((mode, index) => (
                       <Text key={index}>{mode.name}</Text>
                     ))}
@@ -156,7 +156,7 @@ function DetailsPage() {
                   {gameDetails.platforms &&
                     gameDetails.platforms.length > 0 && (
                       <Box className="left-margin" pl={10}>
-                        <Title order={4}>Themes:</Title>
+                        <Title order={4}>Themes</Title>
                         {gameDetails.themes.map((theme, index) => (
                           <Text key={index}>{theme.name}</Text>
                         ))}
@@ -166,7 +166,7 @@ function DetailsPage() {
                   {gameDetails.franchises &&
                     gameDetails.franchises.length > 0 && (
                       <Box className="left-margin" pl={10}>
-                        <Title order={4}>Franchises:</Title>
+                        <Title order={4}>Franchises</Title>
                         {gameDetails.franchises.map((franchise, index) => (
                           <Text key={index}>{franchise.name}</Text>
                         ))}
@@ -178,7 +178,7 @@ function DetailsPage() {
             <Box className="detail-section">
               {gameDetails.genres && gameDetails.genres.length > 0 && (
                 <Box className="responsive-style" pl={10}>
-                  <Title order={4}>Genres:</Title>
+                  <Title order={4}>Genres</Title>
                   {gameDetails.genres.map((genre, index) => (
                     <Text key={index}>{genre.name}</Text>
                   ))}
@@ -186,7 +186,7 @@ function DetailsPage() {
               )}
               {gameDetails.platforms && gameDetails.platforms.length > 0 && (
                 <Box className="responsive-style" pl={10}>
-                  <Title order={4}>Platforms:</Title>
+                  <Title order={4}>Platforms</Title>
                   {gameDetails.platforms.map((platform, index) => (
                     <Text key={index}>{platform.name}</Text>
                   ))}
@@ -208,22 +208,32 @@ function DetailsPage() {
               </Text>
             </Box>
           </Box>
-          <Box mt="md" pl={10}>
-            <Spoiler maxHeight={55} showLabel="Read More" hideLabel="Hide">
-              <Text>{gameDetails.summary}</Text>
-            </Spoiler>
-            {gameDetails.websites && (
-              <Box className="detail-section">
-                <Title order={4}>Websites:</Title>
-                {renderWebsites(gameDetails.websites)}
-              </Box>
-            )}
+          <Box className="centered-content" mt="md" pl={10}>
+            <Box style={{ width: "70%", margin: "0 auto" }}>
+              <Title order={4}>Summary</Title>
+              <Spoiler maxHeight={70} showLabel="Read More" hideLabel="Hide">
+                <Text>{gameDetails.summary}</Text>
+              </Spoiler>
+            </Box>
+            <Box className="website-img-layout">
+              {gameDetails.websites && (
+                <Box mt="xl" className="detail-section">
+                  <Title order={4}>Websites</Title>
+                  {renderWebsites(gameDetails.websites)}
+                </Box>
+              )}
+              <Image
+                src="../../src/assets/gh_details.png"
+                alt="A mascot of Gamehaven presenting information about a game."
+                className="gh-mascot-img"
+              />
+            </Box>
           </Box>
 
           {gameDetails.similar_games &&
             gameDetails.similar_games.length > 0 && (
               <Box>
-                <Title order={2}>Similar Games:</Title>
+                <Title order={2}>Similar Games</Title>
                 <Carousel games={gameDetails.similar_games} />
               </Box>
             )}

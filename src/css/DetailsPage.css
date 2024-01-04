@@ -74,6 +74,12 @@
   z-index: 1;
 }
 
+.divider-horizontal {
+  width: 80%;
+  display: flex;
+  align-self: center;
+}
+
 .centered-content {
   display: flex;
   align-items: center;

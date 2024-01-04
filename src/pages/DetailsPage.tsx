@@ -2,17 +2,19 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Image,
   Loader,
   Spoiler,
   Text,
   Title,
-} from "@mantine/core";
-import { useEffect, useState } from "react";
-import { searchGames } from "../api/igdbApi";
-import Carousel from "../components/Carousel";
-import "../css/DetailsPage.css";
-import { Game } from "./HomePage";
+} from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
+import { useEffect, useState } from 'react';
+import { searchGames } from '../api/igdbApi';
+import Carousel from '../components/Carousel';
+import '../css/DetailsPage.css';
+import { Game } from './HomePage';
 
 interface GameDetails {
   name: string;
@@ -35,6 +37,7 @@ interface GameDetails {
 
 function DetailsPage() {
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   function renderWebsites(websites: any) {
     if (!websites || websites.length === 0) {
@@ -55,28 +58,28 @@ function DetailsPage() {
 
   const getRatingClass = (rating: number) => {
     if (rating === null || rating === undefined) {
-      return "rating-tbd";
+      return 'rating-tbd';
     } else if (rating >= 75) {
-      return "rating-high";
+      return 'rating-high';
     } else if (rating >= 50) {
-      return "rating-medium";
+      return 'rating-medium';
     } else {
-      return "rating-low";
+      return 'rating-low';
     }
   };
 
   useEffect(() => {
-    const query = "The Witcher 3: Wild Hunt";
-    const platform = "pc";
+    const query = 'The Witcher 3: Wild Hunt';
+    const platform = 'pc';
 
     searchGames(query, platform)
       .then((gameData) => {
         const game = gameData[0];
         setGameDetails(game);
-        console.log("Game Information:", game);
+        console.log('Game Information:', game);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error('Error:', error);
       });
   }, []);
 
@@ -129,7 +132,7 @@ function DetailsPage() {
               gameDetails.release_dates.length > 0 && (
                 <Box className="game-release-date">
                   <Text size="lg">
-                    First Release Date:{" "}
+                    First Release Date:{' '}
                     {convertTimestampToDate(gameDetails.release_dates[0].date)}
                   </Text>
                 </Box>
@@ -175,6 +178,11 @@ function DetailsPage() {
                 </Box>
               )}
             </Box>
+            <Divider
+              className={isMobile ? 'divider-horizontal' : ''}
+              orientation={isMobile ? 'horizontal' : 'vertical'}
+              color="var(--nav-text-color)"
+            />
             <Box className="detail-section">
               {gameDetails.genres && gameDetails.genres.length > 0 && (
                 <Box className="responsive-style" pl={10}>
@@ -194,13 +202,19 @@ function DetailsPage() {
               )}
             </Box>
 
+            <Divider
+              className={isMobile ? 'divider-horizontal' : ''}
+              orientation={isMobile ? 'horizontal' : 'vertical'}
+              color="var(--nav-text-color)"
+            />
+
             <Box className="rating-section">
               <Text
                 className={`rating ${getRatingClass(gameDetails.total_rating)}`}
               >
                 {gameDetails.total_rating === null ||
                 gameDetails.total_rating === undefined
-                  ? "TBD"
+                  ? 'TBD'
                   : Math.round(gameDetails.total_rating)}
               </Text>
               <Text size="sm">
@@ -209,7 +223,7 @@ function DetailsPage() {
             </Box>
           </Box>
           <Box className="centered-content" mt="md" pl={10}>
-            <Box style={{ width: "70%", margin: "0 auto" }}>
+            <Box style={{ width: '70%', margin: '0 auto' }}>
               <Title order={4}>Summary</Title>
               <Spoiler maxHeight={70} showLabel="Read More" hideLabel="Hide">
                 <Text>{gameDetails.summary}</Text>

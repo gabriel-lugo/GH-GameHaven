@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import img404_1 from "../assets/404-1.png";
 import img404_2 from "../assets/404-2.png";
 import img404_3 from "../assets/404-3.png";
+import img404_4 from "../assets/404-4.png";
 import "../css/ErrorPage.css";
 
-const images = [img404_1, img404_2, img404_3];
+const images = [img404_1, img404_2, img404_3, img404_4];
 
 function ErrorPage() {
   const randomIndex = Math.floor(Math.random() * images.length);

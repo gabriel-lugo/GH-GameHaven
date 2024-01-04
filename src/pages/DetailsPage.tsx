@@ -45,7 +45,7 @@ function DetailsPage() {
   }
 
   useEffect(() => {
-    const query = "The Witcher 3: Wild Hunt - Game of the Year Edition";
+    const query = "The Witcher";
     const platform = "pc";
 
     searchGames(query, platform)
@@ -149,6 +149,16 @@ function DetailsPage() {
               </Title>
               {gameDetails.themes.map((theme, index) => (
                 <Text key={index}>{theme.name}</Text>
+              ))}
+            </Box>
+          )}
+          {gameDetails.franchises && gameDetails.franchises.length > 0 && (
+            <Box pl={10}>
+              <Title order={2} size="lg">
+                Franchises:
+              </Title>
+              {gameDetails.franchises.map((franchise, index) => (
+                <Text key={index}>{franchise.name}</Text>
               ))}
             </Box>
           )}

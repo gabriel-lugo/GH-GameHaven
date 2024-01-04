@@ -16,7 +16,9 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
   const [isHeartCrowned, setIsHeartCrowned] = useState(false);
 
   const getRatingClass = (rating: number) => {
-    if (rating >= 75) {
+    if (rating === null || rating === undefined) {
+      return "rating-tbd";
+    } else if (rating >= 75) {
       return "rating-high";
     } else if (rating >= 50) {
       return "rating-medium";
@@ -24,9 +26,10 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
       return "rating-low";
     }
   };
-
   const getRatingText = (rating: number) => {
-    if (rating >= 75) {
+    if (rating === null || rating === undefined) {
+      return "No Rating";
+    } else if (rating >= 75) {
       return "Acclaimed";
     } else if (rating >= 50) {
       return "Average";
@@ -68,7 +71,9 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
       </Box>
       <Box className="rating-content">
         <Text className={`rating ${getRatingClass(game.total_rating)}`}>
-          {Math.round(game.total_rating)}
+          {game.total_rating === null || game.total_rating === undefined
+            ? "TBD"
+            : Math.round(game.total_rating)}
         </Text>
         <Text className="rating-text" ml="xs">
           {getRatingText(game.total_rating)}

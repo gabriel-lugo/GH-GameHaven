@@ -71,7 +71,7 @@ function DetailsPage() {
   };
 
   useEffect(() => {
-    const query = "The Witcher 3: Wild Hunt";
+    const query = "Planet Alpha";
     const platform = "pc";
 
     searchGames(query, platform)
@@ -225,9 +225,12 @@ function DetailsPage() {
                   ? "TBD"
                   : Math.round(gameDetails.total_rating)}
               </Text>
-              <Text mt="sm" size="sm">
-                Based on {gameDetails.total_rating_count} ratings
-              </Text>
+              {gameDetails.total_rating_count &&
+                gameDetails.total_rating_count > 0 && (
+                  <Text mt="sm" size="sm">
+                    Based on {gameDetails.total_rating_count} ratings
+                  </Text>
+                )}
             </Box>
           </Box>
           <Box className="centered-content" mt="md" pl={10}>

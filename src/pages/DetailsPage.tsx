@@ -42,6 +42,12 @@ interface GameDetails {
 }
 
 function DetailsPage() {
+  const params = useParams();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [params.id]);
+
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -51,7 +57,7 @@ function DetailsPage() {
     }
 
     const filteredWebsites = websites.filter((website: any) => {
-      const category = website.category; // Assuming there's a 'category' property in each website object
+      const category = website.category;
       return category === 1 || category === 2 || category === 3;
     });
 
@@ -60,7 +66,7 @@ function DetailsPage() {
         {filteredWebsites.map((website: any, index: any) => {
           let label = "";
           let IconComponent;
-          let iconClass = "website-icon"; // Add a class to the icon
+          const iconClass = "website-icon";
 
           switch (website.category) {
             case 1:
@@ -109,26 +115,22 @@ function DetailsPage() {
     }
   };
 
-  const params = useParams();
-  let game = JSON.stringify(params.id);
-  console.log("Game: ", game);
-
-  // const game = games.find(game => game.name === params.id);
-
   useEffect(() => {
-    const query = game;
-    const platform = "pc";
+    if (params.id) {
+      const query = params.id;
+      const platform = "pc";
 
-    searchGames(query, platform)
-      .then((gameData) => {
-        const game = gameData[0];
-        setGameDetails(game);
-        console.log("Game Information:", game);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+      searchGames(query, platform)
+        .then((gameData) => {
+          const game = gameData[0];
+          setGameDetails(game);
+          console.log("Game Information:", game);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  }, [params.id]);
 
   function convertTimestampToDate(timestamp: any) {
     const date = new Date(timestamp * 1000);

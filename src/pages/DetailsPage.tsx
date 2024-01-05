@@ -307,20 +307,22 @@ function DetailsPage() {
               Gallery
             </Title>
             {gameDetails &&
-              gameDetails.screenshots &&
-              gameDetails.artworks &&
-              gameDetails.screenshots.length > 0 &&
-              gameDetails.artworks.length > 0 && (
+              (gameDetails.screenshots?.length > 0 ||
+                gameDetails.artworks?.length > 0) && (
                 <Gallery
                   images={[
-                    ...gameDetails.screenshots.map((s) => ({
-                      url: s,
-                      altText: `Screenshot of ${gameDetails.name}`,
-                    })),
-                    ...gameDetails.artworks.map((a) => ({
-                      url: a,
-                      altText: `Artwork of ${gameDetails.name}`,
-                    })),
+                    ...(gameDetails.screenshots?.length > 0
+                      ? gameDetails.screenshots.map((s) => ({
+                          url: s,
+                          altText: `Screenshot of ${gameDetails.name}`,
+                        }))
+                      : []),
+                    ...(gameDetails.artworks?.length > 0
+                      ? gameDetails.artworks.map((a) => ({
+                          url: a,
+                          altText: `Artwork of ${gameDetails.name}`,
+                        }))
+                      : []),
                   ]}
                 />
               )}

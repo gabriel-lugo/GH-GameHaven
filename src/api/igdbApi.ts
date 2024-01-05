@@ -11,7 +11,7 @@ const platformIds: { [key: string]: number } = {
 // game_videos
 // screenshots
 
-const defaultMinRating = 90;
+const defaultMinRating = 85;
 const defaultMinRatingCount = 20;
 
 export const getGameScreenshotUrl = (imageId: string) => {
@@ -24,7 +24,7 @@ export const getGameCoverUrl = (imageId: string) => {
 
 export const getArtworkUrl = (imageID: string) => {
   return `https://images.igdb.com/igdb/image/upload/t_screenshot_big/${imageID}.jpg`;
-}
+};
 
 const fetchGameCoversAndScreenshots = async (
   games: any[],
@@ -32,8 +32,8 @@ const fetchGameCoversAndScreenshots = async (
 ) => {
   const promises = games.map(async (game: any) => {
     let cover,
-        artworks = [],
-        screenshots = [];
+      artworks = [],
+      screenshots = [];
 
     if (game.cover && game.cover.image_id) {
       // If the game has a cover with a valid image_id, use it
@@ -72,7 +72,6 @@ const fetchGameCoversAndScreenshots = async (
   return Promise.all(promises);
 };
 
-
 export const searchGames = async (query: string, platform: string) => {
   const endpoint = "games/";
   const url = `${endpoint}`;
@@ -94,14 +93,21 @@ export const searchGames = async (query: string, platform: string) => {
     );
 
     // Process similar games' cover data to match Thumbnail component's expectations
-    const similarGamesWithCovers = gameWithCover[0].similar_games.map(
-      (similarGame: any) => ({
-        ...similarGame,
-        cover: similarGame.cover.image_id
-          ? getGameCoverUrl(similarGame.cover.image_id)
-          : "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6",
-      })
-    );
+    let similarGamesWithCovers: Array<any> = [];
+
+    if (
+      gameWithCover[0].similar_games &&
+      gameWithCover[0].similar_games.length > 0
+    ) {
+      similarGamesWithCovers = gameWithCover[0].similar_games.map(
+        (similarGame: any) => ({
+          ...similarGame,
+          cover: similarGame.cover.image_id
+            ? getGameCoverUrl(similarGame.cover.image_id)
+            : "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6",
+        })
+      );
+    }
 
     return [{ ...gameWithCover[0], similar_games: similarGamesWithCovers }];
   } catch (error) {
@@ -114,7 +120,7 @@ export const getTopRatedGames = async (
   platform: string,
   minRating: number = defaultMinRating,
   minRatingCount: number = defaultMinRatingCount,
-  limit: number = 10
+  limit: number = 15
 ) => {
   const endpoint = "games/";
   const url = `${endpoint}?fields=name,total_rating,total_rating_count,cover.image_id&order=rating:desc&limit=${limit}&platforms=${
@@ -165,19 +171,29 @@ export const getNewGames = async (platform: string, limit: number = 10) => {
     const response = await axiosClient.get(url);
     const newGames = response.data;
 
+    if (!newGames || newGames.length === 0) {
+      console.warn("No new games found in the response.");
+      return [];
+    }
+
+    // Log the raw response for inspection
+    console.log("Raw API response:", response.data);
+
     // Fetch covers for each new game
     const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(
       newGames,
       platform
     );
 
+    // Log intermediate results for inspection
     console.log(
       `Newest Games (${limit} games) with Covers:`,
       gamesWithCoversAndScreenshots
     );
+
     return gamesWithCoversAndScreenshots;
   } catch (error) {
-    console.error("Error making request:", error);
+    console.error("Error making request or fetching covers:", error);
     throw error;
   }
 };

@@ -161,11 +161,13 @@ export const getGameCover = async (imageId: string) => {
   }
 };
 
-export const getNewGames = async (platform: string, limit: number = 10) => {
+export const getNewGames = async (
+  platform: string,
+  limit: number = 15,
+  maxReleaseDateTimestamp: number = Date.now()
+) => {
   const endpoint = "games/";
-  const url = `${endpoint}?fields=name,total_rating,release_dates.date,cover.image_id,screenshots.image_id&order=release_dates.date:desc&limit=${limit}&platforms=${
-    platformIds[platform.toLowerCase()] || platformIds.pc
-  };`;
+  const url = `${endpoint}?fields=name,total_rating,release_dates.date,cover.image_id,screenshots.image_id&filter[release_dates.date][lt]=${maxReleaseDateTimestamp}&limit=${limit}`;
 
   try {
     const response = await axiosClient.get(url);
@@ -179,7 +181,7 @@ export const getNewGames = async (platform: string, limit: number = 10) => {
     // Log the raw response for inspection
     console.log("Raw API response:", response.data);
 
-    // Fetch covers for each new game
+    // Fetch covers for each new game, passing the platform information
     const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(
       newGames,
       platform

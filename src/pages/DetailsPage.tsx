@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { FaWikipediaW } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import { LuScroll } from "react-icons/lu";
+import { useParams } from "react-router-dom";
 import { searchGames } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
@@ -41,6 +42,12 @@ interface GameDetails {
 }
 
 function DetailsPage() {
+  const params = useParams();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [params.id]);
+
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -50,7 +57,7 @@ function DetailsPage() {
     }
 
     const filteredWebsites = websites.filter((website: any) => {
-      const category = website.category; // Assuming there's a 'category' property in each website object
+      const category = website.category;
       return category === 1 || category === 2 || category === 3;
     });
 
@@ -59,7 +66,7 @@ function DetailsPage() {
         {filteredWebsites.map((website: any, index: any) => {
           let label = "";
           let IconComponent;
-          let iconClass = "website-icon"; // Add a class to the icon
+          const iconClass = "website-icon";
 
           switch (website.category) {
             case 1:
@@ -109,19 +116,21 @@ function DetailsPage() {
   };
 
   useEffect(() => {
-    const query = "Mario Kart 64";
-    const platform = "pc";
+    if (params.id) {
+      const query = parseInt(params.id, 10); // Convert the ID to a number
+      const platform = "pc";
 
-    searchGames(query, platform)
-      .then((gameData) => {
-        const game = gameData[0];
-        setGameDetails(game);
-        console.log("Game Information:", game);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+      searchGames(query, platform)
+        .then((gameData) => {
+          const game = gameData[0];
+          setGameDetails(game);
+          console.log("Game Information:", game);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  }, [params.id]);
 
   function convertTimestampToDate(timestamp: any) {
     const date = new Date(timestamp * 1000);
@@ -196,15 +205,14 @@ function DetailsPage() {
                     ))}
                   </Box>
 
-                  {gameDetails.platforms &&
-                    gameDetails.platforms.length > 0 && (
-                      <Box mb="sm" className="left-margin" pl={10}>
-                        <Title order={4}>Themes</Title>
-                        {gameDetails.themes.map((theme, index) => (
-                          <Text key={index}>{theme.name}</Text>
-                        ))}
-                      </Box>
-                    )}
+                  {gameDetails.themes && gameDetails.themes.length > 0 && (
+                    <Box mb="sm" className="left-margin" pl={10}>
+                      <Title order={4}>Themes</Title>
+                      {gameDetails.themes.map((theme, index) => (
+                        <Text key={index}>{theme.name}</Text>
+                      ))}
+                    </Box>
+                  )}
 
                   {gameDetails.franchises &&
                     gameDetails.franchises.length > 0 && (
@@ -299,20 +307,22 @@ function DetailsPage() {
               Gallery
             </Title>
             {gameDetails &&
-              gameDetails.screenshots &&
-              gameDetails.artworks &&
-              gameDetails.screenshots.length > 0 &&
-              gameDetails.artworks.length > 0 && (
+              (gameDetails.screenshots?.length > 0 ||
+                gameDetails.artworks?.length > 0) && (
                 <Gallery
                   images={[
-                    ...gameDetails.screenshots.map((s) => ({
-                      url: s,
-                      altText: `Screenshot of ${gameDetails.name}`,
-                    })),
-                    ...gameDetails.artworks.map((a) => ({
-                      url: a,
-                      altText: `Artwork of ${gameDetails.name}`,
-                    })),
+                    ...(gameDetails.screenshots?.length > 0
+                      ? gameDetails.screenshots.map((s) => ({
+                          url: s,
+                          altText: `Screenshot of ${gameDetails.name}`,
+                        }))
+                      : []),
+                    ...(gameDetails.artworks?.length > 0
+                      ? gameDetails.artworks.map((a) => ({
+                          url: a,
+                          altText: `Artwork of ${gameDetails.name}`,
+                        }))
+                      : []),
                   ]}
                 />
               )}

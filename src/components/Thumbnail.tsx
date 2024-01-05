@@ -3,6 +3,7 @@ import { useState } from "react";
 import { GiCrownedHeart } from "react-icons/gi";
 import { HiUsers } from "react-icons/hi2";
 import { IoHeartOutline } from "react-icons/io5";
+import { NavLink } from "react-router-dom";
 import "../css/Thumbnail.css";
 
 interface Game {
@@ -10,6 +11,7 @@ interface Game {
   cover: string;
   rating: number;
   total_rating: number;
+  id: number;
 }
 
 const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
@@ -43,43 +45,45 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
   };
 
   return (
-    <Box className="thumbnail-card-container">
-      <Box className="thumbnail-image">
-        <Image src={game.cover} alt={game.name} />
-        <Box className="hover-content">
-          <HiUsers
-            style={{
-              color: "white",
-              fontSize: "1.5rem",
-              marginRight: "0.5rem",
-            }}
-          />
-          <Title className="game-info" order={5}>
-            Multiplayer:
+    <NavLink to={`/games/${game.id}`} className="game-link">
+      <Box className="thumbnail-card-container">
+        <Box className="thumbnail-image">
+          <Image src={game.cover} alt={game.name} />
+          <Box className="hover-content">
+            <HiUsers
+              style={{
+                color: "white",
+                fontSize: "1.5rem",
+                marginRight: "0.5rem",
+              }}
+            />
+            <Title className="game-info" order={5}>
+              Multiplayer:
+            </Title>
+          </Box>
+        </Box>
+        <Box className="thumbnail-content-container">
+          {isHeartCrowned ? (
+            <GiCrownedHeart className="heart-icon" onClick={handleHeartClick} />
+          ) : (
+            <IoHeartOutline className="heart-icon" onClick={handleHeartClick} />
+          )}
+          <Title mb="sm" order={5}>
+            {game.name}
           </Title>
         </Box>
+        <Box className="rating-content">
+          <Text className={`rating ${getRatingClass(game.total_rating)}`}>
+            {game.total_rating === null || game.total_rating === undefined
+              ? "TBD"
+              : Math.round(game.total_rating)}
+          </Text>
+          <Text className="rating-text" ml="xs">
+            {getRatingText(game.total_rating)}
+          </Text>
+        </Box>
       </Box>
-      <Box className="thumbnail-content-container">
-        {isHeartCrowned ? (
-          <GiCrownedHeart className="heart-icon" onClick={handleHeartClick} />
-        ) : (
-          <IoHeartOutline className="heart-icon" onClick={handleHeartClick} />
-        )}
-        <Title mb="sm" order={5}>
-          {game.name}
-        </Title>
-      </Box>
-      <Box className="rating-content">
-        <Text className={`rating ${getRatingClass(game.total_rating)}`}>
-          {game.total_rating === null || game.total_rating === undefined
-            ? "TBD"
-            : Math.round(game.total_rating)}
-        </Text>
-        <Text className="rating-text" ml="xs">
-          {getRatingText(game.total_rating)}
-        </Text>
-      </Box>
-    </Box>
+    </NavLink>
   );
 };
 

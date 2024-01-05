@@ -1,3 +1,8 @@
+.game-link {
+  text-decoration: none;
+  color: var(--body-text-color);
+}
+
 .thumbnail-card-container {
   position: relative;
   overflow: hidden;

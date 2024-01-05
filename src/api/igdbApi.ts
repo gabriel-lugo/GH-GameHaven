@@ -22,13 +22,18 @@ export const getGameCoverUrl = (imageId: string) => {
   return `https://images.igdb.com/igdb/image/upload/t_cover_big/${imageId}.png`;
 };
 
+export const getArtworkUrl = (imageID: string) => {
+  return `https://images.igdb.com/igdb/image/upload/t_screenshot_big/${imageID}.jpg`;
+}
+
 const fetchGameCoversAndScreenshots = async (
   games: any[],
   platform: string
 ) => {
   const promises = games.map(async (game: any) => {
     let cover,
-      screenshots = [];
+        artworks = [],
+        screenshots = [];
 
     if (game.cover && game.cover.image_id) {
       // If the game has a cover with a valid image_id, use it
@@ -50,16 +55,23 @@ const fetchGameCoversAndScreenshots = async (
       );
     }
 
+    if (game.artworks && game.artworks.length > 0) {
+      artworks = game.artworks.map((artwork: any) =>
+        getArtworkUrl(artwork.image_id)
+      );
+    }
+
     console.log(
-      `Fetching cover and screenshots for game on platform ${platform}:`,
+      `Fetching cover, screenshots, and artworks for game on platform ${platform}:`,
       game
     );
 
-    return { ...game, cover, screenshots };
+    return { ...game, cover, screenshots, artworks };
   });
 
   return Promise.all(promises);
 };
+
 
 export const searchGames = async (query: string, platform: string) => {
   const endpoint = "games/";

@@ -1,4 +1,5 @@
 import { Box, Image } from "@mantine/core";
+import { useEffect, useState } from "react";
 import SwiperCore from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -18,6 +19,25 @@ interface GalleryProps {
 SwiperCore.use([FreeMode, Navigation]);
 
 function Gallery({ images }: GalleryProps) {
+  const [slidesToShow, setSlidesToShow] = useState(2);
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth < 640) {
+        setSlidesToShow(1);
+      } else {
+        setSlidesToShow(2);
+      }
+    }
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <Swiper
       pagination={{ dynamicBullets: true }}
@@ -25,14 +45,15 @@ function Gallery({ images }: GalleryProps) {
       grabCursor={true}
       spaceBetween={0}
       navigation={true}
-      slidesPerView={2}
+      slidesPerView={slidesToShow}
       loop={true}
-      autoplay={{ delay: 4500 }}
+      autoplay={{ delay: 5500 }}
     >
       {images.map((image: any, index: any) => (
         <SwiperSlide key={index}>
           <Box className="gallery-container">
             <Image
+              loading="lazy"
               src={image.url}
               alt={image.altText || `Slide ${index + 1}`}
             />

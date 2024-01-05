@@ -11,6 +11,9 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
+import { FaWikipediaW } from "react-icons/fa";
+import { FiExternalLink } from "react-icons/fi";
+import { LuScroll } from "react-icons/lu";
 import { searchGames } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
@@ -46,16 +49,51 @@ function DetailsPage() {
       return <Text>No websites available.</Text>;
     }
 
-    return websites.map((website: any, index: any) => (
-      <a
-        href={website.url}
-        key={index}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <Text>{website.name || website.url}</Text>
-      </a>
-    ));
+    const filteredWebsites = websites.filter((website: any) => {
+      const category = website.category; // Assuming there's a 'category' property in each website object
+      return category === 1 || category === 2 || category === 3;
+    });
+
+    return (
+      <div className="website-links-container">
+        {filteredWebsites.map((website: any, index: any) => {
+          let label = "";
+          let IconComponent;
+          let iconClass = "website-icon"; // Add a class to the icon
+
+          switch (website.category) {
+            case 1:
+              label = "Official Website";
+              IconComponent = <FiExternalLink className={iconClass} />;
+              break;
+            case 2:
+              label = "Community Wiki";
+              IconComponent = <LuScroll className={iconClass} />;
+              break;
+            case 3:
+              label = "Wikipedia";
+              IconComponent = <FaWikipediaW className={iconClass} />;
+              break;
+            default:
+              label = "Unknown Category";
+              IconComponent = <FaWikipediaW className={iconClass} />;
+          }
+
+          return (
+            <a
+              href={website.url}
+              key={index}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="website-link"
+            >
+              <Box className="website-icon-container">{IconComponent}</Box>
+              <Text>{label}</Text>
+            </a>
+          );
+        })}
+      </div>
+    );
   }
 
   const getRatingClass = (rating: number) => {
@@ -71,7 +109,7 @@ function DetailsPage() {
   };
 
   useEffect(() => {
-    const query = "Planet Alpha";
+    const query = "Mario Kart 64";
     const platform = "pc";
 
     searchGames(query, platform)
@@ -233,46 +271,58 @@ function DetailsPage() {
                 )}
             </Box>
           </Box>
-          <Box className="centered-content" mt="md" pl={10}>
-            <Box style={{ width: "70%", margin: "0 auto" }}>
-              <Title order={4}>Summary</Title>
-              <Spoiler maxHeight={70} showLabel="Read More" hideLabel="Hide">
-                <Text>{gameDetails.summary}</Text>
-              </Spoiler>
+          <Container>
+            <Box className="centered-content" mt="md">
+              <Box>
+                <Title order={4}>Summary</Title>
+                <Spoiler maxHeight={70} showLabel="Read More" hideLabel="Hide">
+                  <Text>{gameDetails.summary}</Text>
+                </Spoiler>
+              </Box>
+              <Box className="website-img-layout">
+                {gameDetails.websites && (
+                  <Box mt="xl" className="detail-section">
+                    <Title order={4}>Websites</Title>
+                    {renderWebsites(gameDetails.websites)}
+                  </Box>
+                )}
+                <Image
+                  src="../../src/assets/gh_details.png"
+                  alt="A mascot of Gamehaven presenting information about a game."
+                  className="gh-mascot-img"
+                />
+              </Box>
             </Box>
-            <Box className="website-img-layout">
-              {gameDetails.websites && (
-                <Box mt="xl" className="detail-section">
-                  <Title order={4}>Websites</Title>
-                  {renderWebsites(gameDetails.websites)}
-                </Box>
-              )}
-              <Image
-                src="../../src/assets/gh_details.png"
-                alt="A mascot of Gamehaven presenting information about a game."
-                className="gh-mascot-img"
-              />
-            </Box>
-          </Box>
+          </Container>
           <Box>
-            <Title pl={10} order={4}>
+            <Title pl={10} order={4} mb={"lg"}>
               Gallery
             </Title>
             {gameDetails &&
               gameDetails.screenshots &&
-              gameDetails.screenshots.length > 0 && (
+              gameDetails.artworks &&
+              gameDetails.screenshots.length > 0 &&
+              gameDetails.artworks.length > 0 && (
                 <Gallery
-                  images={gameDetails.screenshots.map((screenshot) => ({
-                    url: screenshot,
-                    altText: `Screenshot of ${gameDetails.name}`,
-                  }))}
+                  images={[
+                    ...gameDetails.screenshots.map((s) => ({
+                      url: s,
+                      altText: `Screenshot of ${gameDetails.name}`,
+                    })),
+                    ...gameDetails.artworks.map((a) => ({
+                      url: a,
+                      altText: `Artwork of ${gameDetails.name}`,
+                    })),
+                  ]}
                 />
               )}
           </Box>
           {gameDetails.similar_games &&
             gameDetails.similar_games.length > 0 && (
               <Box>
-                <Title order={2}>Similar Games</Title>
+                <Title pl={10} order={4} mt={"lg"}>
+                  You might also like
+                </Title>
                 <Carousel games={gameDetails.similar_games} />
               </Box>
             )}

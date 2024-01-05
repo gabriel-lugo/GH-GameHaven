@@ -205,15 +205,14 @@ function DetailsPage() {
                     ))}
                   </Box>
 
-                  {gameDetails.platforms &&
-                    gameDetails.platforms.length > 0 && (
-                      <Box mb="sm" className="left-margin" pl={10}>
-                        <Title order={4}>Themes</Title>
-                        {gameDetails.themes.map((theme, index) => (
-                          <Text key={index}>{theme.name}</Text>
-                        ))}
-                      </Box>
-                    )}
+                  {gameDetails.themes && gameDetails.themes.length > 0 && (
+                    <Box mb="sm" className="left-margin" pl={10}>
+                      <Title order={4}>Themes</Title>
+                      {gameDetails.themes.map((theme, index) => (
+                        <Text key={index}>{theme.name}</Text>
+                      ))}
+                    </Box>
+                  )}
 
                   {gameDetails.franchises &&
                     gameDetails.franchises.length > 0 && (

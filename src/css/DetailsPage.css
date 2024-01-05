@@ -10,6 +10,14 @@
   color: var(--body-text-color);
 }
 
+.loader-style {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
 .top-game-content {
   display: flex;
   justify-content: space-between;

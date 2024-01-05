@@ -338,8 +338,11 @@ function DetailsPage() {
             )}
         </Box>
       ) : (
-        <Box>
+        <Box className="loader-style">
           <Loader color="orange" size="xl" type="dots" />
+          <Text fw={500} size="xl">
+            Loading...
+          </Text>
         </Box>
       )}
     </Container>

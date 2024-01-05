@@ -1,0 +1,10 @@
+.gallery-container {
+  position: relative;
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+}

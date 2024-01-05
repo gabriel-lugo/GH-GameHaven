@@ -4,6 +4,7 @@ import {
   Container,
   Divider,
   Group,
+  Image,
   Paper,
   Transition,
 } from "@mantine/core";
@@ -89,7 +90,7 @@ function Header() {
         <Container size="xl" className="inner">
           <Group>
             <NavLink to={"/"}>
-              <img src={logo} alt="Gh logo" width="75px" />
+              <Image className="gh-logo" src={logo} alt="Gh logo" />
             </NavLink>
             <Group gap={5} className={`header-links ${opened ? "opened" : ""}`}>
               {" "}

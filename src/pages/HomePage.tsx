@@ -10,6 +10,7 @@ export interface Game {
   name: string;
   cover: string;
   rating: number;
+  total_rating: number;
   screenshots: string[];
 }
 

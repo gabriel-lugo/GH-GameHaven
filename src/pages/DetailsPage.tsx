@@ -13,6 +13,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { searchGames } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
+import Gallery from "../components/Gallery";
 import "../css/DetailsPage.css";
 import { Game } from "./HomePage";
 
@@ -33,6 +34,7 @@ interface GameDetails {
   platforms: Array<{ name: string }>;
   similar_games: Array<Game>;
   cover: string;
+  screenshots: Array<{ url: string }>;
 }
 
 function DetailsPage() {
@@ -69,7 +71,7 @@ function DetailsPage() {
   };
 
   useEffect(() => {
-    const query = "World of Warcraft";
+    const query = "The Witcher 3: Wild Hunt";
     const platform = "pc";
 
     searchGames(query, platform)
@@ -249,7 +251,21 @@ function DetailsPage() {
               />
             </Box>
           </Box>
-
+          <Box>
+            <Title pl={10} order={4}>
+              Gallery
+            </Title>
+            {gameDetails &&
+              gameDetails.screenshots &&
+              gameDetails.screenshots.length > 0 && (
+                <Gallery
+                  images={gameDetails.screenshots.map((screenshot) => ({
+                    url: screenshot,
+                    altText: `Screenshot of ${gameDetails.name}`,
+                  }))}
+                />
+              )}
+          </Box>
           {gameDetails.similar_games &&
             gameDetails.similar_games.length > 0 && (
               <Box>

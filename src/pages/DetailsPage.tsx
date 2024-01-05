@@ -117,7 +117,7 @@ function DetailsPage() {
 
   useEffect(() => {
     if (params.id) {
-      const query = params.id;
+      const query = parseInt(params.id, 10); // Convert the ID to a number
       const platform = "pc";
 
       searchGames(query, platform)

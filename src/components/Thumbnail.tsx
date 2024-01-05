@@ -11,6 +11,7 @@ interface Game {
   cover: string;
   rating: number;
   total_rating: number;
+  id: number;
 }
 
 const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
@@ -44,7 +45,7 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
   };
 
   return (
-    <NavLink to={`/games/${game.name}`} className="game-link">
+    <NavLink to={`/games/${game.id}`} className="game-link">
       <Box className="thumbnail-card-container">
         <Box className="thumbnail-image">
           <Image src={game.cover} alt={game.name} />

@@ -1,6 +1,6 @@
 import { Title } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { getNewGames, getTopRatedGames, searchGames } from "../api/igdbApi";
+import { getNewGames, getTopRatedGames } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import GhInfo from "../components/GhInfo";
 import HeroSlide from "../components/HeroSlide";
@@ -18,20 +18,20 @@ function HomePage() {
   const [topRatedGames, setTopRatedGames] = useState<Game[]>([]);
   const [newestGames, setNewestGames] = useState<Game[]>([]);
 
-  useEffect(() => {
-    const query = "Hades"; // Replace with the desired game name
-    const platform = "pc";
+  // useEffect(() => {
+  //   const query = "Hades"; // Replace with the desired game name
+  //   const platform = "pc";
 
-    searchGames(query, platform)
-      .then((gameData) => {
-        // Log the game information to the console
-        console.log("Game Information:", gameData);
-      })
-      .catch((error) => {
-        // Handle errors
-        console.error("Error:", error);
-      });
-  }, []);
+  //   searchGames(query, platform)
+  //     .then((gameData) => {
+  //       // Log the game information to the console
+  //       console.log("Game Information:", gameData);
+  //     })
+  //     .catch((error) => {
+  //       // Handle errors
+  //       console.error("Error:", error);
+  //     });
+  // }, []);
 
   useEffect(() => {
     getTopRatedGames("playstation")

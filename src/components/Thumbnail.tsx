@@ -44,7 +44,7 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
   };
 
   return (
-    <NavLink to={`/games/${game.name}`}>
+    <NavLink to={`/games/${game.name}`} className="game-link">
       <Box className="thumbnail-card-container">
         <Box className="thumbnail-image">
           <Image src={game.cover} alt={game.name} />

@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { FaWikipediaW } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import { LuScroll } from "react-icons/lu";
+import { useParams } from "react-router-dom";
 import { searchGames } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
@@ -108,8 +109,14 @@ function DetailsPage() {
     }
   };
 
+  const params = useParams();
+  let game = JSON.stringify(params.id);
+  console.log("Game: ", game);
+
+  // const game = games.find(game => game.name === params.id);
+
   useEffect(() => {
-    const query = "Mario Kart 64";
+    const query = game;
     const platform = "pc";
 
     searchGames(query, platform)

@@ -103,6 +103,36 @@ function DetailsPage() {
     );
   }
 
+  function renderVideoOrImage(gameDetails: any) {
+    if (gameDetails.videos && gameDetails.videos.length > 0) {
+      const videoId = gameDetails.videos[0].video_id;
+      return (
+        <iframe
+          width="100%"
+          height="100%"
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&cc_load_policy=0&playlist=${videoId}`}
+          title="Gameplay Video"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      );
+    } else {
+      const imageUrl =
+        gameDetails.screenshots?.[0] || gameDetails.artworks?.[0];
+      if (imageUrl) {
+        return (
+          <Image
+            src={imageUrl}
+            alt={`Image of ${gameDetails.name}`}
+            className="game-image-overlay"
+          />
+        );
+      }
+      return <Text>No videos or images available.</Text>;
+    }
+  }
+
   const getRatingClass = (rating: number) => {
     if (rating === null || rating === undefined) {
       return "rating-color-tbd";
@@ -114,6 +144,10 @@ function DetailsPage() {
       return "rating-color-low";
     }
   };
+
+  function isValidDate(d: any) {
+    return d && !isNaN(new Date(d).getTime());
+  }
 
   useEffect(() => {
     if (params.id) {
@@ -156,33 +190,19 @@ function DetailsPage() {
               </Title>
             </Box>
             <Box className="video-container">
-              {gameDetails.videos && gameDetails.videos.length > 0 && (
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src={`https://www.youtube.com/embed/${
-                    gameDetails.videos[1]
-                      ? gameDetails.videos[1].video_id
-                      : gameDetails.videos[0].video_id
-                  }?autoplay=1&mute=1&loop=1&cc_load_policy=0&playlist=${
-                    gameDetails.videos[1]
-                      ? gameDetails.videos[1].video_id
-                      : gameDetails.videos[0].video_id
-                  }`}
-                  title="Gameplay Video"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              )}
+              {gameDetails ? renderVideoOrImage(gameDetails) : <Loader />}
               <Box className="video-overlay"></Box>
             </Box>
             {gameDetails.release_dates &&
               gameDetails.release_dates.length > 0 && (
                 <Box className="game-release-date">
                   <Text size="lg">
-                    First Release Date:{" "}
-                    {convertTimestampToDate(gameDetails.release_dates[0].date)}
+                    Release Date:{" "}
+                    {isValidDate(gameDetails.release_dates[0].date)
+                      ? convertTimestampToDate(
+                          gameDetails.release_dates[0].date
+                        )
+                      : "No Date Available"}
                   </Text>
                 </Box>
               )}

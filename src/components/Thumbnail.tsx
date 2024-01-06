@@ -45,8 +45,8 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
   };
 
   return (
-    <NavLink to={`/games/${game.id}`} className="game-link">
-      <Box className="thumbnail-card-container">
+    <Box className="thumbnail-card-container">
+      <NavLink to={`/games/${game.id}`} className="game-link">
         <Box className="thumbnail-image">
           <Image src={game.cover} alt={game.name} />
           <Box className="hover-content">
@@ -62,28 +62,28 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
             </Title>
           </Box>
         </Box>
-        <Box className="thumbnail-content-container">
-          {isHeartCrowned ? (
-            <GiCrownedHeart className="heart-icon" onClick={handleHeartClick} />
-          ) : (
-            <IoHeartOutline className="heart-icon" onClick={handleHeartClick} />
-          )}
-          <Title mb="sm" order={5}>
-            {game.name}
-          </Title>
-        </Box>
-        <Box className="rating-content">
-          <Text className={`rating ${getRatingClass(game.total_rating)}`}>
-            {game.total_rating === null || game.total_rating === undefined
-              ? "TBD"
-              : Math.round(game.total_rating)}
-          </Text>
-          <Text className="rating-text" ml="xs">
-            {getRatingText(game.total_rating)}
-          </Text>
-        </Box>
+      </NavLink>
+      <Box className="thumbnail-content-container">
+        {isHeartCrowned ? (
+          <GiCrownedHeart className="heart-icon" onClick={handleHeartClick} />
+        ) : (
+          <IoHeartOutline className="heart-icon" onClick={handleHeartClick} />
+        )}
+        <Title mb="sm" order={5}>
+          {game.name}
+        </Title>
       </Box>
-    </NavLink>
+      <Box className="rating-content">
+        <Text className={`rating ${getRatingClass(game.total_rating)}`}>
+          {game.total_rating === null || game.total_rating === undefined
+            ? "TBD"
+            : Math.round(game.total_rating)}
+        </Text>
+        <Text className="rating-text" ml="xs">
+          {getRatingText(game.total_rating)}
+        </Text>
+      </Box>
+    </Box>
   );
 };
 

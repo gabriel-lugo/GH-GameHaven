@@ -69,6 +69,16 @@
   height: 100%;
 }
 
+.video-container iframe,
+.video-container .game-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .video-overlay {
   position: absolute;
   top: 0;

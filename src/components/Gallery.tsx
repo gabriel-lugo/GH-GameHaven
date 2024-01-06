@@ -23,7 +23,9 @@ function Gallery({ images }: GalleryProps) {
 
   useEffect(() => {
     function handleResize() {
-      if (window.innerWidth < 640) {
+      if (images.length === 1) {
+        setSlidesToShow(1);
+      } else if (window.innerWidth < 640) {
         setSlidesToShow(1);
       } else {
         setSlidesToShow(2);
@@ -37,7 +39,8 @@ function Gallery({ images }: GalleryProps) {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [images]);
+
   return (
     <Swiper
       pagination={{ dynamicBullets: true }}

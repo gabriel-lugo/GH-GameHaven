@@ -164,7 +164,7 @@ function DetailsPage() {
                     gameDetails.videos[1]
                       ? gameDetails.videos[1].video_id
                       : gameDetails.videos[0].video_id
-                  }?autoplay=1&mute=1&loop=1&playlist=${
+                  }?autoplay=1&mute=1&loop=1&cc_load_policy=0&playlist=${
                     gameDetails.videos[1]
                       ? gameDetails.videos[1].video_id
                       : gameDetails.videos[0].video_id
@@ -340,7 +340,7 @@ function DetailsPage() {
       ) : (
         <Box className="loader-style">
           <Loader color="orange" size="xl" type="dots" />
-          <Text fw={500} size="xl">
+          <Text fw={500} size="md">
             Loading...
           </Text>
         </Box>

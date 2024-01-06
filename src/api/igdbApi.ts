@@ -4,6 +4,11 @@ const platformIds: { [key: string]: number } = {
   pc: 6, // Platform ID for PC
   playstation: 48, // Platform ID for PlayStation
   xbox: 49, // Platform ID for Xbox
+  nintendo: 130,
+  n64: 4,
+  nes: 18,
+  snes: 19,
+  gcn: 21,
   // Add more platforms as needed
 };
 
@@ -70,6 +75,37 @@ const fetchGameCoversAndScreenshots = async (
   });
 
   return Promise.all(promises);
+};
+
+export const searchForGames = async (query: string, platforms: string[]) => {
+  const endpoint = "games/";
+  const url = `${endpoint}`;
+
+  const platformIdsArray = platforms.map(platform => {
+    const id = platformIds[platform.toLowerCase()];
+    if (id === undefined) {
+      throw new Error(`Unsupported platform: ${platform}`);
+    }
+    return id;
+  }).join(',');
+
+  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, cover.image_id, involved_companies.company.name, game_modes.name, artworks.*, screenshots.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*, similar_games.cover.image_id; 
+  search "${query}"; where platforms = (${platformIdsArray});`;
+
+  try {
+    const response = await axiosClient.post(url, requestBody);
+    const searchResults = response.data;
+
+    const processedResults = searchResults.map((game: any) => ({
+      ...game,
+      cover: game.cover ? getGameCoverUrl(game.cover.image_id) : 'default_image_url'
+    }));
+
+    return processedResults;
+  } catch (error) {
+    console.error("Error making request:", error);
+    throw error;
+  }
 };
 
 export const searchGames = async (query: number, platform: string) => {

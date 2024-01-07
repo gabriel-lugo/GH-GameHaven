@@ -1,8 +1,9 @@
-import { Box, Paper, Text, TextInput } from "@mantine/core";
+import { Box, Button, Paper, Text, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { GoSearch } from "react-icons/go";
 import { IoIosSearch } from "react-icons/io";
 import { RxCrossCircled } from "react-icons/rx";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { searchForGames } from "../api/igdbApi";
 import "../css/Search.css";
 
@@ -13,6 +14,7 @@ interface Game {
 
 function Search() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isEnterPressed, setIsEnterPressed] = useState(false);
   const [searchResults, setSearchResults] = useState<Game[]>([]);
   const [isInputVisible, setIsInputVisible] = useState(window.innerWidth > 768);
   const [isScreenWidthSmall, setIsScreenWidthSmall] = useState(
@@ -20,25 +22,40 @@ function Search() {
   );
 
   const handleGameSelect = () => {
-    setSearchTerm("");
     setSearchResults([]);
+    setSearchTerm("");
   };
 
   useEffect(() => {
+    let previousWidth = window.innerWidth;
+
     const handleResize = () => {
-      setIsInputVisible(window.innerWidth > 768);
-      setIsScreenWidthSmall(window.innerWidth <= 768);
+      if (window.innerWidth !== previousWidth) {
+        setIsInputVisible(window.innerWidth > 768);
+        setIsScreenWidthSmall(window.innerWidth <= 768);
+        previousWidth = window.innerWidth;
+      }
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const navigate = useNavigate();
+
   const handleInputChange = async (event: any) => {
     const query = event.target.value;
     setSearchTerm(query);
 
-    if (query.length > 0) {
+    if (event.key === "Enter") {
+      setIsEnterPressed(true);
+      setSearchResults([]);
+      setSearchTerm("");
+
+      if (query.length > 0) {
+        navigate(`/search-results/${query}`);
+      }
+    } else if (query.length > 0) {
       try {
         const results = await searchForGames(query, [
           "playstation",
@@ -55,7 +72,15 @@ function Search() {
         console.error("Search error:", error);
       }
     } else {
+      setIsEnterPressed(false);
+    }
+  };
+
+  const handleMobileInputChange = async () => {
+    if (searchTerm.length > 0) {
+      navigate(`/search-results/${searchTerm}`);
       setSearchResults([]);
+      setSearchTerm("");
     }
   };
 
@@ -74,6 +99,13 @@ function Search() {
               isScreenWidthSmall ? (
                 <Box className="icon-wrapper" onClick={toggleInputVisibility}>
                   <RxCrossCircled className="cross-icon" size={25} />
+                  <Button
+                    onClick={handleMobileInputChange}
+                    className="btn-mobile"
+                    variant="xs"
+                  >
+                    <GoSearch size={18} />
+                  </Button>
                 </Box>
               ) : (
                 <IoIosSearch size={25} />
@@ -83,8 +115,9 @@ function Search() {
             placeholder="Search for a game.."
             value={searchTerm}
             onChange={handleInputChange}
+            onKeyPress={handleInputChange}
           />
-          {searchResults.length > 0 && (
+          {!isEnterPressed && searchResults.length > 0 && (
             <Paper
               withBorder
               className="dropdown-search"

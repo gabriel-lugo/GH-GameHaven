@@ -22,6 +22,16 @@
   border-radius: 3px;
 }
 
+.btn-mobile {
+  background-color: var(--button-primary-background-color);
+  color: var(--body-text-color);
+  margin-left: 0.4rem;
+}
+
+.btn-mobile:hover {
+  filter: brightness(90%);
+}
+
 .icon-wrapper,
 .icon-only {
   cursor: pointer;

@@ -14,6 +14,7 @@ import GamesPage from "./pages/GamesPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import SigninPage from "./pages/SigninPage.tsx";
+import SearchResultsPage from "./pages/SearchResultsPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
       { path: "/signin", element: <SigninPage /> },
       { path: "/register", element: <RegisterPage /> },
       { path: "/games/:id", element: <DetailsPage /> },
+      { path: "/search-results/:query", element: <SearchResultsPage /> },
       { path: "*", element: <ErrorPage /> },
     ],
   },

@@ -1,7 +1,6 @@
-import { Box, Image, Text, Title } from "@mantine/core";
+import { Box, Image, Spoiler, Text, Title } from "@mantine/core";
 import { useState } from "react";
-import { GiCrownedHeart } from "react-icons/gi";
-import { HiUsers } from "react-icons/hi2";
+import { GiCrownedHeart, GiStabbedNote } from "react-icons/gi";
 import { IoHeartOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 import "../css/Thumbnail.css";
@@ -12,6 +11,7 @@ interface Game {
   rating: number;
   total_rating: number;
   id: number;
+  summary: string;
 }
 
 const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
@@ -50,16 +50,18 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
         <Box className="thumbnail-image">
           <Image src={game.cover} alt={game.name} />
           <Box className="hover-content">
-            <HiUsers
-              style={{
-                color: "white",
-                fontSize: "1.5rem",
-                marginRight: "0.5rem",
-              }}
-            />
-            <Title className="game-info" order={5}>
-              Multiplayer:
-            </Title>
+            <Spoiler maxHeight={200} showLabel="" hideLabel="">
+              <GiStabbedNote
+                style={{
+                  marginLeft: "5.5rem",
+                  fontSize: "2rem",
+                  color: "#FFF",
+                }}
+              />
+              <Text style={{ padding: "1rem" }} size="sm" className="game-info">
+                {game.summary}
+              </Text>
+            </Spoiler>
           </Box>
         </Box>
       </NavLink>

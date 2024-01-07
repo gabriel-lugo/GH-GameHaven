@@ -12,6 +12,7 @@ export interface Game {
   rating: number;
   total_rating: number;
   screenshots: string[];
+  summary: string;
 }
 
 function HomePage() {

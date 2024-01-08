@@ -10,6 +10,14 @@
   color: var(--body-text-color);
 }
 
+.loader-style {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
 .top-game-content {
   display: flex;
   justify-content: space-between;
@@ -30,7 +38,6 @@
 
 .gh-mascot-img {
   max-width: 20rem;
-  margin-left: 2rem;
 }
 
 .website-img-layout {
@@ -61,6 +68,16 @@
   height: 100%;
 }
 
+.video-container iframe,
+.video-container .game-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .video-overlay {
   position: absolute;
   top: 0;
@@ -79,8 +96,8 @@
 
 .centered-content {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   flex-direction: column;
 }
 
@@ -191,7 +208,6 @@ iframe,
 @media (max-width: 1000px) {
   .website-img-layout {
     flex-direction: column;
-    align-items: center;
   }
   .gh-mascot-img {
     margin-top: 2rem;
@@ -209,11 +225,17 @@ iframe,
     align-items: flex-start;
   }
   .responsive-style {
-    margin-left: 3rem;
+    margin-left: 10px;
   }
   .rating-section {
     margin-top: 0.5rem;
-    margin-left: 4.2rem;
+    margin-left: 14px;
+  }
+  .left-margin {
+    margin-left: 10px;
+  }
+  .divider-h {
+    width: 95%;
   }
 }
 

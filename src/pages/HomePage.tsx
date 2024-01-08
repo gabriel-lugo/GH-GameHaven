@@ -12,6 +12,7 @@ export interface Game {
   rating: number;
   total_rating: number;
   screenshots: string[];
+  summary: string;
 }
 
 function HomePage() {
@@ -22,7 +23,7 @@ function HomePage() {
   //   const query = "Hades"; // Replace with the desired game name
   //   const platform = "pc";
 
-  //   searchGames(query, platform)
+  //   getGameDetails(query, platform)
   //     .then((gameData) => {
   //       // Log the game information to the console
   //       console.log("Game Information:", gameData);

@@ -11,11 +11,11 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { FaWikipediaW } from "react-icons/fa";
+import { FaGoogle, FaWikipediaW } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import { LuScroll } from "react-icons/lu";
 import { useParams } from "react-router-dom";
-import { searchGames } from "../api/igdbApi";
+import { getGameDetails } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
 import "../css/DetailsPage.css";
@@ -53,13 +53,49 @@ function DetailsPage() {
 
   function renderWebsites(websites: any) {
     if (!websites || websites.length === 0) {
-      return <Text>No websites available.</Text>;
+      return (
+        <a
+          href={`https://www.google.com/search?q=${encodeURIComponent(
+            gameDetails?.name || ""
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="website-link"
+        >
+          <div className="website-links-container">
+            <Box className="website-icon-container">
+              <FaGoogle />
+            </Box>
+            <Text>See Google results</Text>
+          </div>
+        </a>
+      );
     }
 
     const filteredWebsites = websites.filter((website: any) => {
       const category = website.category;
       return category === 1 || category === 2 || category === 3;
     });
+
+    if (!filteredWebsites || filteredWebsites.length === 0) {
+      return (
+        <a
+          href={`https://www.google.com/search?q=${encodeURIComponent(
+            gameDetails?.name || ""
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="website-link"
+        >
+          <div className="website-links-container">
+            <Box className="website-icon-container">
+              <FaGoogle />
+            </Box>
+            <Text>See Google results</Text>
+          </div>
+        </a>
+      );
+    }
 
     return (
       <div className="website-links-container">
@@ -103,6 +139,45 @@ function DetailsPage() {
     );
   }
 
+  function renderVideoOrImage(gameDetails: any) {
+    if (gameDetails.videos && gameDetails.videos.length > 0) {
+      const videoId = gameDetails.videos[0].video_id;
+      return (
+        <iframe
+          width="100%"
+          height="100%"
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&cc_load_policy=0&playlist=${videoId}`}
+          title="Gameplay Video"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      );
+    } else {
+      const imageUrl =
+        gameDetails.screenshots?.[0] || gameDetails.artworks?.[0];
+      if (imageUrl) {
+        return (
+          <Image
+            src={imageUrl}
+            alt={`Image of ${gameDetails.name}`}
+            className="game-image-overlay"
+          />
+        );
+      } else {
+        const defaultImageUrl =
+          "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03761a65-0542-4764-8997-9b5b705c45b3";
+        return (
+          <Image
+            src={defaultImageUrl}
+            alt={`Default image for ${gameDetails.name}`}
+            className="game-image-overlay"
+          />
+        );
+      }
+    }
+  }
+
   const getRatingClass = (rating: number) => {
     if (rating === null || rating === undefined) {
       return "rating-color-tbd";
@@ -115,12 +190,16 @@ function DetailsPage() {
     }
   };
 
+  function isValidDate(d: any) {
+    return d && !isNaN(new Date(d).getTime());
+  }
+
   useEffect(() => {
     if (params.id) {
       const query = parseInt(params.id, 10); // Convert the ID to a number
       const platform = "pc";
 
-      searchGames(query, platform)
+      getGameDetails(query, platform)
         .then((gameData) => {
           const game = gameData[0];
           setGameDetails(game);
@@ -156,76 +235,76 @@ function DetailsPage() {
               </Title>
             </Box>
             <Box className="video-container">
-              {gameDetails.videos && gameDetails.videos.length > 0 && (
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src={`https://www.youtube.com/embed/${
-                    gameDetails.videos[1]
-                      ? gameDetails.videos[1].video_id
-                      : gameDetails.videos[0].video_id
-                  }?autoplay=1&mute=1&loop=1&playlist=${
-                    gameDetails.videos[1]
-                      ? gameDetails.videos[1].video_id
-                      : gameDetails.videos[0].video_id
-                  }`}
-                  title="Gameplay Video"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              )}
+              {gameDetails ? renderVideoOrImage(gameDetails) : <Loader />}
               <Box className="video-overlay"></Box>
             </Box>
             {gameDetails.release_dates &&
-              gameDetails.release_dates.length > 0 && (
-                <Box className="game-release-date">
-                  <Text size="lg">
-                    First Release Date:{" "}
-                    {convertTimestampToDate(gameDetails.release_dates[0].date)}
-                  </Text>
-                </Box>
-              )}
+            gameDetails.release_dates.length > 0 ? (
+              <Box className="game-release-date">
+                <Text size="lg">
+                  Release Date:{" "}
+                  {isValidDate(gameDetails.release_dates[0].date)
+                    ? convertTimestampToDate(gameDetails.release_dates[0].date)
+                    : "No Date Available"}
+                </Text>
+              </Box>
+            ) : (
+              <Box className="game-release-date">
+                <Text size="lg">Release Date: Not available</Text>
+              </Box>
+            )}
 
             {gameDetails.involved_companies &&
-              gameDetails.involved_companies.length > 0 && (
-                <Box className="game-companies">
-                  <Text>{gameDetails.involved_companies[0].company.name}</Text>
-                </Box>
-              )}
+            gameDetails.involved_companies.length > 0 ? (
+              <Box className="game-companies">
+                <Text>{gameDetails.involved_companies[0].company.name}</Text>
+              </Box>
+            ) : (
+              <Box className="game-companies">
+                <Text>No involved companies available</Text>
+              </Box>
+            )}
           </Box>
           <Box className="top-game-content">
             <Box className="game-modes-section">
-              {gameDetails.game_modes && gameDetails.game_modes.length > 0 && (
-                <Box className="detail-section">
-                  <Box mb="sm" className="left-margin" pl={10}>
-                    <Title order={4}>Game Modes</Title>
-                    {gameDetails.game_modes.map((mode, index) => (
+              <Box className="detail-section">
+                <Box mb="sm" className="left-margin" pl={10}>
+                  <Title order={4}>Game Modes</Title>
+                  {gameDetails.game_modes &&
+                  gameDetails.game_modes.length > 0 ? (
+                    gameDetails.game_modes.map((mode, index) => (
                       <Text key={index}>{mode.name}</Text>
-                    ))}
-                  </Box>
-
-                  {gameDetails.themes && gameDetails.themes.length > 0 && (
-                    <Box mb="sm" className="left-margin" pl={10}>
-                      <Title order={4}>Themes</Title>
-                      {gameDetails.themes.map((theme, index) => (
-                        <Text key={index}>{theme.name}</Text>
-                      ))}
-                    </Box>
+                    ))
+                  ) : (
+                    <Text fs="italic">Not available</Text>
                   )}
-
-                  {gameDetails.franchises &&
-                    gameDetails.franchises.length > 0 && (
-                      <Box className="left-margin" pl={10}>
-                        <Title order={4}>Franchises</Title>
-                        {gameDetails.franchises.map((franchise, index) => (
-                          <Text key={index}>{franchise.name}</Text>
-                        ))}
-                      </Box>
-                    )}
                 </Box>
-              )}
+
+                <Box mb="sm" className="left-margin" pl={10}>
+                  <Title order={4}>Themes</Title>
+                  {gameDetails.themes && gameDetails.themes.length > 0 ? (
+                    gameDetails.themes.map((theme, index) => (
+                      <Text key={index}>{theme.name}</Text>
+                    ))
+                  ) : (
+                    <Text fs="italic">Not available</Text>
+                  )}
+                </Box>
+
+                <Box className="left-margin" pl={10}>
+                  <Title order={4}>Franchises</Title>
+                  {gameDetails.franchises &&
+                  gameDetails.franchises.length > 0 ? (
+                    gameDetails.franchises.map((franchise, index) => (
+                      <Text key={index}>{franchise.name}</Text>
+                    ))
+                  ) : (
+                    <Text fs="italic">Not available</Text>
+                  )}
+                </Box>
+              </Box>
             </Box>
+
             <Divider
               mt="sm"
               mb="sm"
@@ -234,22 +313,27 @@ function DetailsPage() {
               color="var(--nav-text-color)"
             />
             <Box className="detail-section">
-              {gameDetails.genres && gameDetails.genres.length > 0 && (
-                <Box mb="sm" className="responsive-style" pl={10}>
-                  <Title order={4}>Genres</Title>
-                  {gameDetails.genres.map((genre, index) => (
+              <Box mb="sm" className="responsive-style" pl={10}>
+                <Title order={4}>Genres</Title>
+                {gameDetails.genres && gameDetails.genres.length > 0 ? (
+                  gameDetails.genres.map((genre, index) => (
                     <Text key={index}>{genre.name}</Text>
-                  ))}
-                </Box>
-              )}
-              {gameDetails.platforms && gameDetails.platforms.length > 0 && (
-                <Box className="responsive-style" pl={10}>
-                  <Title order={4}>Platforms</Title>
-                  {gameDetails.platforms.map((platform, index) => (
+                  ))
+                ) : (
+                  <Text fs="italic">Not available</Text>
+                )}
+              </Box>
+
+              <Box className="responsive-style" pl={10}>
+                <Title order={4}>Platforms</Title>
+                {gameDetails.platforms && gameDetails.platforms.length > 0 ? (
+                  gameDetails.platforms.map((platform, index) => (
                     <Text key={index}>{platform.name}</Text>
-                  ))}
-                </Box>
-              )}
+                  ))
+                ) : (
+                  <Text fs="italic">Not available</Text>
+                )}
+              </Box>
             </Box>
 
             <Divider
@@ -271,29 +355,42 @@ function DetailsPage() {
                   ? "TBD"
                   : Math.round(gameDetails.total_rating)}
               </Text>
-              {gameDetails.total_rating_count &&
-                gameDetails.total_rating_count > 0 && (
-                  <Text mt="sm" size="sm">
-                    Based on {gameDetails.total_rating_count} ratings
-                  </Text>
-                )}
+              {gameDetails.total_rating_count !== undefined &&
+              gameDetails.total_rating_count > 0 ? (
+                <Text mt="sm" size="sm">
+                  Based on {gameDetails.total_rating_count} ratings
+                </Text>
+              ) : (
+                <Text mt="sm" size="sm" fs="italic">
+                  No ratings yet
+                </Text>
+              )}
             </Box>
           </Box>
-          <Container>
+          <Container size={"xl"}>
             <Box className="centered-content" mt="md">
-              <Box>
+              <Box className="margin-box">
                 <Title order={4}>Summary</Title>
-                <Spoiler maxHeight={70} showLabel="Read More" hideLabel="Hide">
-                  <Text>{gameDetails.summary}</Text>
-                </Spoiler>
-              </Box>
-              <Box className="website-img-layout">
-                {gameDetails.websites && (
-                  <Box mt="xl" className="detail-section">
-                    <Title order={4}>Websites</Title>
-                    {renderWebsites(gameDetails.websites)}
-                  </Box>
+                {gameDetails.summary ? (
+                  <Spoiler
+                    maxHeight={70}
+                    showLabel="Read More"
+                    hideLabel="Hide"
+                  >
+                    <Text>{gameDetails.summary}</Text>
+                  </Spoiler>
+                ) : (
+                  <Text fs="italic">Not available</Text>
                 )}
+              </Box>
+
+              <Box className="website-img-layout">
+                <Box className="margin-box" mt="xl">
+                  <Title mb="xs" order={4}>
+                    Websites
+                  </Title>
+                  {renderWebsites(gameDetails.websites)}
+                </Box>
                 <Image
                   src="../../src/assets/gh_details.png"
                   alt="A mascot of Gamehaven presenting information about a game."
@@ -303,43 +400,58 @@ function DetailsPage() {
             </Box>
           </Container>
           <Box>
-            <Title pl={10} order={4} mb={"lg"}>
+            <Title pl={10} order={4}>
               Gallery
             </Title>
             {gameDetails &&
-              (gameDetails.screenshots?.length > 0 ||
-                gameDetails.artworks?.length > 0) && (
-                <Gallery
-                  images={[
-                    ...(gameDetails.screenshots?.length > 0
-                      ? gameDetails.screenshots.map((s) => ({
-                          url: s,
-                          altText: `Screenshot of ${gameDetails.name}`,
-                        }))
-                      : []),
-                    ...(gameDetails.artworks?.length > 0
-                      ? gameDetails.artworks.map((a) => ({
-                          url: a,
-                          altText: `Artwork of ${gameDetails.name}`,
-                        }))
-                      : []),
-                  ]}
-                />
-              )}
-          </Box>
-          {gameDetails.similar_games &&
-            gameDetails.similar_games.length > 0 && (
+            (gameDetails.screenshots?.length > 0 ||
+              gameDetails.artworks?.length > 0) ? (
+              <Gallery
+                images={[
+                  ...(gameDetails.screenshots?.length > 0
+                    ? gameDetails.screenshots.map((s) => ({
+                        url: s,
+                        altText: `Screenshot of ${gameDetails.name}`,
+                      }))
+                    : []),
+                  ...(gameDetails.artworks?.length > 0
+                    ? gameDetails.artworks.map((a) => ({
+                        url: a,
+                        altText: `Artwork of ${gameDetails.name}`,
+                      }))
+                    : []),
+                ]}
+              />
+            ) : (
               <Box>
-                <Title pl={10} order={4} mt={"lg"}>
-                  You might also like
-                </Title>
-                <Carousel games={gameDetails.similar_games} />
+                <Text pl={10}>No Screenshots or Artworks Available</Text>
               </Box>
             )}
+          </Box>
+          {gameDetails.similar_games && gameDetails.similar_games.length > 0 ? (
+            <Box>
+              <Title pl={10} mt="md" order={4}>
+                You might also like
+              </Title>
+              <Carousel games={gameDetails.similar_games} />
+            </Box>
+          ) : (
+            <Box>
+              <Title pl={10} order={4} mt={"lg"}>
+                You might also like
+              </Title>
+              <Text pl={10} mb={"lg"}>
+                No Similar Games Available
+              </Text>
+            </Box>
+          )}
         </Box>
       ) : (
-        <Box>
+        <Box className="loader-style">
           <Loader color="orange" size="xl" type="dots" />
+          <Text fw={500} size="md">
+            Loading...
+          </Text>
         </Box>
       )}
     </Container>

@@ -97,6 +97,12 @@
   width: 25%;
 }
 
+/* .mantine-Spoiler-control {
+  color: var(--nav-text-color);
+  margin-top: 0.5rem;
+  padding: 1rem;
+} */
+
 /* Color styles for different rating ranges */
 .rating-high {
   background-color: #6c3;

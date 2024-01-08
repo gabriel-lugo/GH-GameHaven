@@ -398,7 +398,7 @@ function DetailsPage() {
             </Box>
           </Container>
           <Box>
-            <Title pl={10} order={4} mb={"lg"}>
+            <Title pl={10} order={4}>
               Gallery
             </Title>
             {gameDetails &&
@@ -428,7 +428,7 @@ function DetailsPage() {
           </Box>
           {gameDetails.similar_games && gameDetails.similar_games.length > 0 ? (
             <Box>
-              <Title pl={10} order={4} mt={"lg"}>
+              <Title pl={10} order={4}>
                 You might also like
               </Title>
               <Carousel games={gameDetails.similar_games} />

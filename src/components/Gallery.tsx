@@ -42,28 +42,30 @@ function Gallery({ images }: GalleryProps) {
   }, [images]);
 
   return (
-    <Swiper
-      pagination={{ dynamicBullets: true }}
-      modules={[Autoplay, Pagination, Navigation]}
-      grabCursor={true}
-      spaceBetween={0}
-      navigation={true}
-      slidesPerView={slidesToShow}
-      loop={true}
-      autoplay={{ delay: 5500 }}
-    >
-      {images.map((image: any, index: any) => (
-        <SwiperSlide key={index}>
-          <Box className="gallery-container">
-            <Image
-              loading="lazy"
-              src={image.url}
-              alt={image.altText || `Slide ${index + 1}`}
-            />
-          </Box>
-        </SwiperSlide>
-      ))}
-    </Swiper>
+    <Box mt={"lg"} mb={"lg"}>
+      <Swiper
+        pagination={{ dynamicBullets: true }}
+        modules={[Autoplay, Pagination, Navigation]}
+        grabCursor={true}
+        spaceBetween={0}
+        navigation={true}
+        slidesPerView={slidesToShow}
+        loop={true}
+        autoplay={{ delay: 5500 }}
+      >
+        {images.map((image: any, index: any) => (
+          <SwiperSlide key={index}>
+            <Box className="gallery-container">
+              <Image
+                loading="lazy"
+                src={image.url}
+                alt={image.altText || `Slide ${index + 1}`}
+              />
+            </Box>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </Box>
   );
 }
 

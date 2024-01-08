@@ -159,7 +159,7 @@ export const getTopRatedGames = async (
   limit: number = 15
 ) => {
   const endpoint = "games/";
-  const url = `${endpoint}?fields=name, summary, total_rating,total_rating_count,cover.image_id&order=rating:desc&limit=${limit}&platforms=${
+  const url = `${endpoint}?fields=name, summary, total_rating,total_rating_count,cover.image_id,websites&order=rating:desc&limit=${limit}&platforms=${
     platformIds[platform.toLowerCase()] || platformIds.pc
   }&filter[rating][gt]=${minRating}&filter[rating_count][gt]=${minRatingCount};`;
 
@@ -203,7 +203,7 @@ export const getNewGames = async (
   maxReleaseDateTimestamp: number = Date.now()
 ) => {
   const endpoint = "games/";
-  const url = `${endpoint}?fields=name, summary, total_rating,release_dates.date,cover.image_id,screenshots.image_id&filter[release_dates.date][lt]=${maxReleaseDateTimestamp}&limit=${limit}`;
+  const url = `${endpoint}?fields=name, summary, total_rating,release_dates.date,cover.image_id,screenshots.image_id,websites&filter[release_dates.date][lt]=${maxReleaseDateTimestamp}&limit=${limit}`;
 
   try {
     const response = await axiosClient.get(url);

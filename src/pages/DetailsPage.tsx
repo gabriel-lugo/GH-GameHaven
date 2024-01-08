@@ -61,6 +61,10 @@ function DetailsPage() {
       return category === 1 || category === 2 || category === 3;
     });
 
+    if (!filteredWebsites || filteredWebsites.length === 0) {
+      return <Text>No valid websites found.</Text>;
+    }
+
     return (
       <div className="website-links-container">
         {filteredWebsites.map((website: any, index: any) => {
@@ -128,8 +132,17 @@ function DetailsPage() {
             className="game-image-overlay"
           />
         );
+      } else {
+        const defaultImageUrl =
+          "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03761a65-0542-4764-8997-9b5b705c45b3";
+        return (
+          <Image
+            src={defaultImageUrl}
+            alt={`Default image for ${gameDetails.name}`}
+            className="game-image-overlay"
+          />
+        );
       }
-      return <Text>No videos or images available.</Text>;
     }
   }
 
@@ -308,12 +321,10 @@ function DetailsPage() {
                 </Spoiler>
               </Box>
               <Box className="website-img-layout">
-                {gameDetails.websites && (
-                  <Box mt="xl" className="detail-section">
-                    <Title order={4}>Websites</Title>
-                    {renderWebsites(gameDetails.websites)}
-                  </Box>
-                )}
+                <Box mt="xl" className="detail-section">
+                  <Title order={4}>Websites</Title>
+                  {renderWebsites(gameDetails.websites)}
+                </Box>
                 <Image
                   src="../../src/assets/gh_details.png"
                   alt="A mascot of Gamehaven presenting information about a game."

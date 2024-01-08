@@ -13,8 +13,8 @@ import FavoritesPage from "./pages/FavoritesPage.tsx";
 import GamesPage from "./pages/GamesPage.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
-import SigninPage from "./pages/SigninPage.tsx";
 import SearchResultsPage from "./pages/SearchResultsPage.tsx";
+import SigninPage from "./pages/SigninPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       { path: "/about", element: <AboutPage /> },
       { path: "/signin", element: <SigninPage /> },
       { path: "/register", element: <RegisterPage /> },
-      { path: "/games/:id", element: <DetailsPage /> },
+      { path: "/game/:id", element: <DetailsPage /> },
       { path: "/search-results/:query", element: <SearchResultsPage /> },
       { path: "*", element: <ErrorPage /> },
     ],

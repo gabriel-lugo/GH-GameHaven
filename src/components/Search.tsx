@@ -128,7 +128,7 @@ function Search() {
               {searchResults.map((game, index) => (
                 <NavLink
                   onClick={handleGameSelect}
-                  to={`/games/${game.id}`}
+                  to={`/game/${game.id}`}
                   className="game-link"
                 >
                   <Box style={{ height: "auto" }}>

@@ -54,7 +54,7 @@ function SearchResultsPage() {
             <React.Fragment key={index}>
               <NavLink
                 onClick={handleGameSelect}
-                to={`/games/${game.id}`}
+                to={`/game/${game.id}`}
                 className="game-link"
                 key={index}
               >

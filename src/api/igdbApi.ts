@@ -108,7 +108,7 @@ export const searchForGames = async (query: string, platforms: string[]) => {
   }
 };
 
-export const searchGames = async (query: number, platform: string) => {
+export const getGameDetails = async (query: number, platform: string) => {
   const endpoint = "games/";
   const url = `${endpoint}`;
 
@@ -241,7 +241,7 @@ export const getNewGames = async (
 // Add more functions for other IGDB API calls
 
 export default {
-  searchGames,
+  getGameDetails,
   getTopRatedGames,
   getNewGames,
   // Add more functions here if needed

@@ -38,7 +38,6 @@
 
 .gh-mascot-img {
   max-width: 20rem;
-  /* margin-left: 2rem; */
 }
 
 .website-img-layout {
@@ -226,11 +225,17 @@ iframe,
     align-items: flex-start;
   }
   .responsive-style {
-    margin-left: 3rem;
+    margin-left: 10px;
   }
   .rating-section {
     margin-top: 0.5rem;
-    margin-left: 4.2rem;
+    margin-left: 14px;
+  }
+  .left-margin {
+    margin-left: 10px;
+  }
+  .divider-h {
+    width: 95%;
   }
 }
 

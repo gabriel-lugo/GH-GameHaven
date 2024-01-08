@@ -15,7 +15,7 @@ import { FaGoogle, FaWikipediaW } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import { LuScroll } from "react-icons/lu";
 import { useParams } from "react-router-dom";
-import { searchGames } from "../api/igdbApi";
+import { getGameDetails } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
 import "../css/DetailsPage.css";
@@ -199,7 +199,7 @@ function DetailsPage() {
       const query = parseInt(params.id, 10); // Convert the ID to a number
       const platform = "pc";
 
-      searchGames(query, platform)
+      getGameDetails(query, platform)
         .then((gameData) => {
           const game = gameData[0];
           setGameDetails(game);
@@ -367,9 +367,9 @@ function DetailsPage() {
               )}
             </Box>
           </Box>
-          <Container>
+          <Container size={"xl"}>
             <Box className="centered-content" mt="md">
-              <Box>
+              <Box className="margin-box">
                 <Title order={4}>Summary</Title>
                 {gameDetails.summary ? (
                   <Spoiler
@@ -385,8 +385,10 @@ function DetailsPage() {
               </Box>
 
               <Box className="website-img-layout">
-                <Box mt="xl">
-                  <Title order={4}>Websites</Title>
+                <Box className="margin-box" mt="xl">
+                  <Title mb="xs" order={4}>
+                    Websites
+                  </Title>
                   {renderWebsites(gameDetails.websites)}
                 </Box>
                 <Image
@@ -428,7 +430,7 @@ function DetailsPage() {
           </Box>
           {gameDetails.similar_games && gameDetails.similar_games.length > 0 ? (
             <Box>
-              <Title pl={10} order={4}>
+              <Title pl={10} mt="md" order={4}>
                 You might also like
               </Title>
               <Carousel games={gameDetails.similar_games} />

@@ -38,7 +38,7 @@
 
 .gh-mascot-img {
   max-width: 20rem;
-  margin-left: 2rem;
+  /* margin-left: 2rem; */
 }
 
 .website-img-layout {
@@ -209,7 +209,6 @@ iframe,
 @media (max-width: 1000px) {
   .website-img-layout {
     flex-direction: column;
-    align-items: center;
   }
   .gh-mascot-img {
     margin-top: 2rem;

@@ -13,6 +13,7 @@ export interface Game {
   total_rating: number;
   screenshots: string[];
   summary: string;
+  release_dates: Array<{ date: string }>;
 }
 
 function HomePage() {

@@ -78,6 +78,13 @@
   object-fit: cover;
 }
 
+.fallback-button {
+  color: var(--nav-text-color);
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
 .video-overlay {
   position: absolute;
   top: 0;
@@ -250,5 +257,8 @@ iframe,
 @media (max-width: 550px) {
   .title-size {
     font-size: 1.3rem;
+  }
+  .fallback-button {
+    font-size: 0.7rem;
   }
 }

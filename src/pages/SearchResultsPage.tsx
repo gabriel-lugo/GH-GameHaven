@@ -37,6 +37,15 @@ function SearchResultsPage() {
     fetchSearchResults();
   }, [query]);
 
+  function convertTimestampToDate(timestamp: any) {
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleDateString();
+  }
+
+  function isValidDate(d: any) {
+    return d && !isNaN(new Date(d).getTime());
+  }
+
   return (
     <Box>
       <Title pl={10} mt="md" mb="md" order={2}>
@@ -73,9 +82,17 @@ function SearchResultsPage() {
                       }}
                     />
                   )}
-                  <Text className="text-underline-hover" mb="xs">
-                    {game.name}
-                  </Text>
+                  <Box>
+                    <Text className="text-underline-hover" mb="xs">
+                      {game.name}
+                    </Text>
+                    <Text size="xs">
+                      Release Date:{" "}
+                      {isValidDate(game.release_dates[0].date)
+                        ? convertTimestampToDate(game.release_dates[0].date)
+                        : "No Date Available"}
+                    </Text>
+                  </Box>
                 </Box>
               </NavLink>
               {index < searchResults.length - 1 && <Divider my="sm" />}

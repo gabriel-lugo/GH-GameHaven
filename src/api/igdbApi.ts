@@ -268,14 +268,15 @@ export const getGameCover = async (imageId: string) => {
 
 export const getNewGames = async (
   platform: string,
-  limit: number = 15,
-  maxReleaseDateTimestamp: number = Date.now()
+  limit: number = 15
 ) => {
-  // Generate a unique cache key
-  const cacheKey = `getNewGames-${platform}-${limit}-${maxReleaseDateTimestamp}`;
-  const cachedData = sessionStorage.getItem(cacheKey);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); 
+  const maxReleaseDateTimestamp = today.getTime();
 
-  // Use cached data if available
+  const cacheKey = `getNewGames-${platform}-${limit}-${maxReleaseDateTimestamp}`;
+
+  const cachedData = sessionStorage.getItem(cacheKey);
   if (cachedData) {
     console.log("Using cached data for new games:", cacheKey);
     return JSON.parse(cachedData);

@@ -33,7 +33,7 @@ function GhInfo() {
             find your next game. You should be able to share these games with
             your friends and mark them as favorites as you please.
           </Text>
-          <NavLink to={"/about/"}>
+          <NavLink style={{ textDecoration: "none" }} to={"/about/"}>
             <Button className="button-style" mt="lg" fullWidth>
               Learn More
             </Button>

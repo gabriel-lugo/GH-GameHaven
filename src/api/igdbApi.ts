@@ -215,7 +215,7 @@ export const getTopRatedGames = async (
   }
 
   const endpoint = "games/";
-  const url = `${endpoint}?fields=name, summary, total_rating,total_rating_count,cover.image_id,websites&order=rating:desc&limit=${limit}&platforms=${
+  const url = `${endpoint}?fields=name, summary, total_rating,total_rating_count,cover.image_id,artworks.*,screenshots.image_id,websites&order=rating:desc&limit=${limit}&platforms=${
     platformIds[platform.toLowerCase()] || platformIds.pc
   }&filter[rating][gt]=${minRating}&filter[rating_count][gt]=${minRatingCount};`;
 
@@ -266,39 +266,45 @@ export const getGameCover = async (imageId: string) => {
   }
 };
 
-export const getNewGames = async (
-  platform: string,
-  limit: number = 15
-) => {
+export const getNewGames = async (platform: any, limit: number = 15) => {
   const today = new Date();
-  today.setHours(0, 0, 0, 0); 
-  const maxReleaseDateTimestamp = today.getTime();
+  today.setHours(0, 0, 0, 0);
+  const currentTimestamp = Math.floor(today.getTime() / 1000);
 
-  const cacheKey = `getNewGames-${platform}-${limit}-${maxReleaseDateTimestamp}`;
-
+  const cacheKey = `getNewGames-${platform}-${limit}-${currentTimestamp}`;
   const cachedData = sessionStorage.getItem(cacheKey);
+
   if (cachedData) {
     console.log("Using cached data for new games:", cacheKey);
     return JSON.parse(cachedData);
   }
 
-  const endpoint = "games/";
-  const url = `${endpoint}?fields=name, summary, total_rating,release_dates.date,cover.image_id,screenshots.image_id,websites&filter[release_dates.date][lt]=${maxReleaseDateTimestamp}&limit=${limit}`;
+  const endpoint = "release_dates/";
+  const query = `fields game; where date < ${currentTimestamp}; sort date desc; limit ${limit};`;
 
   try {
-    const response = await axiosClient.get(url);
+    const response = await axiosClient.post(endpoint, query);
     const newGames = response.data;
-  
+    console.log("New Games:", newGames);
+
     if (!newGames || newGames.length === 0) {
       console.warn("No new games found in the response.");
       return [];
     }
-  
+
+
+    // Extract game IDs from release dates
+    const gameIds = newGames.map((newGame: any) => newGame.game);
+
+    // Fetch detailed game information from the "games/" endpoint
+    const gamesResponse = await axiosClient.get(`games/${gameIds.join(",")}?fields=name,summary,cover.image_id,screenshots.image_id,artworks.*,websites`);
+
     const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(
-      newGames,
+      gamesResponse.data,
       platform
     );
-  
+
+    // Attempt to cache the results in sessionStorage
     try {
       sessionStorage.setItem(cacheKey, JSON.stringify(gamesWithCoversAndScreenshots));
     } catch (e) {
@@ -308,13 +314,14 @@ export const getNewGames = async (
         console.error("Error during caching:", e);
       }
     }
-  
+
     return gamesWithCoversAndScreenshots;
   } catch (error) {
     console.error("Error making request or fetching covers:", error);
     throw error;
   }
 };
+
 // ... (other functions and exports)
 
 // Add more functions for other IGDB API calls

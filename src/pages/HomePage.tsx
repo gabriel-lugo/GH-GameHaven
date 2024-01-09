@@ -13,6 +13,7 @@ export interface Game {
   total_rating: number;
   screenshots: string[];
   summary: string;
+  artworks: string[];
   release_dates: Array<{ date: string }>;
 }
 
@@ -63,7 +64,7 @@ function HomePage() {
 
   return (
     <>
-      <HeroSlide games={newestGames} />
+      <HeroSlide games={topRatedGames} />
       {/* <Container size={"xl"}>
         <Title order={2} mb={"md"}>
           Top Rated Games

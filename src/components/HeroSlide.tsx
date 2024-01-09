@@ -11,6 +11,7 @@ interface Game {
   cover: string;
   rating: number;
   screenshots: string[];
+  artworks: string[];
 }
 
 interface HeroSlideProps {
@@ -31,13 +32,13 @@ function HeroSlide({ games }: HeroSlideProps) {
       autoplay={{ delay: 4500 }}
     >
       {games.map((game) =>
-        game.screenshots.map((screenshot, index) => (
+        game.screenshots.map((screenshot: any, index: any) => (
           <SwiperSlide key={`${game.id}-${index}`}>
             <Box className="hero-slide-container">
               <Box aria-label="new games" className="is-new-label">
                 Screenshot from: <b>{game.name}</b>
               </Box>
-              <Image src={screenshot} alt={`Screenshot of ${game.name}`} />
+              <Image src={screenshot} alt={`Artwork of ${game.name}`} />
             </Box>
           </SwiperSlide>
         ))

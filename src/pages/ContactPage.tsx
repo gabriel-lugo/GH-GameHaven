@@ -72,6 +72,7 @@ function ContactPage() {
                   {...form.getInputProps("name")}
                 />
                 <TextInput
+                  required
                   label="Your email"
                   placeholder="your@mail.com"
                   {...form.getInputProps("email")}
@@ -86,6 +87,7 @@ function ContactPage() {
               />
 
               <Textarea
+                required
                 mt="md"
                 label="Your message"
                 placeholder="Please include all relevant information"

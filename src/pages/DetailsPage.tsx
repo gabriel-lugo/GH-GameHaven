@@ -50,6 +50,11 @@ function DetailsPage() {
 
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const [showVideo, setShowVideo] = useState(true);
+
+  useEffect(() => {
+    setShowVideo(true);
+  }, [gameDetails]);
 
   function renderWebsites(websites: any) {
     if (!websites || websites.length === 0) {
@@ -140,41 +145,46 @@ function DetailsPage() {
   }
 
   function renderVideoOrImage(gameDetails: any) {
-    if (gameDetails.videos && gameDetails.videos.length > 0) {
+    const handleFallbackClick = () => {
+      setShowVideo(false);
+    };
+
+    if (showVideo && gameDetails.videos && gameDetails.videos.length > 0) {
       const videoId = gameDetails.videos[0].video_id;
       return (
-        <iframe
-          width="100%"
-          height="100%"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&cc_load_policy=0&playlist=${videoId}`}
-          title="Gameplay Video"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
+        <div>
+          <iframe
+            width="100%"
+            height="100%"
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&cc_load_policy=0&playlist=${videoId}`}
+            title="Gameplay Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+          <Button
+            variant="subtle"
+            style={{ zIndex: "5" }}
+            onClick={handleFallbackClick}
+            className="fallback-button"
+            color="yellow"
+          >
+            Can't play the video? Click here for images.
+          </Button>
+        </div>
       );
     } else {
       const imageUrl =
-        gameDetails.screenshots?.[0] || gameDetails.artworks?.[0];
-      if (imageUrl) {
-        return (
-          <Image
-            src={imageUrl}
-            alt={`Image of ${gameDetails.name}`}
-            className="game-image-overlay"
-          />
-        );
-      } else {
-        const defaultImageUrl =
-          "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03761a65-0542-4764-8997-9b5b705c45b3";
-        return (
-          <Image
-            src={defaultImageUrl}
-            alt={`Default image for ${gameDetails.name}`}
-            className="game-image-overlay"
-          />
-        );
-      }
+        gameDetails.screenshots?.[0] ||
+        gameDetails.artworks?.[0] ||
+        "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03761a65-0542-4764-8997-9b5b705c45b3";
+      return (
+        <Image
+          src={imageUrl}
+          alt={`Image of ${gameDetails.name}`}
+          className="game-image-overlay"
+        />
+      );
     }
   }
 
@@ -367,7 +377,7 @@ function DetailsPage() {
               )}
             </Box>
           </Box>
-          <Container size={"xl"}>
+          <Container>
             <Box className="centered-content" mt="md">
               <Box className="margin-box">
                 <Title order={4}>Summary</Title>

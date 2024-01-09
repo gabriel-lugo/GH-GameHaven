@@ -367,7 +367,7 @@ function DetailsPage() {
               )}
             </Box>
           </Box>
-          <Container size={"xl"}>
+          <Container>
             <Box className="centered-content" mt="md">
               <Box className="margin-box">
                 <Title order={4}>Summary</Title>

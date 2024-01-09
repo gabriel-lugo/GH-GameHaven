@@ -55,7 +55,7 @@ function Search() {
       if (query.length > 0) {
         navigate(`/search-results/${query}`);
       }
-    } else if (query.length > 0) {
+    } else if (query.length > 1) {
       try {
         const results = await searchForGames(query, [
           "playstation",

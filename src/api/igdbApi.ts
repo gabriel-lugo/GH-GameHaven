@@ -78,6 +78,16 @@ const fetchGameCoversAndScreenshots = async (
 };
 
 export const searchForGames = async (query: string, platforms: string[]) => {
+  // Generate a unique cache key based on query and platforms
+  const cacheKey = `searchForGames-${query}-${platforms.join('-')}`;
+  const cachedData = sessionStorage.getItem(cacheKey);
+
+  // Use cached data if available
+  if (cachedData) {
+    console.log("Using cached data for search query:", query);
+    return JSON.parse(cachedData);
+  }
+
   const endpoint = "games/";
   const url = `${endpoint}`;
 
@@ -95,12 +105,25 @@ export const searchForGames = async (query: string, platforms: string[]) => {
   try {
     const response = await axiosClient.post(url, requestBody);
     const searchResults = response.data;
-
+  
     const processedResults = searchResults.map((game: any) => ({
       ...game,
       cover: game.cover ? getGameCoverUrl(game.cover.image_id) : 'default_image_url'
     }));
-
+  
+    // Attempt to cache the processed results in sessionStorage
+    try {
+      sessionStorage.setItem(cacheKey, JSON.stringify(processedResults));
+    } catch (e) {
+      if (e instanceof DOMException && e.code === DOMException.QUOTA_EXCEEDED_ERR) {
+        console.warn("Session storage is full, unable to cache the results");
+        // Log the warning but continue with the function
+      } else {
+        console.error("Error during caching:", e);
+        // Log other errors that may occur during caching
+      }
+    }
+  
     return processedResults;
   } catch (error) {
     console.error("Error making request:", error);
@@ -109,6 +132,16 @@ export const searchForGames = async (query: string, platforms: string[]) => {
 };
 
 export const getGameDetails = async (query: number, platform: string) => {
+  // Generate a unique cache key
+  const cacheKey = `getGameDetails-${query}-${platform}`;
+  const cachedData = sessionStorage.getItem(cacheKey);
+
+  // Use cached data if available
+  if (cachedData) {
+    console.log("Using cached data for game details:", cacheKey);
+    return JSON.parse(cachedData);
+  }
+
   const endpoint = "games/";
   const url = `${endpoint}`;
 
@@ -122,15 +155,15 @@ export const getGameDetails = async (query: number, platform: string) => {
   try {
     const response = await axiosClient.post(url, requestBody);
     const gameDetails = response.data;
-
+  
     const gameWithCover = await fetchGameCoversAndScreenshots(
       gameDetails,
       platform
     );
-
-    // Process similar games' cover data to match Thumbnail component's expectations
-    let similarGamesWithCovers: Array<any> = [];
-
+  
+    // Process similar games' cover data
+    let similarGamesWithCovers = [];
+  
     if (
       gameWithCover[0].similar_games &&
       gameWithCover[0].similar_games.length > 0
@@ -140,12 +173,27 @@ export const getGameDetails = async (query: number, platform: string) => {
           ...similarGame,
           cover: similarGame.cover.image_id
             ? getGameCoverUrl(similarGame.cover.image_id)
-            : "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6",
+            : "default_image_url",
         })
       );
     }
-
-    return [{ ...gameWithCover[0], similar_games: similarGamesWithCovers }];
+  
+    const result = [{ ...gameWithCover[0], similar_games: similarGamesWithCovers }];
+  
+    // Attempt to cache the result in sessionStorage
+    try {
+      sessionStorage.setItem(cacheKey, JSON.stringify(result));
+    } catch (e) {
+      if (e instanceof DOMException && e.code === DOMException.QUOTA_EXCEEDED_ERR) {
+        console.warn("Session storage is full, unable to cache the results");
+        // Log the warning but continue with the function
+      } else {
+        console.error("Error during caching:", e);
+        // Log other errors that may occur during caching
+      }
+    }
+  
+    return result;
   } catch (error) {
     console.error("Error making request:", error);
     throw error;
@@ -158,6 +206,14 @@ export const getTopRatedGames = async (
   minRatingCount: number = defaultMinRatingCount,
   limit: number = 15
 ) => {
+  const cacheKey = `topRatedGames-${platform}-${minRating}-${minRatingCount}-${limit}`;
+  const cachedData = sessionStorage.getItem(cacheKey);
+
+  if (cachedData) {
+    console.log("Using cached data for top rated games");
+    return JSON.parse(cachedData);
+  }
+
   const endpoint = "games/";
   const url = `${endpoint}?fields=name, summary, total_rating,total_rating_count,cover.image_id,websites&order=rating:desc&limit=${limit}&platforms=${
     platformIds[platform.toLowerCase()] || platformIds.pc
@@ -166,17 +222,30 @@ export const getTopRatedGames = async (
   try {
     const response = await axiosClient.get(url);
     const topRatedGames = response.data;
-
-    // Fetch covers for each top-rated game
+  
     const gamesWithCovers = await fetchGameCoversAndScreenshots(
       topRatedGames,
       platform
     );
-
+  
     console.log(
       `Top Rated Games with Covers (Rating > ${minRating}, Rating Count > ${minRatingCount}):`,
       gamesWithCovers
     );
+  
+    // Attempt to cache the results in sessionStorage
+    try {
+      sessionStorage.setItem(cacheKey, JSON.stringify(gamesWithCovers));
+    } catch (e) {
+      if (e instanceof DOMException && e.code === DOMException.QUOTA_EXCEEDED_ERR) {
+        console.warn("Session storage is full, unable to cache the results");
+        // If sessionStorage is full, this warning is logged but the function continues
+      } else {
+        console.error("Error during caching:", e);
+        // Log other caching errors
+      }
+    }
+  
     return gamesWithCovers;
   } catch (error) {
     console.error("Error making request:", error);
@@ -202,40 +271,49 @@ export const getNewGames = async (
   limit: number = 15,
   maxReleaseDateTimestamp: number = Date.now()
 ) => {
+  // Generate a unique cache key
+  const cacheKey = `getNewGames-${platform}-${limit}-${maxReleaseDateTimestamp}`;
+  const cachedData = sessionStorage.getItem(cacheKey);
+
+  // Use cached data if available
+  if (cachedData) {
+    console.log("Using cached data for new games:", cacheKey);
+    return JSON.parse(cachedData);
+  }
+
   const endpoint = "games/";
   const url = `${endpoint}?fields=name, summary, total_rating,release_dates.date,cover.image_id,screenshots.image_id,websites&filter[release_dates.date][lt]=${maxReleaseDateTimestamp}&limit=${limit}`;
 
   try {
     const response = await axiosClient.get(url);
     const newGames = response.data;
-
+  
     if (!newGames || newGames.length === 0) {
       console.warn("No new games found in the response.");
       return [];
     }
-
-    // Log the raw response for inspection
-    console.log("Raw API response:", response.data);
-
-    // Fetch covers for each new game, passing the platform information
+  
     const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(
       newGames,
       platform
     );
-
-    // Log intermediate results for inspection
-    console.log(
-      `Newest Games (${limit} games) with Covers:`,
-      gamesWithCoversAndScreenshots
-    );
-
+  
+    try {
+      sessionStorage.setItem(cacheKey, JSON.stringify(gamesWithCoversAndScreenshots));
+    } catch (e) {
+      if (e instanceof DOMException && e.code === DOMException.QUOTA_EXCEEDED_ERR) {
+        console.warn("Session storage is full, unable to cache the results");
+      } else {
+        console.error("Error during caching:", e);
+      }
+    }
+  
     return gamesWithCoversAndScreenshots;
   } catch (error) {
     console.error("Error making request or fetching covers:", error);
     throw error;
   }
 };
-
 // ... (other functions and exports)
 
 // Add more functions for other IGDB API calls

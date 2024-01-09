@@ -8,6 +8,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import { NavLink } from "react-router-dom";
 import "../css/GhInfo.css";
 
 function GhInfo() {
@@ -32,9 +33,11 @@ function GhInfo() {
             find your next game. You should be able to share these games with
             your friends and mark them as favorites as you please.
           </Text>
-          <Button className="button-style" mt="lg" fullWidth>
-            Learn More
-          </Button>
+          <NavLink to={"/about/"}>
+            <Button className="button-style" mt="lg" fullWidth>
+              Learn More
+            </Button>
+          </NavLink>
         </Card>
       </Box>
     </Container>

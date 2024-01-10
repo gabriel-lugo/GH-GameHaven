@@ -1,6 +1,10 @@
 import { Title } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { getNewGames, getTopRatedGames } from "../api/igdbApi";
+import {
+  getNewGames,
+  getTopRatedGames,
+  getUpcomingGames,
+} from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import GhInfo from "../components/GhInfo";
 import HeroSlide from "../components/HeroSlide";
@@ -13,12 +17,14 @@ export interface Game {
   total_rating: number;
   screenshots: string[];
   summary: string;
+  artworks: string[];
   release_dates: Array<{ date: string }>;
 }
 
 function HomePage() {
   const [topRatedGames, setTopRatedGames] = useState<Game[]>([]);
   const [newestGames, setNewestGames] = useState<Game[]>([]);
+  const [upcomingGames, setUpcomingGames] = useState<Game[]>([]);
 
   // useEffect(() => {
   //   const query = "Hades"; // Replace with the desired game name
@@ -61,9 +67,22 @@ function HomePage() {
       });
   }, []);
 
+  useEffect(() => {
+    getUpcomingGames("playstation")
+      .then((upcomingGames) => {
+        // Log the newest games information to the console
+        console.log("Newest Games:", upcomingGames);
+        setUpcomingGames(upcomingGames);
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error("Error:", error);
+      });
+  }, []);
+
   return (
     <>
-      <HeroSlide games={newestGames} />
+      <HeroSlide games={topRatedGames} />
       {/* <Container size={"xl"}>
         <Title order={2} mb={"md"}>
           Top Rated Games
@@ -78,6 +97,10 @@ function HomePage() {
         Top Rated Games
       </Title>
       <Carousel games={topRatedGames} />
+      <Title order={2} pl={"md"} mb={"md"}>
+        Newest Releases
+      </Title>
+      <Carousel games={newestGames} />
       <GhInfo />
       {/* <Container size={"xl"}>
         <Title order={2} mb={"md"}>
@@ -90,9 +113,9 @@ function HomePage() {
         </SimpleGrid>
       </Container> */}
       <Title order={2} pl={"md"} mb={"md"}>
-        Newest Games
+        Upcoming Releases
       </Title>
-      <Carousel games={newestGames} />
+      <Carousel games={upcomingGames} />
     </>
   );
 }

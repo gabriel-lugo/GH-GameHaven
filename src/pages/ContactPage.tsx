@@ -44,13 +44,26 @@ function ContactPage() {
             </Text>
             <Box className="social-contact">
               <MdOutlineAlternateEmail style={{ fontSize: "1.2rem" }} />
-              <Text size="sm">contact@ghgamehaven.com</Text>
+              <Text size="sm">
+                <a
+                  style={{ textDecoration: "none", color: "#262626" }}
+                  href="mailto:contact@ghgamehaven.com"
+                >
+                  contact@ghgamehaven.com
+                </a>
+              </Text>
             </Box>
             <Box className="social-contact" mt="md">
               <GrLocation style={{ fontSize: "1.2rem" }} />
               <Text size="sm">
-                Anders Personsgatan 18, 416 <br />
-                64 Gothenburg, Sweden
+                <a
+                  style={{ textDecoration: "none", color: "#262626" }}
+                  href="https://www.google.com/maps/place/Medieinstitutet/@57.7097458,11.9919449,17z/data=!3m1!4b1!4m6!3m5!1s0x464ff30de9cbee3d:0xbb3f902b63916df6!8m2!3d57.7097458!4d11.9945252!16s%2Fg%2F11ghpmkkpk?entry=ttu"
+                  target="_blank"
+                >
+                  Anders Personsgatan 18, <br />
+                  416 64 Gothenburg, Sweden
+                </a>
               </Text>
             </Box>
             <Image

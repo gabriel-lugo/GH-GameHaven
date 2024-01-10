@@ -1,0 +1,9 @@
+.signin-button-style {
+  background-color: var(--button-primary-background-color);
+  color: var(--body-text-color);
+  transition: 0.3s ease;
+}
+
+.signin-button-style:hover {
+  filter: drop-shadow(0 0 2px rgba(117, 87, 6, 0.8));
+}

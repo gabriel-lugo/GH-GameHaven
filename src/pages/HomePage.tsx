@@ -113,7 +113,7 @@ function HomePage() {
         </SimpleGrid>
       </Container> */}
       <Title order={2} pl={"md"} mb={"md"}>
-        Upcoming Games
+        Upcoming Releases
       </Title>
       <Carousel games={upcomingGames} />
     </>

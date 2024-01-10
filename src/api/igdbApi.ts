@@ -210,7 +210,7 @@ export const getGameDetails = async (query: number, platform: string) => {
     throw new Error(`Unsupported platform: ${platform}`);
   }
 
-  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, cover.image_id, involved_companies.company.name, game_modes.name, artworks.*, screenshots.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*, similar_games.cover.image_id; where id = ${query};`;
+  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, cover.image_id, involved_companies.company.name, game_modes.name, artworks.*, screenshots.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*, similar_games.cover.image_id, similar_games.screenshots.*; where id = ${query};`;
 
   try {
     const response = await axiosClient.post(url, requestBody);

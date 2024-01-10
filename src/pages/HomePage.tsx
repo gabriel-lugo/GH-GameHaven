@@ -98,7 +98,7 @@ function HomePage() {
       </Title>
       <Carousel games={topRatedGames} />
       <Title order={2} pl={"md"} mb={"md"}>
-        Newest Games
+        Newest Releases
       </Title>
       <Carousel games={newestGames} />
       <GhInfo />

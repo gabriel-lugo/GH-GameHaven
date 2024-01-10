@@ -53,7 +53,6 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
             <Spoiler maxHeight={200} showLabel="" hideLabel="">
               <GiStabbedNote
                 style={{
-                  marginLeft: "5.5rem",
                   fontSize: "2rem",
                   color: "#FFF",
                 }}

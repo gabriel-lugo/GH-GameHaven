@@ -5,16 +5,26 @@ import {
   Divider,
   Group,
   Image,
+  Menu,
   Paper,
   Transition,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { FaEnvelope, FaHeart, FaInfoCircle, FaUser } from "react-icons/fa";
+import { CgLogOut } from "react-icons/cg";
+import {
+  FaEnvelope,
+  FaHeart,
+  FaInfoCircle,
+  FaRegUserCircle,
+  FaUser,
+} from "react-icons/fa";
 import { IoLogoGameControllerA } from "react-icons/io";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../assets/GH-logo.png";
 import "../css/Header.css";
+import { auth } from "../firebase";
 import Search from "./Search";
 
 const links = [
@@ -30,6 +40,14 @@ function Header() {
   const isActive = (pathname: string) => location.pathname === pathname;
   const [isVisible, setIsVisible] = useState(true);
   const [pastThreshold, setPastThreshold] = useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsUserLoggedIn(!!user);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const threshold = 50;
@@ -99,17 +117,45 @@ function Header() {
           </Group>
           <Group>
             <Search />
-            <NavLink to="/signin">
-              <Button
-                variant="transparent"
-                leftSection={<FaUser size={18} />}
-                className={`button-color ${
-                  isActive("/signin") ? "active" : ""
-                }`}
-              >
-                Login
-              </Button>
-            </NavLink>
+            {isUserLoggedIn ? (
+              <Menu>
+                <Menu.Target>
+                  <Button
+                    variant="transparent"
+                    leftSection={<FaUser size={18} />}
+                    className={`button-color ${
+                      isActive("/profile") ? "active" : ""
+                    }`}
+                  >
+                    Profile
+                  </Button>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Label>Account</Menu.Label>
+                  <Menu.Item leftSection={<FaRegUserCircle />}>
+                    My Profile
+                  </Menu.Item>
+                  <Menu.Item
+                    leftSection={<CgLogOut />}
+                    onClick={() => auth.signOut()}
+                  >
+                    Logout
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            ) : (
+              <NavLink to="/signin">
+                <Button
+                  variant="transparent"
+                  leftSection={<FaUser size={18} />}
+                  className={`button-color ${
+                    isActive("/signin") ? "active" : ""
+                  }`}
+                >
+                  Login
+                </Button>
+              </NavLink>
+            )}
             <Burger
               color="#F2C341"
               opened={opened}

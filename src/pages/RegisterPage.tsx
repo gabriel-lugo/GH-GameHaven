@@ -15,18 +15,22 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghRegister from "../assets/gh-register.png";
 import "../css/SigninPage.css";
 import { auth } from "../firebase";
 
-function SigninPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+interface FormValues {
+  email: string;
+  name: string;
+  password: string;
+  terms: boolean;
+}
+
+function RegisterPage() {
   const navigate = useNavigate();
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     initialValues: {
       email: "",
       name: "",
@@ -35,7 +39,14 @@ function SigninPage() {
     },
 
     validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
+      name: (val) =>
+        val.length <= 2
+          ? "Username should include at least 2 characters"
+          : null,
+      email: (val) =>
+        /^\S+@\S+$/.test(val)
+          ? null
+          : "Make sure you are using mail@mail.com format",
       password: (val) =>
         val.length <= 6
           ? "Password should include at least 6 characters"
@@ -43,8 +54,8 @@ function SigninPage() {
     },
   });
 
-  const onSubmit = async (e: any) => {
-    e.preventDefault();
+  const onSubmit = async (values: any) => {
+    const { email, password } = values;
 
     await createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -92,29 +103,31 @@ function SigninPage() {
               onChange={(event) =>
                 form.setFieldValue("name", event.currentTarget.value)
               }
+              error={form.errors.name}
               radius="md"
             />
 
             <TextInput
-              required
               label="Email"
+              withAsterisk
               placeholder="mail@mail.com"
-              // value={form.values.email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={form.errors.email && "Invalid email"}
+              value={form.values.email}
+              onChange={(event) =>
+                form.setFieldValue("email", event.currentTarget.value)
+              }
+              error={form.errors.email}
               radius="md"
             />
 
             <PasswordInput
-              required
+              withAsterisk
               label="Password"
               placeholder="Your password"
-              // value={form.values.password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={
-                form.errors.password &&
-                "Password should include at least 6 characters"
+              value={form.values.password}
+              onChange={(event) =>
+                form.setFieldValue("password", event.currentTarget.value)
               }
+              error={form.errors.password}
               radius="md"
             />
 
@@ -152,4 +165,4 @@ function SigninPage() {
   );
 }
 
-export default SigninPage;
+export default RegisterPage;

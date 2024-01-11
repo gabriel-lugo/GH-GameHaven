@@ -1,0 +1,28 @@
+.profile-settings-paper {
+  width: 100%;
+}
+
+.profile-settings-wrapper {
+  display: flex;
+  gap: 2rem;
+  background-color: #f9f6ee;
+  border-radius: 16px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.profile-settings-image {
+  display: flex;
+
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-settings-form {
+  flex: 2;
+}

@@ -61,7 +61,7 @@ function RegisterPage() {
       .then((userCredential) => {
         const user = userCredential.user;
         console.log(user);
-        navigate("/signin");
+        navigate("/");
       })
       .catch((error) => {
         const errorCode = error.code;

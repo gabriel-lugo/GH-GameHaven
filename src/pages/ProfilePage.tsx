@@ -14,7 +14,7 @@ import "../css/ProfilePage.css";
 
 function ProfilePage() {
   return (
-    <Container size={"md"}>
+    <Container size={"lg"}>
       <Paper
         className="profile-settings-paper"
         style={{ background: "#f9f6ee" }}

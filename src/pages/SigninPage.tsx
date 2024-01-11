@@ -42,7 +42,7 @@ function SigninPage() {
           : "Make sure you are using mail@mail.com format",
       password: (val) =>
         val.length <= 6
-          ? "Password should include at least 6 characters"
+          ? "Password should include at least 7 characters"
           : null,
     },
   });
@@ -98,6 +98,7 @@ function SigninPage() {
         <form onSubmit={form.onSubmit(onLogin)}>
           <Stack>
             <TextInput
+              autoComplete="email"
               withAsterisk
               label="Email"
               placeholder="mail@mail.com"
@@ -110,6 +111,7 @@ function SigninPage() {
             />
 
             <PasswordInput
+              autoComplete="current-password"
               withAsterisk
               label="Password"
               placeholder="Your password"

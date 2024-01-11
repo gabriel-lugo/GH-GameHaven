@@ -40,7 +40,7 @@ function RegisterPage() {
 
     validate: {
       name: (val) =>
-        val.length <= 2
+        val.length <= 1
           ? "Username should include at least 2 characters"
           : null,
       email: (val) =>
@@ -49,7 +49,7 @@ function RegisterPage() {
           : "Make sure you are using mail@mail.com format",
       password: (val) =>
         val.length <= 6
-          ? "Password should include at least 6 characters"
+          ? "Password should include at least 7 characters"
           : null,
     },
   });

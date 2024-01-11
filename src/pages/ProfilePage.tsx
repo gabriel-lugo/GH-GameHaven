@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 import logo from "../assets/GH-logo.png";
 import "../css/ProfilePage.css";
 import { auth } from "../firebase";
@@ -42,7 +43,14 @@ function ProfilePage() {
   }, []);
 
   if (!user) {
-    return <Title order={2}>User not logged in</Title>;
+    return (
+      <Box>
+        <Title order={2}>User not logged in</Title>
+        <NavLink to="/signin">
+          <Button className="button-style">Sign In</Button>
+        </NavLink>
+      </Box>
+    );
   }
 
   return (

@@ -1,4 +1,5 @@
 import { Title } from "@mantine/core";
+import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import {
   getNewGames,
@@ -8,6 +9,7 @@ import {
 import Carousel from "../components/Carousel";
 import GhInfo from "../components/GhInfo";
 import HeroSlide from "../components/HeroSlide";
+import { auth } from "../firebase";
 
 export interface Game {
   id: number;
@@ -40,6 +42,18 @@ function HomePage() {
   //       console.error("Error:", error);
   //     });
   // }, []);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+
+        console.log("uid", uid);
+      } else {
+        console.log("user is logged out");
+      }
+    });
+  }, []);
 
   useEffect(() => {
     getTopRatedGames("playstation")

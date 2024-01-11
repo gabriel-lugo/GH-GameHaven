@@ -14,13 +14,18 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { upperFirst, useToggle } from "@mantine/hooks";
-import ghRegister from "../assets/gh-register.png";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import ghSignin from "../assets/gh-signin.png";
 import "../css/SigninPage.css";
+import { auth } from "../firebase";
 
 function SigninPage() {
-  const [type, toggle] = useToggle(["sign in", "register"]);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
   const form = useForm({
     initialValues: {
       email: "",
@@ -38,6 +43,20 @@ function SigninPage() {
     },
   });
 
+  const onLogin = (e: any) => {
+    e.preventDefault();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        navigate("/");
+        console.log(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
+  };
   return (
     <Container size="xs" mt="xl">
       <Paper
@@ -48,56 +67,28 @@ function SigninPage() {
         withBorder
       >
         <Text size="lg" fw={500}>
-          Welcome to Gamehaven, {type} with
+          Welcome to Gamehaven, sign in with
         </Text>
-        {type === "register" && (
-          <Flex justify="center">
-            <Image
-              mt="lg"
-              mb="lg"
-              src={ghRegister}
-              alt="GH-mascot encouraging the user to register and join the family"
-              w={200}
-              radius="lg"
-            />
-          </Flex>
-        )}
-        {type === "sign in" && (
-          <Flex justify="center">
-            <Image
-              mt="lg"
-              mb="lg"
-              src={ghSignin}
-              alt="GH-mascot encouraging the user to register and join the family"
-              w={200}
-              radius="lg"
-            />
-          </Flex>
-        )}
+
+        <Flex justify="center">
+          <Image
+            mt="lg"
+            mb="lg"
+            src={ghSignin}
+            alt="GH-mascot encouraging the user to register and join the family"
+            w={200}
+            radius="lg"
+          />
+        </Flex>
 
         <form onSubmit={form.onSubmit(() => {})}>
           <Stack>
-            {type === "register" && (
-              <TextInput
-                label="Username"
-                placeholder="Your name"
-                value={form.values.name}
-                onChange={(event) =>
-                  form.setFieldValue("name", event.currentTarget.value)
-                }
-                radius="md"
-                required
-              />
-            )}
-
             <TextInput
               required
               label="Email"
               placeholder="mail@mail.com"
-              value={form.values.email}
-              onChange={(event) =>
-                form.setFieldValue("email", event.currentTarget.value)
-              }
+              // value={form.values.email}
+              onChange={(e) => setEmail(e.target.value)}
               error={form.errors.email && "Invalid email"}
               radius="md"
             />
@@ -106,10 +97,8 @@ function SigninPage() {
               required
               label="Password"
               placeholder="Your password"
-              value={form.values.password}
-              onChange={(event) =>
-                form.setFieldValue("password", event.currentTarget.value)
-              }
+              // value={form.values.password}
+              onChange={(e) => setPassword(e.target.value)}
               error={
                 form.errors.password &&
                 "Password should include at least 6 characters"
@@ -117,28 +106,21 @@ function SigninPage() {
               radius="md"
             />
 
-            {type === "register" && (
-              <Checkbox
-                label="I accept terms and conditions"
-                checked={form.values.terms}
-                onChange={(event) =>
-                  form.setFieldValue("terms", event.currentTarget.checked)
-                }
-              />
-            )}
+            <Checkbox
+              label="I accept terms and conditions"
+              checked={form.values.terms}
+              onChange={(event) =>
+                form.setFieldValue("terms", event.currentTarget.checked)
+              }
+            />
           </Stack>
 
           <Box mt="md">
-            <Anchor
-              component="button"
-              type="button"
-              onClick={() => toggle()}
-              size="sm"
-            >
-              {type === "register"
-                ? "Already a member? Sign in here."
-                : "New to Gamehaven? Sign up now."}
-            </Anchor>
+            <NavLink to={"/register"} style={{ textDecoration: "none" }}>
+              <Anchor component="button" type="button" size="sm">
+                New to Gamehaven? Register now.
+              </Anchor>
+            </NavLink>
           </Box>
 
           <Group justify="space-between" mt="xl">
@@ -147,8 +129,9 @@ function SigninPage() {
               fullWidth
               type="submit"
               radius="sm"
+              onClick={onLogin}
             >
-              {upperFirst(type)}
+              Sign in
             </Button>
           </Group>
         </form>

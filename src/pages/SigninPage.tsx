@@ -2,7 +2,6 @@ import {
   Anchor,
   Box,
   Button,
-  Checkbox,
   Container,
   Flex,
   Group,
@@ -14,48 +13,63 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { showNotification } from "@mantine/notifications";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
+import { MdOutlineError } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghSignin from "../assets/gh-signin.png";
 import "../css/SigninPage.css";
 import { auth } from "../firebase";
 
+interface FormValues {
+  email: string;
+  password: string;
+}
+
 function SigninPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     initialValues: {
       email: "",
-      name: "",
       password: "",
-      terms: true,
     },
 
     validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
+      email: (val) =>
+        /^\S+@\S+$/.test(val)
+          ? null
+          : "Make sure you are using mail@mail.com format",
       password: (val) =>
         val.length <= 6
-          ? "Password should include at least 6 characters"
+          ? "Password should include at least 7 characters"
           : null,
     },
   });
 
-  const onLogin = (e: any) => {
-    e.preventDefault();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        navigate("/");
-        console.log(user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+  const onLogin = async (values: any) => {
+    console.log(values);
+    console.log("Email:", values.email);
+    console.log("Password:", values.password);
+    const { email, password } = values;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      navigate("/");
+      console.log(user);
+    } catch (error) {
+      showNotification({
+        title: "Authentication Failed",
+        message: "Your Email or Password is incorrect! Please try again",
+        color: "red",
+        icon: <MdOutlineError />,
       });
+    }
   };
   return (
     <Container size="xs" mt="xl">
@@ -81,37 +95,32 @@ function SigninPage() {
           />
         </Flex>
 
-        <form onSubmit={form.onSubmit(() => {})}>
+        <form onSubmit={form.onSubmit(onLogin)}>
           <Stack>
             <TextInput
-              required
+              autoComplete="email"
+              withAsterisk
               label="Email"
               placeholder="mail@mail.com"
-              // value={form.values.email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={form.errors.email && "Invalid email"}
+              value={form.values.email}
+              onChange={(event) =>
+                form.setFieldValue("email", event.currentTarget.value)
+              }
+              error={form.errors.email}
               radius="md"
             />
 
             <PasswordInput
-              required
+              autoComplete="current-password"
+              withAsterisk
               label="Password"
               placeholder="Your password"
-              // value={form.values.password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={
-                form.errors.password &&
-                "Password should include at least 6 characters"
-              }
-              radius="md"
-            />
-
-            <Checkbox
-              label="I accept terms and conditions"
-              checked={form.values.terms}
+              value={form.values.password}
               onChange={(event) =>
-                form.setFieldValue("terms", event.currentTarget.checked)
+                form.setFieldValue("password", event.currentTarget.value)
               }
+              error={form.errors.password}
+              radius="md"
             />
           </Stack>
 
@@ -125,11 +134,10 @@ function SigninPage() {
 
           <Group justify="space-between" mt="xl">
             <Button
+              type="submit"
               className="signin-button-style"
               fullWidth
-              type="submit"
               radius="sm"
-              onClick={onLogin}
             >
               Sign in
             </Button>

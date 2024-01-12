@@ -14,19 +14,24 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghRegister from "../assets/gh-register.png";
 import "../css/SigninPage.css";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 
-function SigninPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+interface FormValues {
+  email: string;
+  name: string;
+  password: string;
+  terms: boolean;
+}
+
+function RegisterPage() {
   const navigate = useNavigate();
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     initialValues: {
       email: "",
       name: "",
@@ -35,30 +40,49 @@ function SigninPage() {
     },
 
     validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
+      name: (val) =>
+        val.length <= 1
+          ? "Username should include at least 2 characters"
+          : null,
+      email: (val) =>
+        /^\S+@\S+$/.test(val)
+          ? null
+          : "Make sure you are using mail@mail.com format",
       password: (val) =>
         val.length <= 6
-          ? "Password should include at least 6 characters"
+          ? "Password should include at least 7 characters"
           : null,
     },
   });
+  const onSubmit = async (values: any) => {
+    const { email, password } = values;
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-  const onSubmit = async (e: any) => {
-    e.preventDefault();
+      const displayName = values.name;
 
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
-        navigate("/signin");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+      await updateProfile(userCredential.user, { displayName });
+
+      console.log("User created: ", userCredential.user);
+
+      // Create a reference to the specific document in the 'users' collection
+      const userRef = doc(db, "users", userCredential.user.uid);
+
+      // Set the username in this document
+      await setDoc(userRef, {
+        username: values.name,
       });
-  };
+      console.log("Username saved to Firestore");
 
+      navigate("/");
+    } catch (error) {
+      console.error("Error in user registration: ", error);
+    }
+  };
   return (
     <Container size="xs" mt="xl">
       <Paper
@@ -92,29 +116,31 @@ function SigninPage() {
               onChange={(event) =>
                 form.setFieldValue("name", event.currentTarget.value)
               }
+              error={form.errors.name}
               radius="md"
             />
 
             <TextInput
-              required
               label="Email"
+              withAsterisk
               placeholder="mail@mail.com"
-              // value={form.values.email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={form.errors.email && "Invalid email"}
+              value={form.values.email}
+              onChange={(event) =>
+                form.setFieldValue("email", event.currentTarget.value)
+              }
+              error={form.errors.email}
               radius="md"
             />
 
             <PasswordInput
-              required
+              withAsterisk
               label="Password"
               placeholder="Your password"
-              // value={form.values.password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={
-                form.errors.password &&
-                "Password should include at least 6 characters"
+              value={form.values.password}
+              onChange={(event) =>
+                form.setFieldValue("password", event.currentTarget.value)
               }
+              error={form.errors.password}
               radius="md"
             />
 
@@ -152,4 +178,4 @@ function SigninPage() {
   );
 }
 
-export default SigninPage;
+export default RegisterPage;

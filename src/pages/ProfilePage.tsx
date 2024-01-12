@@ -131,6 +131,7 @@ function ProfilePage() {
                 </Button>
               </Stack>
             </form>
+            {error && <div style={{ color: "red" }}>{error}</div>}
           </Box>
         </Box>
       </Paper>

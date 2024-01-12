@@ -6,6 +6,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
+import { UsernameProvider } from "./context/UsernameContext.tsx";
 import "./css/main.css";
 import AboutPage from "./pages/AboutPage.tsx";
 import ContactPage from "./pages/ContactPage.tsx";
@@ -48,8 +49,10 @@ const theme = createTheme({
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <MantineProvider theme={theme}>
-      <Notifications limit={5} />
-      <RouterProvider router={router} />
+      <UsernameProvider>
+        <Notifications limit={5} />
+        <RouterProvider router={router} />
+      </UsernameProvider>
     </MantineProvider>
   </React.StrictMode>
 );

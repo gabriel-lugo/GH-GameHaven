@@ -41,10 +41,16 @@ function Header() {
   const [isVisible, setIsVisible] = useState(true);
   const [pastThreshold, setPastThreshold] = useState(false);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setIsUserLoggedIn(!!user);
+      if (user) {
+        setUsername(user.displayName || "");
+      } else {
+        setUsername("");
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -127,7 +133,7 @@ function Header() {
                       isActive("/profile") ? "active" : ""
                     }`}
                   >
-                    Profile
+                    {username || "Profile"}
                   </Button>
                 </Menu.Target>
                 <Menu.Dropdown>

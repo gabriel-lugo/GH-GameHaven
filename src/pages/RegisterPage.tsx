@@ -14,11 +14,12 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghRegister from "../assets/gh-register.png";
 import "../css/SigninPage.css";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 
 interface FormValues {
   email: string;
@@ -53,23 +54,35 @@ function RegisterPage() {
           : null,
     },
   });
-
   const onSubmit = async (values: any) => {
     const { email, password } = values;
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
-        navigate("/");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+      const displayName = values.name;
+
+      await updateProfile(userCredential.user, { displayName });
+
+      console.log("User created: ", userCredential.user);
+
+      // Create a reference to the specific document in the 'users' collection
+      const userRef = doc(db, "users", userCredential.user.uid);
+
+      // Set the username in this document
+      await setDoc(userRef, {
+        username: values.name,
       });
-  };
+      console.log("Username saved to Firestore");
 
+      navigate("/");
+    } catch (error) {
+      console.error("Error in user registration: ", error);
+    }
+  };
   return (
     <Container size="xs" mt="xl">
       <Paper

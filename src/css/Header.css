@@ -134,3 +134,13 @@ header {
     display: flex;
   }
 }
+
+@media (max-width: 360px) {
+  .button-color {
+    font-size: 0.8rem;
+  }
+
+  .gh-logo {
+    width: 60px;
+  }
+}

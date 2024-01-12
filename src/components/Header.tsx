@@ -138,9 +138,11 @@ function Header() {
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Label>Account</Menu.Label>
-                  <Menu.Item leftSection={<FaRegUserCircle />}>
-                    My Profile
-                  </Menu.Item>
+                  <NavLink to={"/profile"} style={{ textDecoration: "none" }}>
+                    <Menu.Item leftSection={<FaRegUserCircle />}>
+                      My Profile
+                    </Menu.Item>
+                  </NavLink>
                   <Menu.Item
                     leftSection={<CgLogOut />}
                     onClick={() => auth.signOut()}

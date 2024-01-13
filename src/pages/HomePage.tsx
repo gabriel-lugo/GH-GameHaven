@@ -1,4 +1,4 @@
-import { Title } from "@mantine/core";
+import { Container, Divider, Title } from "@mantine/core";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import {
@@ -110,10 +110,16 @@ function HomePage() {
       <Title order={2} pl={"md"} mb={"md"}>
         Top Rated Games
       </Title>
+      <Container size={"xl"}>
+        <Divider color="#262626" />
+      </Container>
       <Carousel games={topRatedGames} />
       <Title order={2} pl={"md"} mb={"md"}>
         Newest Releases
       </Title>
+      <Container size={"xl"}>
+        <Divider color="#262626" />
+      </Container>
       <Carousel games={newestGames} />
       <GhInfo />
       {/* <Container size={"xl"}>
@@ -129,6 +135,9 @@ function HomePage() {
       <Title order={2} pl={"md"} mb={"md"}>
         Upcoming Releases
       </Title>
+      <Container size={"xl"}>
+        <Divider color="#262626" />
+      </Container>
       <Carousel games={upcomingGames} />
     </>
   );

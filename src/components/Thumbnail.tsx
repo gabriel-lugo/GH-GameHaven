@@ -1,9 +1,11 @@
 import { Box, Image, Spoiler, Text, Title } from "@mantine/core";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GiCrownedHeart, GiStabbedNote } from "react-icons/gi";
 import { IoHeartOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import { BookmarkContext, GameData } from "../context/FavoritesContext";
 import "../css/Thumbnail.css";
+import { auth } from "../firebase";
 
 interface Game {
   name: string;
@@ -15,7 +17,28 @@ interface Game {
 }
 
 const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
+  const { bookmarks, addBookmark, removeBookmark } =
+    useContext(BookmarkContext);
   const [isHeartCrowned, setIsHeartCrowned] = useState(false);
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user: any) => {
+      setUserId(user ? user.uid : "");
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const isBookmarked = bookmarks.some((b) => b.id === game.id);
+    console.log(
+      "Updating heart icon for game:",
+      game.id,
+      "Is Bookmarked:",
+      isBookmarked
+    );
+    setIsHeartCrowned(isBookmarked);
+  }, [bookmarks, game.id]);
 
   const getRatingClass = (rating: number) => {
     if (rating === null || rating === undefined) {
@@ -41,9 +64,19 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
   };
 
   const handleHeartClick = () => {
+    console.log("clicked");
+    const gameData: GameData = {
+      ...game,
+      userId: userId,
+    };
+
+    if (isHeartCrowned) {
+      removeBookmark(gameData);
+    } else {
+      addBookmark({ ...game, userId });
+    }
     setIsHeartCrowned(!isHeartCrowned);
   };
-
   return (
     <Box className="thumbnail-card-container">
       <NavLink to={`/game/${game.id}`} className="game-link">

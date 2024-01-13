@@ -55,16 +55,18 @@ function FavoritesPage() {
           </Center>
         </Container>
       ) : (
-        <SimpleGrid
-          cols={{ base: 1, xs: 3, sm: 4, lg: 6 }}
-          spacing={"sm"}
-          verticalSpacing={"lg"}
-          mt="md"
-        >
-          {bookmarks.map((game) => (
-            <Thumbnail key={game.id} game={game} />
-          ))}
-        </SimpleGrid>
+        <Container size={"xl"} mb={"xl"}>
+          <SimpleGrid
+            cols={{ base: 1, xs: 3, sm: 4, lg: 6 }}
+            spacing={"xs"}
+            verticalSpacing={"lg"}
+            mt="md"
+          >
+            {bookmarks.map((game) => (
+              <Thumbnail key={game.id} game={game} />
+            ))}
+          </SimpleGrid>
+        </Container>
       )}
     </Container>
   );

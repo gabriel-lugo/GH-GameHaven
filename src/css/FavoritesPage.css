@@ -14,3 +14,10 @@
 .favorites-button:hover {
   filter: drop-shadow(0 0 2px rgba(117, 87, 6, 0.8));
 }
+
+@media (max-width: 700px) {
+  .mantine-SimpleGrid-root {
+    justify-items: center;
+    align-items: center;
+  }
+}

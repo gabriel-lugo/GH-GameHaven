@@ -17,7 +17,7 @@ export interface GameData {
   rating: number;
   total_rating: number;
   userId?: string;
-  screenshots?: string[];
+  screenshots?: Array<{ url: string }>;
   summary: string;
   artworks?: string[];
   release_dates?: Array<{ date: string }>;
@@ -78,7 +78,7 @@ export const BookmarkProvider = ({ children }: Props) => {
       const q = query(
         collection(db, "favorites"),
         where("userId", "==", bookmark.userId),
-        where("id", "==", bookmark.id.toString())
+        where("id", "==", bookmark.id)
       );
       const querySnapshot = await getDocs(q);
       console.log("Documents found for removal:", querySnapshot.docs.length);

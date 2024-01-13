@@ -10,15 +10,19 @@ import {
   Title,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaGoogle, FaWikipediaW } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
+import { GiCrownedHeart } from "react-icons/gi";
+import { IoHeartOutline } from "react-icons/io5";
 import { LuScroll } from "react-icons/lu";
 import { useParams } from "react-router-dom";
 import { getGameDetails } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
+import { BookmarkContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
+import { auth } from "../firebase";
 import { Game } from "./HomePage";
 
 interface GameDetails {
@@ -39,6 +43,8 @@ interface GameDetails {
   similar_games: Array<Game>;
   cover: string;
   screenshots: Array<{ url: string }>;
+  id: any;
+  rating: any;
 }
 
 function DetailsPage() {
@@ -51,6 +57,35 @@ function DetailsPage() {
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [showVideo, setShowVideo] = useState(true);
+  const { bookmarks, addBookmark, removeBookmark } =
+    useContext(BookmarkContext);
+
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user: any) => {
+      setUserId(user ? user.uid : "");
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const isBookmarked = bookmarks.some(
+    (bookmark) => bookmark.id === gameDetails?.id
+  );
+  const handleBookmarkClick = () => {
+    if (!gameDetails) return;
+
+    const gameData: GameData = {
+      ...gameDetails,
+      userId: userId,
+    };
+
+    if (isBookmarked) {
+      removeBookmark(gameData);
+    } else {
+      addBookmark(gameData);
+    }
+  };
 
   useEffect(() => {
     setShowVideo(true);
@@ -237,7 +272,24 @@ function DetailsPage() {
                 alt={`Cover of ${gameDetails.name}`}
                 className="game-cover-img"
               />
-              <Button className="cover-img-btn">Favorite</Button>
+              <Button
+                className="cover-img-btn"
+                onClick={handleBookmarkClick}
+                style={{
+                  backgroundColor: isBookmarked ? "#E3735E" : "#f2c341",
+                  color: isBookmarked ? "#FFF" : "#262626",
+                }}
+              >
+                {isBookmarked ? (
+                  <>
+                    <GiCrownedHeart style={{ marginRight: "8px" }} /> Unfavorite
+                  </>
+                ) : (
+                  <>
+                    <IoHeartOutline style={{ marginRight: "8px" }} /> Favorite
+                  </>
+                )}
+              </Button>
             </Box>
             <Box className="details-title">
               <Title className="title-size" pl={10} order={2}>

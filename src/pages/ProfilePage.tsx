@@ -117,6 +117,8 @@ function ProfilePage() {
           console.log("Password updated successfully!");
         }
 
+        form.setFieldValue("currentPassword", "");
+
         showNotification({
           title: "Profile updated successfully!",
           message: "Your profile has been updated successfully.",

@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Container,
-  Flex,
   Image,
   Paper,
   PasswordInput,
@@ -220,16 +219,17 @@ function ProfilePage() {
           <Box className="profile-settings-image">
             <Title order={3}>{user.displayName || "Username"}</Title>
             <Image src={profileImages[selectedProfileImage]} w={200} />
-            <Flex>
+            <Box className="profile-settings-thumbnails">
               {profileImages.map((image, index) => (
                 <Image
                   key={index}
                   src={image}
-                  w={80}
+                  w={65}
+                  className="profile-thumbnail"
                   onClick={() => handleSelectProfileImage(index)}
                 />
               ))}
-            </Flex>
+            </Box>
             <Button className="button-style" onClick={handleSaveProfileImage}>
               Save Profile Image
             </Button>

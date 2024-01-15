@@ -191,6 +191,54 @@ export const searchForGames = async (query: string, platforms: string[]) => {
   }
 };
 
+export const fetchFilteredGames = async (
+  platforms: Array<{ name: string }> = [],
+  genres: Array<{ name: string }> = [],
+  gameModes: Array<{ name: string }> = [],
+  limit: number = 40
+) => {
+  const platformIdsArray = platforms
+    .map(platform => platformIds[platform.name.toLowerCase()])
+    .filter(id => id !== undefined);
+  const genreNamesArray = genres.map(genre => genre.name);
+  const gameModeNamesArray = gameModes.map(gameMode => gameMode.name);
+
+  let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name; limit ${limit};`;
+
+  if (platformIdsArray.length > 0) {
+    query += ` where platforms = (${platformIdsArray.join(',')})`;
+  }
+
+  if (genreNamesArray.length > 0) {
+    query += ` & genres = [${genreNamesArray.map(name => `"${name}"`).join(',')}]`;
+  }
+
+  if (gameModeNamesArray.length > 0) {
+    query += ` & game_modes = [${gameModeNamesArray.map(name => `"${name}"`).join(',')}]`;
+  }
+
+  query += ';';
+
+  try {
+    const response = await axiosClient.post('games/', query);
+    const data = response.data;
+    
+      const processedGames = data.map((game: any) => {
+        return {
+            ...game,
+            cover: game.cover ? getGameCoverUrl(game.cover.image_id) : "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6",
+            total_rating: game.total_rating !== undefined ? game.total_rating : null
+        };
+    });
+      console.log("Genres", processedGames);
+      return processedGames;
+      
+    } catch (error) {
+    console.error('Error fetching filtered games:', error);
+    throw error;
+    }
+    };
+
 export const getGameDetails = async (query: number, platform: string) => {
   // Generate a unique cache key
   const cacheKey = `getGameDetails-${query}-${platform}`;

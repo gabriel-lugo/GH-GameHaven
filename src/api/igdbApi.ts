@@ -204,8 +204,17 @@ export const fetchFilteredGames = async (
   platforms: Array<{ name: string }> = [],
   genres: Array<{ name: string }> = [],
   gameModes: Array<{ name: string }> = [],
-  limit: number = 40
+  limit: number = 42
 ) => {
+
+  const cacheKey = `fetchFilteredGames-${platforms.map(p => p.name).join(',')}-${genres.map(g => g.name).join(',')}-${gameModes.map(gm => gm.name).join(',')}-${limit}`;
+
+  const cachedData = sessionStorage.getItem(cacheKey);
+  if (cachedData) {
+    console.log("Using cached data for fetchFilteredGames:", cacheKey);
+    return JSON.parse(cachedData);
+  }
+
   const platformIdsArray = platforms
     .map(platform => platformIds[platform.name.toLowerCase()])
     .filter(id => id !== undefined);
@@ -238,6 +247,12 @@ export const fetchFilteredGames = async (
         };
     });
       console.log("Genres", processedGames);
+
+      try {
+        sessionStorage.setItem(cacheKey, JSON.stringify(processedGames));
+      } catch (e) {
+        console.error("Error during caching:", e);
+      }
       return processedGames;
       
     } catch (error) {

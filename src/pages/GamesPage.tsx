@@ -2,13 +2,16 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Group,
   SimpleGrid,
+  Text,
   Title,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { fetchFilteredGames } from "../api/igdbApi";
 import Thumbnail from "../components/Thumbnail";
+import "../css/GamesPage.css";
 
 function GamesPage() {
   const [selectedPlatform, setSelectedPlatform] = useState<string>("pc");
@@ -67,9 +70,11 @@ function GamesPage() {
     }
   };
   return (
-    <Container size="xl">
+    <Container mb={"xl"} className="games-buttons" size="xl">
       <Box>
-        <Title order={5}>Platform:</Title>
+        <Title mb={"sm"} mt={"sm"} order={5}>
+          Platform:
+        </Title>
         <Group>
           {[
             "pc",
@@ -82,6 +87,7 @@ function GamesPage() {
             "gcn",
           ].map((platform) => (
             <Button
+              color="#f2c341"
               key={platform}
               onClick={() => handlePlatformSelect(platform)}
               variant={
@@ -94,10 +100,13 @@ function GamesPage() {
         </Group>
       </Box>
       <Box>
-        <Title order={5}>Genre:</Title>
+        <Title mb={"sm"} mt={"sm"} order={5}>
+          Genre:
+        </Title>
         <Group>
           {["Adventure", "RPG", "Strategy"].map((genre) => (
             <Button
+              color="#f2c341"
               key={genre}
               onClick={() => handleGenreSelect(genre)}
               variant={isActiveButton("genre", genre) ? "filled" : "outline"}
@@ -109,10 +118,14 @@ function GamesPage() {
       </Box>
 
       <Box>
-        <Title order={5}>Game Mode:</Title>
+        <Title mb={"sm"} mt={"sm"} order={5}>
+          Game Mode:
+        </Title>
         <Group>
           {["Singleplayer", "Multiplayer", "Coop"].map((gameMode) => (
             <Button
+              autoContrast
+              color="#f2c341"
               key={gameMode}
               onClick={() => handleGameModeSelect(gameMode)}
               variant={
@@ -125,11 +138,18 @@ function GamesPage() {
         </Group>
       </Box>
 
-      <Title ta="center" order={3}>
-        Selected Platform: {selectedPlatform || "None"} | Selected Genre:
-        {selectedGenre || "None"} | Selected Game Mode:
-        {selectedGameMode || "None"}
+      <Title mt={"lg"} ta="center" order={3}>
+        {selectedPlatform.toUpperCase() || "None"}
       </Title>
+      <Text size="lg" ta="center">
+        {selectedGenre || "None"}
+      </Text>
+      <Text size="lg" ta="center">
+        {selectedGameMode || "None"}
+      </Text>
+      <Container mt={"md"} size={"xl"}>
+        <Divider color="#262626" />
+      </Container>
       <div>
         <SimpleGrid
           cols={{ base: 1, xs: 3, sm: 4, lg: 6 }}

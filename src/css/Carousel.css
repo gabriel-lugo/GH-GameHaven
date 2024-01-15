@@ -1,6 +1,6 @@
 .carousel-container {
   margin-bottom: 1rem;
-  border-top: 1px solid var(--nav-text-color);
+  /* border-top: 1px solid var(--nav-text-color); */
 }
 
 .carousel-container .swiper-slide {

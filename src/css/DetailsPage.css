@@ -54,6 +54,7 @@
   z-index: 5;
   background-color: var(--button-primary-background-color);
   color: var(--body-text-color);
+  transition: 0.3s ease;
 }
 
 .cover-img-btn:hover {

@@ -5,7 +5,6 @@ import {
   Group,
   Image,
   Paper,
-  SimpleGrid,
   Text,
   TextInput,
   Textarea,
@@ -35,7 +34,7 @@ function ContactPage() {
   });
 
   return (
-    <Container mt="xl">
+    <Container style={{ marginTop: "10rem", marginBottom: "5rem" }}>
       <Paper shadow="md" radius="lg">
         <Box className="wrapper">
           <Box className="contacts">
@@ -78,19 +77,18 @@ function ContactPage() {
             </Text>
 
             <Box className="fields">
-              <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                <TextInput
-                  label="Your name"
-                  placeholder="Your name"
-                  {...form.getInputProps("name")}
-                />
-                <TextInput
-                  required
-                  label="Your email"
-                  placeholder="your@mail.com"
-                  {...form.getInputProps("email")}
-                />
-              </SimpleGrid>
+              <TextInput
+                label="Your name"
+                placeholder="Your name"
+                {...form.getInputProps("name")}
+              />
+              <TextInput
+                mt={"md"}
+                required
+                label="Your email"
+                placeholder="your@mail.com"
+                {...form.getInputProps("email")}
+              />
 
               <TextInput
                 mt="md"

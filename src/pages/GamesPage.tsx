@@ -11,8 +11,10 @@ import { fetchFilteredGames } from "../api/igdbApi";
 import Thumbnail from "../components/Thumbnail";
 
 function GamesPage() {
-  const [selectedPlatform, setSelectedPlatform] = useState<any>("");
-  const [selectedGenre, setSelectedGenre] = useState<any>("");
+  const [selectedPlatform, setSelectedPlatform] = useState<string>("pc");
+  const [selectedGenre, setSelectedGenre] = useState<string>("Adventure");
+  const [selectedGameMode, setSelectedGameMode] =
+    useState<string>("Singleplayer");
   const [games, setGames] = useState<any[]>([]);
 
   useEffect(() => {
@@ -22,15 +24,20 @@ function GamesPage() {
         : [];
       const genreFilter = selectedGenre ? [{ name: selectedGenre }] : [];
 
+      const gameModeFilter = selectedGameMode
+        ? [{ name: selectedGameMode }]
+        : [];
+
       const filteredGames = await fetchFilteredGames(
         platformFilter,
-        genreFilter
+        genreFilter,
+        gameModeFilter
       );
       setGames(filteredGames);
     };
 
     fetchGames();
-  }, [selectedPlatform, selectedGenre]);
+  }, [selectedPlatform, selectedGenre, selectedGameMode]);
 
   const handleGenreSelect = (genre: string) => {
     setSelectedGenre(genre);
@@ -40,12 +47,25 @@ function GamesPage() {
     setSelectedPlatform(platform);
   };
 
-  const isActiveButton = (buttonType: "platform" | "genre", value: string) => {
-    return (
-      (buttonType === "platform" ? selectedPlatform : selectedGenre) === value
-    );
+  const handleGameModeSelect = (gameMode: string) => {
+    setSelectedGameMode(gameMode);
   };
 
+  const isActiveButton = (
+    buttonType: "platform" | "genre" | "gameMode",
+    value: string
+  ) => {
+    switch (buttonType) {
+      case "platform":
+        return selectedPlatform === value;
+      case "genre":
+        return selectedGenre === value;
+      case "gameMode":
+        return selectedGameMode === value;
+      default:
+        return false;
+    }
+  };
   return (
     <Container size="xl">
       <Box>
@@ -88,10 +108,27 @@ function GamesPage() {
         </Group>
       </Box>
 
+      <Box>
+        <Title order={5}>Game Mode:</Title>
+        <Group>
+          {["Singleplayer", "Multiplayer", "Coop"].map((gameMode) => (
+            <Button
+              key={gameMode}
+              onClick={() => handleGameModeSelect(gameMode)}
+              variant={
+                isActiveButton("gameMode", gameMode) ? "filled" : "outline"
+              }
+            >
+              {gameMode}
+            </Button>
+          ))}
+        </Group>
+      </Box>
+
       <Title ta="center" order={3}>
-        {" "}
-        Selected Platform: {selectedPlatform || "None"} | Selected Genre:{" "}
-        {selectedGenre || "None"}
+        Selected Platform: {selectedPlatform || "None"} | Selected Genre:
+        {selectedGenre || "None"} | Selected Game Mode:
+        {selectedGameMode || "None"}
       </Title>
       <div>
         <SimpleGrid

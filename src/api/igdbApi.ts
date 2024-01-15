@@ -19,10 +19,11 @@ const genreNameToId: { [key: string]: number } = {
   Strategy: 15,
 };
 
-
-// release_dates
-// game_videos
-// screenshots
+const gameModeNameToId: { [key: string]: number } = {
+ Singleplayer: 1,
+ Multiplayer: 2,
+ Coop: 3
+};
 
 const defaultMinRating = 85;
 const defaultMinRatingCount = 20;
@@ -209,7 +210,7 @@ export const fetchFilteredGames = async (
     .map(platform => platformIds[platform.name.toLowerCase()])
     .filter(id => id !== undefined);
     const genreIdsArray = genres.map(genre => genreNameToId[genre.name]);
-  const gameModeNamesArray = gameModes.map(gameMode => gameMode.name);
+    const gameModeIdsArray = gameModes.map(gameMode => gameModeNameToId[gameMode.name]);
 
   let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name; limit ${limit};`;
 
@@ -220,10 +221,9 @@ export const fetchFilteredGames = async (
   if (genreIdsArray.length > 0) {
     query += ` & genres = [${genreIdsArray.join(',')}]`;
   }
-  if (gameModeNamesArray.length > 0) {
-    query += ` & game_modes = [${gameModeNamesArray.map(name => `"${name}"`).join(',')}]`;
+  if (gameModeIdsArray.length > 0) {
+    query += ` & game_modes = [${gameModeIdsArray.join(',')}]`;
   }
-
   query += ';';
 
   try {

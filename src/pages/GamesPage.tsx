@@ -1,4 +1,11 @@
-import { Button, Container, Group, SimpleGrid, Title } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Container,
+  Group,
+  SimpleGrid,
+  Title,
+} from "@mantine/core";
 import { useEffect, useState } from "react";
 import { fetchFilteredGames } from "../api/igdbApi";
 import Thumbnail from "../components/Thumbnail";
@@ -8,23 +15,12 @@ function GamesPage() {
   const [selectedGenre, setSelectedGenre] = useState<any>("");
   const [games, setGames] = useState<any[]>([]);
 
-  type Genre = "Adventure" | "RPG" | "Indie" | "Strategy";
-
-  const genreNameToId: { [key in Genre]: number } = {
-    Adventure: 31,
-    RPG: 12,
-    Indie: 32,
-    Strategy: 15,
-  };
-
   useEffect(() => {
     const fetchGames = async () => {
       const platformFilter = selectedPlatform
         ? [{ name: selectedPlatform }]
         : [];
-      const genreFilter = selectedGenre
-        ? [{ id: genreNameToId[selectedGenre as Genre], name: selectedGenre }]
-        : [];
+      const genreFilter = selectedGenre ? [{ name: selectedGenre }] : [];
 
       const filteredGames = await fetchFilteredGames(
         platformFilter,
@@ -36,7 +32,7 @@ function GamesPage() {
     fetchGames();
   }, [selectedPlatform, selectedGenre]);
 
-  const handleGenreSelect = (genre: Genre) => {
+  const handleGenreSelect = (genre: string) => {
     setSelectedGenre(genre);
   };
 
@@ -44,40 +40,59 @@ function GamesPage() {
     setSelectedPlatform(platform);
   };
 
+  const isActiveButton = (buttonType: "platform" | "genre", value: string) => {
+    return (
+      (buttonType === "platform" ? selectedPlatform : selectedGenre) === value
+    );
+  };
+
   return (
     <Container size="xl">
-      <Group>
+      <Box>
         <Title order={5}>Platform:</Title>
-        <Button onClick={() => handlePlatformSelect("pc")}>PC</Button>
-        <Button onClick={() => handlePlatformSelect("playstation")}>
-          PlayStation
-        </Button>
-        <Button onClick={() => handlePlatformSelect("xbox")}>Xbox</Button>
-        <Button onClick={() => handlePlatformSelect("nintendo")}>
-          Nintendo Switch
-        </Button>
-        <Button onClick={() => handlePlatformSelect("n64")}>Nintendo 64</Button>
-        <Button onClick={() => handlePlatformSelect("nes")}>
-          Nintendo Entertainment System
-        </Button>
-        <Button onClick={() => handlePlatformSelect("snes")}>
-          Super Nintendo Entertainment System
-        </Button>
-        <Button onClick={() => handlePlatformSelect("gcn")}>
-          Nintendo Gamecube
-        </Button>
-      </Group>
-
-      <Group>
+        <Group>
+          {[
+            "pc",
+            "playstation",
+            "xbox",
+            "nintendo",
+            "n64",
+            "nes",
+            "snes",
+            "gcn",
+          ].map((platform) => (
+            <Button
+              key={platform}
+              onClick={() => handlePlatformSelect(platform)}
+              variant={
+                isActiveButton("platform", platform) ? "filled" : "outline"
+              }
+            >
+              {platform.charAt(0).toUpperCase() + platform.slice(1)}
+            </Button>
+          ))}
+        </Group>
+      </Box>
+      <Box>
         <Title order={5}>Genre:</Title>
-        <Button onClick={() => handleGenreSelect("Adventure")}>
-          Adventure
-        </Button>
-        <Button onClick={() => handleGenreSelect("RPG")}>RPG</Button>
-        <Button onClick={() => handleGenreSelect("Strategy")}>Strategy</Button>
-      </Group>
+        <Group>
+          {["Adventure", "RPG", "Strategy"].map((genre) => (
+            <Button
+              key={genre}
+              onClick={() => handleGenreSelect(genre)}
+              variant={isActiveButton("genre", genre) ? "filled" : "outline"}
+            >
+              {genre}
+            </Button>
+          ))}
+        </Group>
+      </Box>
 
-      <Title order={2}>Games</Title>
+      <Title ta="center" order={3}>
+        {" "}
+        Selected Platform: {selectedPlatform || "None"} | Selected Genre:{" "}
+        {selectedGenre || "None"}
+      </Title>
       <div>
         <SimpleGrid
           cols={{ base: 1, xs: 3, sm: 4, lg: 6 }}

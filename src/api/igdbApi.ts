@@ -12,6 +12,14 @@ const platformIds: { [key: string]: number } = {
   // Add more platforms as needed
 };
 
+const genreNameToId: { [key: string]: number } = {
+  Adventure: 31,
+  RPG: 12,
+  Indie: 32,
+  Strategy: 15,
+};
+
+
 // release_dates
 // game_videos
 // screenshots
@@ -200,7 +208,7 @@ export const fetchFilteredGames = async (
   const platformIdsArray = platforms
     .map(platform => platformIds[platform.name.toLowerCase()])
     .filter(id => id !== undefined);
-  const genreNamesArray = genres.map(genre => genre.name);
+    const genreIdsArray = genres.map(genre => genreNameToId[genre.name]);
   const gameModeNamesArray = gameModes.map(gameMode => gameMode.name);
 
   let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name; limit ${limit};`;
@@ -209,10 +217,9 @@ export const fetchFilteredGames = async (
     query += ` where platforms = (${platformIdsArray.join(',')})`;
   }
 
-  if (genreNamesArray.length > 0) {
-    query += ` & genres = [${genreNamesArray.map(name => `"${name}"`).join(',')}]`;
+  if (genreIdsArray.length > 0) {
+    query += ` & genres = [${genreIdsArray.join(',')}]`;
   }
-
   if (gameModeNamesArray.length > 0) {
     query += ` & game_modes = [${gameModeNamesArray.map(name => `"${name}"`).join(',')}]`;
   }

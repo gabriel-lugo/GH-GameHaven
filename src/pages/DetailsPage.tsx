@@ -10,12 +10,14 @@ import {
   Title,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
 import { useContext, useEffect, useState } from "react";
 import { FaGoogle, FaWikipediaW } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import { GiCrownedHeart } from "react-icons/gi";
 import { IoHeartOutline } from "react-icons/io5";
 import { LuScroll } from "react-icons/lu";
+import { MdOutlineError } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import { getGameDetails } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
@@ -24,8 +26,6 @@ import { BookmarkContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
 import { auth } from "../firebase";
 import { Game } from "./HomePage";
-import { showNotification } from "@mantine/notifications";
-import { MdOutlineError } from "react-icons/md";
 
 interface GameDetails {
   name: string;
@@ -504,16 +504,22 @@ function DetailsPage() {
           </Box>
           {gameDetails.similar_games && gameDetails.similar_games.length > 0 ? (
             <Box>
-              <Title pl={10} mt="md" order={4}>
+              <Title pl={10} mt="md" mb={"md"} order={4}>
                 You might also like
               </Title>
+              <Container size={"xl"}>
+                <Divider color="#262626" />
+              </Container>
               <Carousel games={gameDetails.similar_games} />
             </Box>
           ) : (
             <Box>
-              <Title pl={10} order={4} mt={"lg"}>
+              <Title pl={10} order={4} mb={"md"} mt={"lg"}>
                 You might also like
               </Title>
+              <Container size={"xl"}>
+                <Divider color="#262626" />
+              </Container>
               <Text pl={10} mb={"lg"}>
                 No Similar Games Available
               </Text>

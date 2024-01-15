@@ -72,12 +72,11 @@ function RegisterPage() {
       // Create a reference to the specific document in the 'users' collection
       const userRef = doc(db, "users", userCredential.user.uid);
 
-      // Set the username in this document
       await setDoc(userRef, {
         username: values.name,
+        profileImageId: "1",
+        favorites: [],
       });
-      console.log("Username saved to Firestore");
-
       navigate("/");
     } catch (error) {
       console.error("Error in user registration: ", error);

@@ -6,6 +6,8 @@ import { NavLink } from "react-router-dom";
 import { BookmarkContext, GameData } from "../context/FavoritesContext";
 import "../css/Thumbnail.css";
 import { auth } from "../firebase";
+import { showNotification } from "@mantine/notifications";
+import { MdOutlineError } from "react-icons/md";
 
 interface Game {
   name: string;
@@ -31,12 +33,6 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
 
   useEffect(() => {
     const isBookmarked = bookmarks.some((b) => b.id === game.id);
-    console.log(
-      "Updating heart icon for game:",
-      game.id,
-      "Is Bookmarked:",
-      isBookmarked
-    );
     setIsHeartCrowned(isBookmarked);
   }, [bookmarks, game.id]);
 
@@ -70,12 +66,21 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
       userId: userId,
     };
 
-    if (isHeartCrowned) {
-      removeBookmark(gameData);
+    if (userId) {
+      if (isHeartCrowned) {
+        removeBookmark(gameData);
+      } else {
+        addBookmark({ ...game, userId });
+      }
+      setIsHeartCrowned(!isHeartCrowned);
     } else {
-      addBookmark({ ...game, userId });
+      showNotification({
+        title: "Sign In Needed",
+        message: "You need to sign in to favorite a game",
+        color: "red",
+        icon: <MdOutlineError />,
+      });
     }
-    setIsHeartCrowned(!isHeartCrowned);
   };
   return (
     <Box className="thumbnail-card-container">

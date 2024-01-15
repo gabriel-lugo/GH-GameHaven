@@ -24,6 +24,8 @@ import { BookmarkContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
 import { auth } from "../firebase";
 import { Game } from "./HomePage";
+import { showNotification } from "@mantine/notifications";
+import { MdOutlineError } from "react-icons/md";
 
 interface GameDetails {
   name: string;
@@ -72,6 +74,7 @@ function DetailsPage() {
   const isBookmarked = bookmarks.some(
     (bookmark) => bookmark.id === gameDetails?.id
   );
+
   const handleBookmarkClick = () => {
     if (!gameDetails) return;
 
@@ -80,10 +83,19 @@ function DetailsPage() {
       userId: userId,
     };
 
-    if (isBookmarked) {
-      removeBookmark(gameData);
+    if (userId) {
+      if (isBookmarked) {
+        removeBookmark(gameData);
+      } else {
+        addBookmark(gameData);
+      }
     } else {
-      addBookmark(gameData);
+      showNotification({
+        title: "Sign In Needed",
+        message: "You need to sign in to favorite a game",
+        color: "red",
+        icon: <MdOutlineError />,
+      });
     }
   };
 

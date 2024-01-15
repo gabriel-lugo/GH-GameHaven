@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   Image,
   Paper,
   PasswordInput,
@@ -18,12 +19,15 @@ import {
   updatePassword,
   updateProfile,
 } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { MdOutlineError, MdThumbUp } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import logo from "../assets/GH-logo.png";
+import profile1thumb from "../assets/profile1thumb.jpg";
 import "../css/ProfilePage.css";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import profile2thumb from "./../assets/profile2thumb.jpg";
 
 interface FormValues {
   email: string;
@@ -35,14 +39,15 @@ interface FormValues {
 function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [formValues, setFormValues] = useState<FormValues>({
+    email: "",
+    name: "",
+    newPassword: "",
+    currentPassword: "",
+  });
 
   const form = useForm<FormValues>({
-    initialValues: {
-      email: "",
-      name: "",
-      newPassword: "",
-      currentPassword: "",
-    },
+    initialValues: formValues,
 
     validate: {
       name: (val) =>
@@ -62,12 +67,16 @@ function ProfilePage() {
     const unsubscribe = auth.onAuthStateChanged((authUser: User | null) => {
       setUser(authUser);
       if (authUser && authUser.displayName) {
-        form.values.name = authUser.displayName;
+        setFormValues({
+          email: authUser.email || "",
+          name: authUser.displayName,
+          newPassword: "",
+          currentPassword: "",
+        });
       }
     });
-
     return () => unsubscribe();
-  }, [form]);
+  }, []);
 
   const handleSaveChanges = async () => {
     setError(null);
@@ -88,9 +97,19 @@ function ProfilePage() {
         await reauthenticateWithCredential(user, credential);
 
         console.log("Reauthentication successful. Updating profile...");
+
         await updateProfile(user, {
           displayName: form.values.name || user.displayName,
         });
+
+        console.log("Updated display name:", form.values.name);
+
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          username: form.values.name,
+        });
+
+        console.log("Updated username:", form.values.name);
 
         if (form.values.newPassword) {
           console.log("Updating password...");
@@ -151,6 +170,11 @@ function ProfilePage() {
           <Box className="profile-settings-image">
             <Title order={3}>{user.displayName || "Username"}</Title>
             <Image src={logo} w={200} />
+            <Flex>
+              <Image src={logo} w={102} />
+              <Image src={profile1thumb} w={102} />
+              <Image src={profile2thumb} w={102} />
+            </Flex>
             <Button className="button-style">Change Profile Image</Button>
           </Box>
           <Box className="profile-settings-form">
@@ -159,7 +183,7 @@ function ProfilePage() {
                 <TextInput label="Email" value={user?.email || ""} disabled />
                 <TextInput
                   label="Username"
-                  placeholder="Your name"
+                  placeholder={user?.displayName || "Your name"}
                   value={form.values.name}
                   onChange={(event) =>
                     form.setFieldValue("name", event.currentTarget.value)
@@ -167,6 +191,7 @@ function ProfilePage() {
                   error={form.errors.name}
                   radius="md"
                 />
+
                 <PasswordInput
                   label="New Password"
                   placeholder="●●●●●●●●●●"
@@ -180,6 +205,7 @@ function ProfilePage() {
                 <PasswordInput
                   label="Current Password"
                   placeholder="●●●●●●●●●●"
+                  required
                   value={form.values.currentPassword}
                   onChange={(event) =>
                     form.setFieldValue(

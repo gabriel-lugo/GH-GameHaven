@@ -43,7 +43,6 @@ function ProfilePage() {
 
   const form = useForm<FormValues>({
     initialValues: {
-      // email: "",
       name: "",
       newPassword: "",
       currentPassword: "",
@@ -51,7 +50,7 @@ function ProfilePage() {
 
     validate: {
       name: (val) =>
-        val.length <= 1
+        val && val.length <= 1
           ? "Username should include at least 2 characters"
           : null,
       newPassword: (val) => {
@@ -111,23 +110,21 @@ function ProfilePage() {
 
         console.log("Reauthentication successful. Updating profile...");
 
-        if (form.values.name.length < 2) {
-          return;
+        if (form.values.name && form.values.name.length >= 2) {
+          await updateProfile(user, {
+            displayName: form.values.name,
+          });
+
+          const userRef = doc(db, "users", user.uid);
+          await updateDoc(userRef, {
+            username: form.values.name,
+          });
+
+          console.log(
+            "Updated display name and Firestore document:",
+            form.values.name
+          );
         }
-
-        await updateProfile(user, {
-          displayName: form.values.name,
-        });
-
-        const userRef = doc(db, "users", user.uid);
-        await updateDoc(userRef, {
-          username: form.values.name,
-        });
-
-        console.log(
-          "Updated display name and Firestore document:",
-          form.values.name
-        );
 
         if (form.values.newPassword) {
           console.log("Updating password...");

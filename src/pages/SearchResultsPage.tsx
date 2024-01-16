@@ -1,4 +1,12 @@
-import { Box, Divider, Image, Paper, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Divider,
+  Image,
+  Pagination,
+  Paper,
+  Text,
+  Title,
+} from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { searchForGames } from "../api/igdbApi";
@@ -8,25 +16,35 @@ import { Game } from "./HomePage";
 function SearchResultsPage() {
   const { query } = useParams();
   const [searchResults, setSearchResults] = useState<Game[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleGameSelect = () => {
     setSearchResults([]);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   useEffect(() => {
     const fetchSearchResults = async () => {
       if (query) {
         try {
-          const results = await searchForGames(query, [
-            "playstation",
-            "xbox",
-            "pc",
-            "nintendo",
-            "n64",
-            "nes",
-            "snes",
-            "gcn",
-          ]);
+          const results = await searchForGames(
+            query,
+            [
+              "playstation",
+              "xbox",
+              "pc",
+              "nintendo",
+              "n64",
+              "nes",
+              "snes",
+              "gcn",
+            ],
+            currentPage
+          );
           setSearchResults(results);
         } catch (error) {
           console.error("Error fetching search results:", error);
@@ -35,7 +53,7 @@ function SearchResultsPage() {
     };
 
     fetchSearchResults();
-  }, [query]);
+  }, [query, currentPage]);
 
   function convertTimestampToDate(timestamp: any) {
     const date = new Date(timestamp * 1000);
@@ -48,7 +66,7 @@ function SearchResultsPage() {
 
   return (
     <Box>
-      <Title pl={10} mt="md" mb="md" order={2}>
+      <Title pl={10} mt="md" mb="md" order={3}>
         Search Results for: {query}
       </Title>
       {searchResults.length > 0 ? (
@@ -98,6 +116,22 @@ function SearchResultsPage() {
               {index < searchResults.length - 1 && <Divider my="sm" />}
             </React.Fragment>
           ))}
+          <Box
+            mt={"lg"}
+            mb={"xl"}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Pagination
+              color="#f2c341"
+              value={currentPage}
+              onChange={handlePageChange}
+              total={2}
+            />
+          </Box>
         </Paper>
       ) : (
         <Text pl={10}>No results found</Text>

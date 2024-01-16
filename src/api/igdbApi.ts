@@ -139,9 +139,9 @@ const fetchSimilarGamesCoversAndScreenshots = async (
   return Promise.all(promises);
 };
 
-export const searchForGames = async (query: string, platforms: string[]) => {
-  // Generate a unique cache key based on query and platforms
-  const cacheKey = `searchForGames-${query}-${platforms.join("-")}`;
+export const searchForGames = async (query: string, platforms: string[], currentPage = 1, limit = 20) => {
+  // Generate a unique cache key based on query, platforms, current page, and limit
+  const cacheKey = `searchForGames-${query}-${platforms.join("-")}-${currentPage}-${limit}`;
   const cachedData = sessionStorage.getItem(cacheKey);
 
   // Use cached data if available
@@ -163,8 +163,10 @@ export const searchForGames = async (query: string, platforms: string[]) => {
     })
     .join(",");
 
+  const offset = (currentPage - 1) * limit;
+
   const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, cover.image_id, involved_companies.company.name, game_modes.name, artworks.*, screenshots.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*, similar_games.cover.image_id; 
-  search "${query}"; where platforms = (${platformIdsArray});`;
+  search "${query}"; where platforms = (${platformIdsArray}); limit ${limit}; offset ${offset};`;
 
   try {
     const response = await axiosClient.post(url, requestBody);
@@ -186,10 +188,8 @@ export const searchForGames = async (query: string, platforms: string[]) => {
         e.code === DOMException.QUOTA_EXCEEDED_ERR
       ) {
         console.warn("Session storage is full, unable to cache the results");
-        // Log the warning but continue with the function
       } else {
         console.error("Error during caching:", e);
-        // Log other errors that may occur during caching
       }
     }
 

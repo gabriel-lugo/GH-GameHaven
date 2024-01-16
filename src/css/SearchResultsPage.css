@@ -1,3 +1,7 @@
 .text-underline-hover:hover {
   text-decoration: underline;
 }
+
+.mantine-Pagination-control {
+  color: var(--heading-color);
+}

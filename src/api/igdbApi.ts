@@ -4,7 +4,7 @@ const platformIds: { [key: string]: number } = {
   pc: 6, // Platform ID for PC
   playstation: 48, // Platform ID for PlayStation
   xbox: 49, // Platform ID for Xbox
-  nintendo: 130,
+  "nintendo switch": 130,
   n64: 4,
   nes: 18,
   snes: 19,
@@ -17,6 +17,8 @@ const genreNameToId: { [key: string]: number } = {
   RPG: 12,
   Indie: 32,
   Strategy: 15,
+  Platform: 8,
+  Arcade: 33,
 };
 
 const gameModeNameToId: { [key: string]: number } = {
@@ -204,10 +206,11 @@ export const fetchFilteredGames = async (
   platforms: Array<{ name: string }> = [],
   genres: Array<{ name: string }> = [],
   gameModes: Array<{ name: string }> = [],
+  currentPage: number = 1,
   limit: number = 42
 ) => {
 
-  const cacheKey = `fetchFilteredGames-${platforms.map(p => p.name).join(',')}-${genres.map(g => g.name).join(',')}-${gameModes.map(gm => gm.name).join(',')}-${limit}`;
+  const cacheKey = `fetchFilteredGames-${platforms.map(p => p.name).join(',')}-${genres.map(g => g.name).join(',')}-${gameModes.map(gm => gm.name).join(',')}-${currentPage}-${limit}`;
 
   const cachedData = sessionStorage.getItem(cacheKey);
   if (cachedData) {
@@ -221,7 +224,9 @@ export const fetchFilteredGames = async (
     const genreIdsArray = genres.map(genre => genreNameToId[genre.name]);
     const gameModeIdsArray = gameModes.map(gameMode => gameModeNameToId[gameMode.name]);
 
-  let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name; limit ${limit};`;
+  const offset = (currentPage - 1) * limit;
+
+  let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name; limit ${limit}; offset ${offset};`;
 
   if (platformIdsArray.length > 0) {
     query += ` where platforms = (${platformIdsArray.join(',')})`;
@@ -234,6 +239,7 @@ export const fetchFilteredGames = async (
     query += ` & game_modes = [${gameModeIdsArray.join(',')}]`;
   }
   query += ';';
+
 
   try {
     const response = await axiosClient.post('games/', query);
@@ -251,7 +257,14 @@ export const fetchFilteredGames = async (
       try {
         sessionStorage.setItem(cacheKey, JSON.stringify(processedGames));
       } catch (e) {
-        console.error("Error during caching:", e);
+        if (
+          e instanceof DOMException &&
+          e.code === DOMException.QUOTA_EXCEEDED_ERR
+        ) {
+          console.warn("Session storage is full, unable to cache the results");
+        } else {
+          console.error("Error during caching:", e);
+        }
       }
       return processedGames;
       

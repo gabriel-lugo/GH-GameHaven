@@ -61,7 +61,7 @@ function Search() {
           "playstation",
           "xbox",
           "pc",
-          "nintendo",
+          "nintendo Switch",
           "n64",
           "nes",
           "snes",

@@ -10,6 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { searchForGames } from "../api/igdbApi";
+import nogames from "../assets/no-games-available.png";
 import "../css/SearchResultsPage.css";
 import { Game } from "./HomePage";
 
@@ -37,7 +38,7 @@ function SearchResultsPage() {
               "playstation",
               "xbox",
               "pc",
-              "nintendo",
+              "nintendo Switch",
               "n64",
               "nes",
               "snes",
@@ -129,12 +130,31 @@ function SearchResultsPage() {
               color="#f2c341"
               value={currentPage}
               onChange={handlePageChange}
-              total={2}
+              total={4}
             />
           </Box>
         </Paper>
       ) : (
-        <Text pl={10}>No results found</Text>
+        <>
+          <Text fw={"500"} size="xl" ta="center" mt="lg">
+            No more games available for this search.
+          </Text>
+          <Box
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Image
+              ta="center"
+              mt="lg"
+              maw={500}
+              src={nogames}
+              alt="No more games available for this search"
+            />
+          </Box>
+        </>
       )}
     </Box>
   );

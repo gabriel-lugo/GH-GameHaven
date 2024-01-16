@@ -29,6 +29,10 @@ function SearchResultsPage() {
   };
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [query]);
+
+  useEffect(() => {
     const fetchSearchResults = async () => {
       if (query) {
         try {

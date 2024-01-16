@@ -15,11 +15,14 @@ import {
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { useContext } from "react";
 import { MdOutlineError } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghSignin from "../assets/gh-signin.png";
+import { UserContext } from "../context/UserContext";
 import "../css/SigninPage.css";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 
 interface FormValues {
   email: string;
@@ -28,6 +31,7 @@ interface FormValues {
 
 function SigninPage() {
   const navigate = useNavigate();
+  const { updateUser } = useContext(UserContext);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -60,6 +64,18 @@ function SigninPage() {
         password
       );
       const user = userCredential.user;
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnapshot = await getDoc(userRef);
+      const userData = userSnapshot.data();
+
+      updateUser({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "",
+        profileImage: userData?.profileImageId || "",
+      });
+
       navigate("/");
       console.log(user);
     } catch (error) {

@@ -16,8 +16,10 @@ import {
 import { useForm } from "@mantine/form";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghRegister from "../assets/gh-register.png";
+import { UserContext } from "../context/UserContext";
 import "../css/SigninPage.css";
 import { auth, db } from "../firebase";
 
@@ -30,6 +32,7 @@ interface FormValues {
 
 function RegisterPage() {
   const navigate = useNavigate();
+  const { updateUser } = useContext(UserContext);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -77,6 +80,14 @@ function RegisterPage() {
         profileImageId: 1,
         favorites: [],
       });
+
+      updateUser({
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        displayName: values.name,
+        profileImage: 1,
+      });
+
       navigate("/");
     } catch (error) {
       console.error("Error in user registration: ", error);

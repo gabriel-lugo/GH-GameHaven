@@ -241,8 +241,10 @@ function ProfilePage() {
 
   if (!user) {
     return (
-      <Box>
-        <Title order={2}>User not logged in</Title>
+      <Box className="loader-style">
+        <Title mb={"xl"} order={2}>
+          User not logged in
+        </Title>
         <NavLink to="/signin">
           <Button className="button-style">Sign In</Button>
         </NavLink>

@@ -10,6 +10,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import {
   EmailAuthProvider,
@@ -18,10 +19,12 @@ import {
   updatePassword,
   updateProfile,
 } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { MdOutlineError, MdThumbUp } from "react-icons/md";
-import { NavLink } from "react-router-dom";
+import { TfiFaceSad } from "react-icons/tfi";
+import { NavLink, useNavigate } from "react-router-dom";
+import DeleteAccountModal from "../components/DeleteAccountModal";
 import { ProfileImageContext } from "../context/ProfileImageContext";
 import { UserContext } from "../context/UserContext";
 import "../css/ProfilePage.css";
@@ -40,6 +43,10 @@ function ProfilePage() {
   const [error, setError] = useState<string>("");
   const { updateUser } = useContext(UserContext);
   const { updateSelectedProfileImage } = useContext(ProfileImageContext);
+  const [modalOpened, { open: openModal, close: closeModal }] =
+    useDisclosure(false);
+
+  const navigate = useNavigate();
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -91,6 +98,9 @@ function ProfilePage() {
     };
 
     fetchProfileImageId();
+    // if (user) {
+    //   document.title = `GH: Gamehaven - ${user.displayName}`;
+    // }
   }, [user]);
 
   const onSubmit = async () => {
@@ -197,6 +207,38 @@ function ProfilePage() {
     setSelectedProfileImage(index);
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+
+        await deleteDoc(userRef);
+
+        // Delete the user account from authentication
+        await user.delete();
+
+        auth.signOut();
+
+        showNotification({
+          title: "Account Deleted",
+          message: "Your account has been deleted successfully.",
+          color: "green",
+          icon: <TfiFaceSad />,
+        });
+
+        navigate("/");
+      }
+    } catch (error) {
+      showNotification({
+        title: "Failed to Delete Account",
+        message: "Please try again.",
+        color: "red",
+        icon: <MdOutlineError />,
+      });
+      console.error("Error deleting account:", error);
+    }
+  };
+
   if (!user) {
     return (
       <Box>
@@ -209,86 +251,106 @@ function ProfilePage() {
   }
 
   return (
-    <Container size={"lg"}>
-      <Paper
-        className="profile-settings-paper"
-        style={{ background: "#f9f6ee" }}
-        radius="md"
-        p="xl"
-        shadow="md"
-        mt={"xl"}
-        mb={"lg"}
-        withBorder
-      >
-        <Box className="profile-settings-wrapper">
-          <Box className="profile-settings-image">
-            <Title order={3}>{user.displayName || "Username"}</Title>
-            <Image src={getProfileImage(selectedProfileImage)} w={200} />
-            <Box className="profile-settings-thumbnails">
-              {Array.from({ length: profileImages.length }).map((_, index) => (
-                <Image
-                  key={index}
-                  src={getProfileImage(index)}
-                  w={65}
-                  className="profile-thumbnail"
-                  onClick={() => handleSelectProfileImage(index)}
-                />
-              ))}
+    <>
+      <DeleteAccountModal
+        opened={modalOpened}
+        onClose={closeModal}
+        onDeleteAccount={handleDeleteAccount}
+      />
+
+      <Container size={"lg"}>
+        <Paper
+          className="profile-settings-paper"
+          style={{ background: "#f9f6ee" }}
+          radius="md"
+          p="xl"
+          shadow="md"
+          mt={"xl"}
+          mb={"lg"}
+          withBorder
+        >
+          <Box className="profile-settings-wrapper">
+            <Box className="profile-settings-image">
+              <Title order={3}>{user.displayName || "Username"}</Title>
+              <Image src={getProfileImage(selectedProfileImage)} w={200} />
+              <Box className="profile-settings-thumbnails">
+                {Array.from({ length: profileImages.length }).map(
+                  (_, index) => (
+                    <Image
+                      key={index}
+                      src={getProfileImage(index)}
+                      w={65}
+                      className="profile-thumbnail"
+                      onClick={() => handleSelectProfileImage(index)}
+                    />
+                  )
+                )}
+              </Box>
+              <Button
+                className="button-style"
+                fullWidth
+                onClick={handleSaveProfileImage}
+              >
+                Save Profile Image
+              </Button>
+              {error && <div style={{ color: "red" }}>{error}</div>}
             </Box>
-            <Button className="button-style" onClick={handleSaveProfileImage}>
-              Save Profile Image
-            </Button>
-            {error && <div style={{ color: "red" }}>{error}</div>}
-          </Box>
-          <Box className="profile-settings-form">
-            <form onSubmit={form.onSubmit(onSubmit)}>
-              <Stack>
-                <TextInput label="Email" value={user?.email || ""} disabled />
-                <TextInput
-                  label="Username"
-                  name="name"
-                  placeholder={user?.displayName || "Your name"}
-                  value={form.values.name}
-                  onChange={(event) =>
-                    form.setFieldValue("name", event.currentTarget.value)
-                  }
-                  error={form.errors.name}
-                />
+            <Box className="profile-settings-form">
+              <form onSubmit={form.onSubmit(onSubmit)}>
+                <Stack>
+                  <TextInput label="Email" value={user?.email || ""} disabled />
+                  <TextInput
+                    label="Username"
+                    name="name"
+                    placeholder={user?.displayName || "Your name"}
+                    value={form.values.name}
+                    onChange={(event) =>
+                      form.setFieldValue("name", event.currentTarget.value)
+                    }
+                    error={form.errors.name}
+                  />
 
-                <PasswordInput
-                  label="New Password"
-                  placeholder="●●●●●●●●●●"
-                  value={form.values.newPassword}
-                  onChange={(event) =>
-                    form.setFieldValue("newPassword", event.currentTarget.value)
-                  }
-                  error={form.errors.newPassword}
-                  radius="md"
-                />
-                <PasswordInput
-                  label="Current Password"
-                  placeholder="●●●●●●●●●●"
-                  withAsterisk
-                  value={form.values.currentPassword}
-                  onChange={(event) =>
-                    form.setFieldValue(
-                      "currentPassword",
-                      event.currentTarget.value
-                    )
-                  }
-                  error={form.errors.currentPassword}
-                  radius="md"
-                />
+                  <PasswordInput
+                    label="New Password"
+                    placeholder="●●●●●●●●●●"
+                    value={form.values.newPassword}
+                    onChange={(event) =>
+                      form.setFieldValue(
+                        "newPassword",
+                        event.currentTarget.value
+                      )
+                    }
+                    error={form.errors.newPassword}
+                    radius="md"
+                  />
+                  <PasswordInput
+                    label="Current Password"
+                    placeholder="●●●●●●●●●●"
+                    withAsterisk
+                    value={form.values.currentPassword}
+                    onChange={(event) =>
+                      form.setFieldValue(
+                        "currentPassword",
+                        event.currentTarget.value
+                      )
+                    }
+                    error={form.errors.currentPassword}
+                    radius="md"
+                  />
 
-                <Button className="button-style" fullWidth type="submit">
-                  Save Changes
-                </Button>
-              </Stack>
-            </form>
+                  <Button className="button-style" fullWidth type="submit">
+                    Save Changes
+                  </Button>
+                </Stack>
+              </form>
+              <Button mt={"lg"} color="red" fullWidth onClick={openModal}>
+                Delete My Account
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </Paper>
-    </Container>
+        </Paper>
+      </Container>
+    </>
   );
 }
 

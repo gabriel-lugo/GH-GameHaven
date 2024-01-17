@@ -199,7 +199,7 @@ function DetailsPage() {
     if (showVideo && gameDetails.videos && gameDetails.videos.length > 0) {
       const videoId = gameDetails.videos[0].video_id;
       return (
-        <div>
+        <Box>
           <iframe
             width="100%"
             height="100%"
@@ -210,15 +210,14 @@ function DetailsPage() {
             allowFullScreen
           ></iframe>
           <Button
-            variant="subtle"
+            variant="light"
             style={{ zIndex: "5" }}
             onClick={handleFallbackClick}
             className="fallback-button"
-            color="yellow"
           >
-            Can't play the video? Click here for images.
+            Switch to image background
           </Button>
-        </div>
+        </Box>
       );
     } else {
       const imageUrl =

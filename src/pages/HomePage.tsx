@@ -96,7 +96,7 @@ function HomePage() {
 
   return (
     <>
-      <HeroSlide games={topRatedGames} />
+      <HeroSlide games={upcomingGames} />
       {/* <Container size={"xl"}>
         <Title order={2} mb={"md"}>
           Top Rated Games

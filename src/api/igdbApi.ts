@@ -4,7 +4,7 @@ const platformIds: { [key: string]: number } = {
   pc: 6, // Platform ID for PC
   playstation: 48, // Platform ID for PlayStation
   xbox: 49, // Platform ID for Xbox
-  nintendo: 130,
+  "nintendo switch": 130,
   n64: 4,
   nes: 18,
   snes: 19,
@@ -12,9 +12,20 @@ const platformIds: { [key: string]: number } = {
   // Add more platforms as needed
 };
 
-// release_dates
-// game_videos
-// screenshots
+const genreNameToId: { [key: string]: number } = {
+  Adventure: 31,
+  RPG: 12,
+  Indie: 32,
+  Strategy: 15,
+  Platform: 8,
+  Arcade: 33,
+};
+
+const gameModeNameToId: { [key: string]: number } = {
+ Singleplayer: 1,
+ Multiplayer: 2,
+ Coop: 3
+};
 
 const defaultMinRating = 85;
 const defaultMinRatingCount = 20;
@@ -130,9 +141,9 @@ const fetchSimilarGamesCoversAndScreenshots = async (
   return Promise.all(promises);
 };
 
-export const searchForGames = async (query: string, platforms: string[]) => {
-  // Generate a unique cache key based on query and platforms
-  const cacheKey = `searchForGames-${query}-${platforms.join("-")}`;
+export const searchForGames = async (query: string, platforms: string[], currentPage = 1, limit = 20) => {
+  // Generate a unique cache key based on query, platforms, current page, and limit
+  const cacheKey = `searchForGames-${query}-${platforms.join("-")}-${currentPage}-${limit}`;
   const cachedData = sessionStorage.getItem(cacheKey);
 
   // Use cached data if available
@@ -154,8 +165,10 @@ export const searchForGames = async (query: string, platforms: string[]) => {
     })
     .join(",");
 
+  const offset = (currentPage - 1) * limit;
+
   const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, cover.image_id, involved_companies.company.name, game_modes.name, artworks.*, screenshots.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*, similar_games.cover.image_id; 
-  search "${query}"; where platforms = (${platformIdsArray});`;
+  search "${query}"; where platforms = (${platformIdsArray}); limit ${limit}; offset ${offset};`;
 
   try {
     const response = await axiosClient.post(url, requestBody);
@@ -177,10 +190,8 @@ export const searchForGames = async (query: string, platforms: string[]) => {
         e.code === DOMException.QUOTA_EXCEEDED_ERR
       ) {
         console.warn("Session storage is full, unable to cache the results");
-        // Log the warning but continue with the function
       } else {
         console.error("Error during caching:", e);
-        // Log other errors that may occur during caching
       }
     }
 
@@ -190,6 +201,78 @@ export const searchForGames = async (query: string, platforms: string[]) => {
     throw error;
   }
 };
+
+export const fetchFilteredGames = async (
+  platforms: Array<{ name: string }> = [],
+  genres: Array<{ name: string }> = [],
+  gameModes: Array<{ name: string }> = [],
+  currentPage: number = 1,
+  limit: number = 42
+) => {
+
+  const cacheKey = `fetchFilteredGames-${platforms.map(p => p.name).join(',')}-${genres.map(g => g.name).join(',')}-${gameModes.map(gm => gm.name).join(',')}-${currentPage}-${limit}`;
+
+  const cachedData = sessionStorage.getItem(cacheKey);
+  if (cachedData) {
+    console.log("Using cached data for fetchFilteredGames:", cacheKey);
+    return JSON.parse(cachedData);
+  }
+
+  const platformIdsArray = platforms
+    .map(platform => platformIds[platform.name.toLowerCase()])
+    .filter(id => id !== undefined);
+    const genreIdsArray = genres.map(genre => genreNameToId[genre.name]);
+    const gameModeIdsArray = gameModes.map(gameMode => gameModeNameToId[gameMode.name]);
+
+  const offset = (currentPage - 1) * limit;
+
+  let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name; limit ${limit}; offset ${offset};`;
+
+  if (platformIdsArray.length > 0) {
+    query += ` where platforms = (${platformIdsArray.join(',')})`;
+  }
+
+  if (genreIdsArray.length > 0) {
+    query += ` & genres = [${genreIdsArray.join(',')}]`;
+  }
+  if (gameModeIdsArray.length > 0) {
+    query += ` & game_modes = [${gameModeIdsArray.join(',')}]`;
+  }
+  query += ';';
+
+
+  try {
+    const response = await axiosClient.post('games/', query);
+    const data = response.data;
+    
+      const processedGames = data.map((game: any) => {
+        return {
+            ...game,
+            cover: game.cover ? getGameCoverUrl(game.cover.image_id) : "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6",
+            total_rating: game.total_rating !== undefined ? game.total_rating : null
+        };
+    });
+      console.log("Genres", processedGames);
+
+      try {
+        sessionStorage.setItem(cacheKey, JSON.stringify(processedGames));
+      } catch (e) {
+        if (
+          e instanceof DOMException &&
+          e.code === DOMException.QUOTA_EXCEEDED_ERR
+        ) {
+          console.warn("Session storage is full, unable to cache the results");
+        } else {
+          console.error("Error during caching:", e);
+        }
+      }
+      return processedGames;
+      
+    } catch (error) {
+    console.error('Error fetching filtered games:', error);
+    throw error;
+    }
+    };
 
 export const getGameDetails = async (query: number, platform: string) => {
   // Generate a unique cache key

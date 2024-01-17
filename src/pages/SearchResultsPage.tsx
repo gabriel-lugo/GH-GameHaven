@@ -1,32 +1,55 @@
-import { Box, Divider, Image, Paper, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Divider,
+  Image,
+  Pagination,
+  Paper,
+  Text,
+  Title,
+} from "@mantine/core";
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { searchForGames } from "../api/igdbApi";
+import nogames from "../assets/no-games-available.png";
 import "../css/SearchResultsPage.css";
 import { Game } from "./HomePage";
 
 function SearchResultsPage() {
   const { query } = useParams();
   const [searchResults, setSearchResults] = useState<Game[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleGameSelect = () => {
     setSearchResults([]);
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "auto" });
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query]);
+
   useEffect(() => {
     const fetchSearchResults = async () => {
       if (query) {
         try {
-          const results = await searchForGames(query, [
-            "playstation",
-            "xbox",
-            "pc",
-            "nintendo",
-            "n64",
-            "nes",
-            "snes",
-            "gcn",
-          ]);
+          const results = await searchForGames(
+            query,
+            [
+              "playstation",
+              "xbox",
+              "pc",
+              "nintendo Switch",
+              "n64",
+              "nes",
+              "snes",
+              "gcn",
+            ],
+            currentPage
+          );
           setSearchResults(results);
         } catch (error) {
           console.error("Error fetching search results:", error);
@@ -35,7 +58,7 @@ function SearchResultsPage() {
     };
 
     fetchSearchResults();
-  }, [query]);
+  }, [query, currentPage]);
 
   function convertTimestampToDate(timestamp: any) {
     const date = new Date(timestamp * 1000);
@@ -48,7 +71,7 @@ function SearchResultsPage() {
 
   return (
     <Box>
-      <Title pl={10} mt="md" mb="md" order={2}>
+      <Title pl={10} mt="md" mb="md" order={3}>
         Search Results for: {query}
       </Title>
       {searchResults.length > 0 ? (
@@ -98,9 +121,44 @@ function SearchResultsPage() {
               {index < searchResults.length - 1 && <Divider my="sm" />}
             </React.Fragment>
           ))}
+          <Box
+            mt={"lg"}
+            mb={"xl"}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Pagination
+              color="#f2c341"
+              value={currentPage}
+              onChange={handlePageChange}
+              total={4}
+            />
+          </Box>
         </Paper>
       ) : (
-        <Text pl={10}>No results found</Text>
+        <>
+          <Text fw={"500"} size="xl" ta="center" mt="lg">
+            No more games available for this search.
+          </Text>
+          <Box
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Image
+              ta="center"
+              mt="lg"
+              maw={500}
+              src={nogames}
+              alt="No more games available for this search"
+            />
+          </Box>
+        </>
       )}
     </Box>
   );

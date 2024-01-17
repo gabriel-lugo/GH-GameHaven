@@ -14,9 +14,12 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { MdOutlineError } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghSignin from "../assets/gh-signin.png";
@@ -33,7 +36,8 @@ interface FormValues {
 function SigninPage() {
   const navigate = useNavigate();
   const { updateUser } = useContext(UserContext);
-  const { updateSelectedProfileImage } = useContext(ProfileImageContext); // Use ProfileImageContext
+  const { updateSelectedProfileImage } = useContext(ProfileImageContext);
+  const [isForgotPasswordMode, setIsForgotPasswordMode] = useState(false);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -90,6 +94,32 @@ function SigninPage() {
       });
     }
   };
+
+  const onForgotPasswordClick = () => {
+    setIsForgotPasswordMode(true);
+  };
+
+  const onForgotPassword = async () => {
+    const { email } = form.values;
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      showNotification({
+        title: "Password Reset Email Sent",
+        message: "Check your email for instructions to reset your password.",
+        color: "green",
+      });
+      setIsForgotPasswordMode(false);
+    } catch (error) {
+      showNotification({
+        title: "Password Reset Failed",
+        message: "Failed to send password reset email. Please try again.",
+        color: "red",
+        icon: <MdOutlineError />,
+      });
+    }
+  };
+
   return (
     <Container size="xs" mt="xl">
       <Paper
@@ -144,11 +174,47 @@ function SigninPage() {
           </Stack>
 
           <Box mt="md">
-            <NavLink to={"/register"} style={{ textDecoration: "none" }}>
-              <Anchor component="button" type="button" size="sm">
-                New to Gamehaven? Register now.
-              </Anchor>
-            </NavLink>
+            {isForgotPasswordMode ? (
+              <Stack>
+                <TextInput
+                  autoComplete="email"
+                  withAsterisk
+                  label="Email"
+                  placeholder="mail@mail.com"
+                  value={form.values.email}
+                  onChange={(event) =>
+                    form.setFieldValue("email", event.currentTarget.value)
+                  }
+                  error={form.errors.email}
+                  radius="md"
+                />
+                <Button
+                  type="button"
+                  onClick={onForgotPassword}
+                  className="signin-button-style"
+                  fullWidth
+                  radius="sm"
+                >
+                  Send Password Reset Link
+                </Button>
+              </Stack>
+            ) : (
+              <Flex justify="space-between">
+                <NavLink to={"/register"} style={{ textDecoration: "none" }}>
+                  <Anchor component="button" type="button" size="sm">
+                    New to Gamehaven? Register now.
+                  </Anchor>
+                </NavLink>
+                <Anchor
+                  component="button"
+                  type="button"
+                  size="sm"
+                  onClick={onForgotPasswordClick}
+                >
+                  Forgot Password?
+                </Anchor>
+              </Flex>
+            )}
           </Box>
 
           <Group justify="space-between" mt="xl">

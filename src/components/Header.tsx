@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CgLogOut } from "react-icons/cg";
 import {
   FaEnvelope,
@@ -23,8 +23,10 @@ import {
 import { IoLogoGameControllerA } from "react-icons/io";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../assets/GH-logo.png";
+import { ProfileImageContext } from "../context/ProfileImageContext";
 import "../css/Header.css";
 import { auth } from "../firebase";
+import { getProfileImage } from "../util/ProfileImageUtility";
 import Search from "./Search";
 
 const links = [
@@ -42,6 +44,7 @@ function Header() {
   const [pastThreshold, setPastThreshold] = useState(false);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
+  const { selectedProfileImage } = useContext(ProfileImageContext);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -126,15 +129,16 @@ function Header() {
             {isUserLoggedIn ? (
               <Menu>
                 <Menu.Target>
-                  <Button
-                    variant="transparent"
-                    leftSection={<FaUser size={18} />}
+                  <Image
+                    src={getProfileImage(selectedProfileImage)}
+                    alt={username || "Profile"}
+                    title={username || "Profile"}
+                    radius="full"
+                    w={50}
                     className={`button-color ${
                       isActive("/profile") ? "active" : ""
-                    }`}
-                  >
-                    {username || "Profile"}
-                  </Button>
+                    } clickable-profile-image`}
+                  />
                 </Menu.Target>
                 <Menu.Dropdown>
                   <Menu.Label>Account</Menu.Label>

@@ -7,6 +7,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
 import { BookmarkProvider } from "./context/FavoritesContext.tsx";
+import { ProfileImageProvider } from "./context/ProfileImageContext.tsx";
 import { UserProvider } from "./context/UserContext.tsx";
 import "./css/main.css";
 import AboutPage from "./pages/AboutPage.tsx";
@@ -51,10 +52,12 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <MantineProvider theme={theme}>
       <UserProvider>
-        <BookmarkProvider>
-          <Notifications limit={5} />
-          <RouterProvider router={router} />
-        </BookmarkProvider>
+        <ProfileImageProvider>
+          <BookmarkProvider>
+            <Notifications limit={5} />
+            <RouterProvider router={router} />
+          </BookmarkProvider>
+        </ProfileImageProvider>
       </UserProvider>
     </MantineProvider>
   </React.StrictMode>

@@ -20,6 +20,7 @@ import { useContext } from "react";
 import { MdOutlineError } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghSignin from "../assets/gh-signin.png";
+import { ProfileImageContext } from "../context/ProfileImageContext";
 import { UserContext } from "../context/UserContext";
 import "../css/SigninPage.css";
 import { auth, db } from "../firebase";
@@ -32,6 +33,7 @@ interface FormValues {
 function SigninPage() {
   const navigate = useNavigate();
   const { updateUser } = useContext(UserContext);
+  const { updateSelectedProfileImage } = useContext(ProfileImageContext); // Use ProfileImageContext
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -73,8 +75,9 @@ function SigninPage() {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName || "",
-        profileImage: userData?.profileImageId || "",
       });
+
+      updateSelectedProfileImage(userData?.profileImageId - 1 || 0);
 
       navigate("/");
       console.log(user);

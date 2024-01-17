@@ -19,15 +19,14 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MdOutlineError, MdThumbUp } from "react-icons/md";
 import { NavLink } from "react-router-dom";
-import logo from "../assets/GH-logo.png";
-import profile1 from "../assets/profile1.jpg";
+import { ProfileImageContext } from "../context/ProfileImageContext";
+import { UserContext } from "../context/UserContext";
 import "../css/ProfilePage.css";
 import { auth, db } from "../firebase";
-import { getProfileImage } from "../util/ProfileImageUtility";
-import profile2 from "./../assets/profile2.jpg";
+import { getProfileImage, profileImages } from "../util/ProfileImageUtility";
 
 interface FormValues {
   name: string;
@@ -39,8 +38,8 @@ function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [selectedProfileImage, setSelectedProfileImage] = useState<number>(1);
   const [error, setError] = useState<string>("");
-
-  const profileImages = [logo, profile1, profile2];
+  const { updateUser } = useContext(UserContext);
+  const { updateSelectedProfileImage } = useContext(ProfileImageContext);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -121,6 +120,12 @@ function ProfilePage() {
             username: form.values.name,
           });
 
+          updateUser({
+            uid: user?.uid || "",
+            email: user?.email || null,
+            displayName: form.values.name || "",
+          });
+
           console.log(
             "Updated display name and Firestore document:",
             form.values.name
@@ -164,6 +169,8 @@ function ProfilePage() {
         await updateDoc(userRef, {
           profileImageId: selectedProfileImage + 1,
         });
+
+        updateSelectedProfileImage(selectedProfileImage);
 
         showNotification({
           title: "Profile image updated successfully!",

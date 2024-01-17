@@ -19,6 +19,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghRegister from "../assets/gh-register.png";
+import { ProfileImageContext } from "../context/ProfileImageContext";
 import { UserContext } from "../context/UserContext";
 import "../css/SigninPage.css";
 import { auth, db } from "../firebase";
@@ -33,6 +34,7 @@ interface FormValues {
 function RegisterPage() {
   const navigate = useNavigate();
   const { updateUser } = useContext(UserContext);
+  const { updateSelectedProfileImage } = useContext(ProfileImageContext);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -85,8 +87,9 @@ function RegisterPage() {
         uid: userCredential.user.uid,
         email: userCredential.user.email,
         displayName: values.name,
-        profileImage: 1,
       });
+
+      updateSelectedProfileImage(0);
 
       navigate("/");
     } catch (error) {

@@ -41,6 +41,7 @@ function HeroSlide({ games }: HeroSlideProps) {
                 <Box aria-label="new games" className="is-new-label">
                   Screenshot from: <b>{game.name}</b>
                   <Badge
+                    size="sm"
                     bg="dark"
                     variant="dot"
                     color="orange"

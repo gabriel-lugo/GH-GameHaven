@@ -26,6 +26,7 @@ import logo from "../assets/GH-logo.png";
 import profile1 from "../assets/profile1.jpg";
 import "../css/ProfilePage.css";
 import { auth, db } from "../firebase";
+import { getProfileImage } from "../util/ProfileImageUtility";
 import profile2 from "./../assets/profile2.jpg";
 
 interface FormValues {
@@ -215,12 +216,12 @@ function ProfilePage() {
         <Box className="profile-settings-wrapper">
           <Box className="profile-settings-image">
             <Title order={3}>{user.displayName || "Username"}</Title>
-            <Image src={profileImages[selectedProfileImage]} w={200} />
+            <Image src={getProfileImage(selectedProfileImage)} w={200} />
             <Box className="profile-settings-thumbnails">
-              {profileImages.map((image, index) => (
+              {Array.from({ length: profileImages.length }).map((_, index) => (
                 <Image
                   key={index}
-                  src={image}
+                  src={getProfileImage(index)}
                   w={65}
                   className="profile-thumbnail"
                   onClick={() => handleSelectProfileImage(index)}

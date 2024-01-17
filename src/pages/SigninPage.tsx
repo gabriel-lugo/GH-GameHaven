@@ -120,6 +120,10 @@ function SigninPage() {
     }
   };
 
+  const onRememberPasswordClick = () => {
+    setIsForgotPasswordMode(false);
+  };
+
   return (
     <Container size="xs" mt="xl">
       <Paper
@@ -144,8 +148,8 @@ function SigninPage() {
           />
         </Flex>
 
-        <form onSubmit={form.onSubmit(onLogin)}>
-          <Stack>
+        {isForgotPasswordMode ? (
+          <>
             <TextInput
               autoComplete="email"
               withAsterisk
@@ -158,47 +162,59 @@ function SigninPage() {
               error={form.errors.email}
               radius="md"
             />
+            <Box mt="md">
+              <Anchor
+                component="button"
+                type="button"
+                size="sm"
+                onClick={onRememberPasswordClick}
+                // style={{ textDecoration: "none" }}
+              >
+                Remembered your password?
+              </Anchor>
+            </Box>
+            <Button
+              type="button"
+              onClick={onForgotPassword}
+              className="signin-button-style"
+              fullWidth
+              radius="sm"
+              mt="xl"
+            >
+              Send Password Reset Link
+            </Button>
+          </>
+        ) : (
+          <form onSubmit={form.onSubmit(onLogin)}>
+            <Stack>
+              <TextInput
+                autoComplete="email"
+                withAsterisk
+                label="Email"
+                placeholder="mail@mail.com"
+                value={form.values.email}
+                onChange={(event) =>
+                  form.setFieldValue("email", event.currentTarget.value)
+                }
+                error={form.errors.email}
+                radius="md"
+              />
 
-            <PasswordInput
-              autoComplete="current-password"
-              withAsterisk
-              label="Password"
-              placeholder="Your password"
-              value={form.values.password}
-              onChange={(event) =>
-                form.setFieldValue("password", event.currentTarget.value)
-              }
-              error={form.errors.password}
-              radius="md"
-            />
-          </Stack>
+              <PasswordInput
+                autoComplete="current-password"
+                withAsterisk
+                label="Password"
+                placeholder="Your password"
+                value={form.values.password}
+                onChange={(event) =>
+                  form.setFieldValue("password", event.currentTarget.value)
+                }
+                error={form.errors.password}
+                radius="md"
+              />
+            </Stack>
 
-          <Box mt="md">
-            {isForgotPasswordMode ? (
-              <Stack>
-                <TextInput
-                  autoComplete="email"
-                  withAsterisk
-                  label="Email"
-                  placeholder="mail@mail.com"
-                  value={form.values.email}
-                  onChange={(event) =>
-                    form.setFieldValue("email", event.currentTarget.value)
-                  }
-                  error={form.errors.email}
-                  radius="md"
-                />
-                <Button
-                  type="button"
-                  onClick={onForgotPassword}
-                  className="signin-button-style"
-                  fullWidth
-                  radius="sm"
-                >
-                  Send Password Reset Link
-                </Button>
-              </Stack>
-            ) : (
+            <Box mt="md">
               <Flex justify="space-between">
                 <NavLink to={"/register"} style={{ textDecoration: "none" }}>
                   <Anchor component="button" type="button" size="sm">
@@ -214,20 +230,20 @@ function SigninPage() {
                   Forgot Password?
                 </Anchor>
               </Flex>
-            )}
-          </Box>
+            </Box>
 
-          <Group justify="space-between" mt="xl">
-            <Button
-              type="submit"
-              className="signin-button-style"
-              fullWidth
-              radius="sm"
-            >
-              Sign in
-            </Button>
-          </Group>
-        </form>
+            <Group justify="space-between" mt="xl">
+              <Button
+                type="submit"
+                className="signin-button-style"
+                fullWidth
+                radius="sm"
+              >
+                Sign in
+              </Button>
+            </Group>
+          </form>
+        )}
       </Paper>
     </Container>
   );

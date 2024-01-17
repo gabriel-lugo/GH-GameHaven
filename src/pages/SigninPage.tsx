@@ -14,12 +14,19 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { useContext, useState } from "react";
 import { MdOutlineError } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghSignin from "../assets/gh-signin.png";
+import { ProfileImageContext } from "../context/ProfileImageContext";
+import { UserContext } from "../context/UserContext";
 import "../css/SigninPage.css";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 
 interface FormValues {
   email: string;
@@ -28,6 +35,9 @@ interface FormValues {
 
 function SigninPage() {
   const navigate = useNavigate();
+  const { updateUser } = useContext(UserContext);
+  const { updateSelectedProfileImage } = useContext(ProfileImageContext);
+  const [isForgotPasswordMode, setIsForgotPasswordMode] = useState(false);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -60,6 +70,19 @@ function SigninPage() {
         password
       );
       const user = userCredential.user;
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnapshot = await getDoc(userRef);
+      const userData = userSnapshot.data();
+
+      updateUser({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "",
+      });
+
+      updateSelectedProfileImage(userData?.profileImageId - 1 || 0);
+
       navigate("/");
       console.log(user);
     } catch (error) {
@@ -71,6 +94,36 @@ function SigninPage() {
       });
     }
   };
+
+  const onForgotPasswordClick = () => {
+    setIsForgotPasswordMode(true);
+  };
+
+  const onForgotPassword = async () => {
+    const { email } = form.values;
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      showNotification({
+        title: "Password Reset Email Sent",
+        message: "Check your email for instructions to reset your password.",
+        color: "green",
+      });
+      setIsForgotPasswordMode(false);
+    } catch (error) {
+      showNotification({
+        title: "Password Reset Failed",
+        message: "Failed to send password reset email. Please try again.",
+        color: "red",
+        icon: <MdOutlineError />,
+      });
+    }
+  };
+
+  const onRememberPasswordClick = () => {
+    setIsForgotPasswordMode(false);
+  };
+
   return (
     <Container size="xs" mt="xl">
       <Paper
@@ -95,8 +148,8 @@ function SigninPage() {
           />
         </Flex>
 
-        <form onSubmit={form.onSubmit(onLogin)}>
-          <Stack>
+        {isForgotPasswordMode ? (
+          <>
             <TextInput
               autoComplete="email"
               withAsterisk
@@ -109,40 +162,88 @@ function SigninPage() {
               error={form.errors.email}
               radius="md"
             />
-
-            <PasswordInput
-              autoComplete="current-password"
-              withAsterisk
-              label="Password"
-              placeholder="Your password"
-              value={form.values.password}
-              onChange={(event) =>
-                form.setFieldValue("password", event.currentTarget.value)
-              }
-              error={form.errors.password}
-              radius="md"
-            />
-          </Stack>
-
-          <Box mt="md">
-            <NavLink to={"/register"} style={{ textDecoration: "none" }}>
-              <Anchor component="button" type="button" size="sm">
-                New to Gamehaven? Register now.
+            <Box mt="md">
+              <Anchor
+                component="button"
+                type="button"
+                size="sm"
+                onClick={onRememberPasswordClick}
+                // style={{ textDecoration: "none" }}
+              >
+                Remembered your password?
               </Anchor>
-            </NavLink>
-          </Box>
-
-          <Group justify="space-between" mt="xl">
+            </Box>
             <Button
-              type="submit"
+              type="button"
+              onClick={onForgotPassword}
               className="signin-button-style"
               fullWidth
               radius="sm"
+              mt="xl"
             >
-              Sign in
+              Send Password Reset Link
             </Button>
-          </Group>
-        </form>
+          </>
+        ) : (
+          <form onSubmit={form.onSubmit(onLogin)}>
+            <Stack>
+              <TextInput
+                autoComplete="email"
+                withAsterisk
+                label="Email"
+                placeholder="mail@mail.com"
+                value={form.values.email}
+                onChange={(event) =>
+                  form.setFieldValue("email", event.currentTarget.value)
+                }
+                error={form.errors.email}
+                radius="md"
+              />
+
+              <PasswordInput
+                autoComplete="current-password"
+                withAsterisk
+                label="Password"
+                placeholder="Your password"
+                value={form.values.password}
+                onChange={(event) =>
+                  form.setFieldValue("password", event.currentTarget.value)
+                }
+                error={form.errors.password}
+                radius="md"
+              />
+            </Stack>
+
+            <Box mt="md">
+              <Flex justify="space-between">
+                <NavLink to={"/register"} style={{ textDecoration: "none" }}>
+                  <Anchor component="button" type="button" size="sm">
+                    New to Gamehaven? Register now.
+                  </Anchor>
+                </NavLink>
+                <Anchor
+                  component="button"
+                  type="button"
+                  size="sm"
+                  onClick={onForgotPasswordClick}
+                >
+                  Forgot Password?
+                </Anchor>
+              </Flex>
+            </Box>
+
+            <Group justify="space-between" mt="xl">
+              <Button
+                type="submit"
+                className="signin-button-style"
+                fullWidth
+                radius="sm"
+              >
+                Sign in
+              </Button>
+            </Group>
+          </form>
+        )}
       </Paper>
     </Container>
   );

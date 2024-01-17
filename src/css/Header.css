@@ -78,6 +78,20 @@ header {
   color: var(--mantine-color-black);
 }
 
+.clickable-profile-image {
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.5s ease-in-out;
+}
+
+.clickable-profile-image:hover {
+  filter: drop-shadow(0 0 4px rgba(242, 195, 65, 0.8));
+}
+
+.clickable-profile-image.active {
+  filter: drop-shadow(0 0 4px rgba(242, 195, 65, 0.8));
+}
+
 .header-links.opened {
   display: flex;
   flex-direction: column;
@@ -138,6 +152,12 @@ header {
 @media (max-width: 360px) {
   .button-color {
     font-size: 0.8rem;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .clickable-profile-image {
+    width: 40px;
   }
 
   .gh-logo {

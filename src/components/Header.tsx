@@ -24,6 +24,7 @@ import { IoLogoGameControllerA } from "react-icons/io";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../assets/GH-logo.png";
 import { ProfileImageContext } from "../context/ProfileImageContext";
+import { UserContext } from "../context/UserContext";
 import "../css/Header.css";
 import { auth } from "../firebase";
 import { getProfileImage } from "../util/ProfileImageUtility";
@@ -43,17 +44,12 @@ function Header() {
   const [isVisible, setIsVisible] = useState(true);
   const [pastThreshold, setPastThreshold] = useState(false);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
   const { selectedProfileImage } = useContext(ProfileImageContext);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setIsUserLoggedIn(!!user);
-      if (user) {
-        setUsername(user.displayName || "");
-      } else {
-        setUsername("");
-      }
     });
     return () => unsubscribe();
   }, []);
@@ -131,8 +127,8 @@ function Header() {
                 <Menu.Target>
                   <Image
                     src={getProfileImage(selectedProfileImage)}
-                    alt={username || "Profile"}
-                    title={username || "Profile"}
+                    alt={user?.displayName || "Profile"}
+                    title={user?.displayName || "Profile"}
                     radius="full"
                     w={50}
                     className={`button-color ${

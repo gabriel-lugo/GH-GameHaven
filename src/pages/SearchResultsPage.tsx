@@ -172,6 +172,25 @@ function SearchResultsPage() {
               alt="No more games available for this search"
             />
           </Box>
+          <Text size="lg" mt={"xl"} ta="center">
+            Use pagination to go back
+          </Text>
+          <Box
+            mt={"lg"}
+            mb={"xl"}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Pagination
+              color="#f2c341"
+              value={currentPage}
+              onChange={handlePageChange}
+              total={4}
+            />
+          </Box>
         </>
       )}
     </Box>

@@ -1,4 +1,4 @@
-import { Badge, Box, Image } from "@mantine/core";
+import { Badge, Box, Image, Text } from "@mantine/core";
 import { NavLink } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -39,7 +39,9 @@ function HeroSlide({ games }: HeroSlideProps) {
             <NavLink to={`/game/${game.id}`} className="game-link">
               <Box className="hero-slide-container">
                 <Box aria-label="new games" className="is-new-label">
-                  Screenshot from: <b>{game.name}</b>
+                  <Text size="sm">
+                    Screenshot from: <b>{game.name}</b>
+                  </Text>
                   <Badge
                     size="sm"
                     bg="dark"

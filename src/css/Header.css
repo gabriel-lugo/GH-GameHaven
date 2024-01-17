@@ -152,6 +152,12 @@ header {
 @media (max-width: 360px) {
   .button-color {
     font-size: 0.8rem;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .clickable-profile-image {
+    width: 40px;
   }
 
   .gh-logo {

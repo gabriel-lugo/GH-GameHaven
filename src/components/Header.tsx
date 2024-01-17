@@ -164,7 +164,7 @@ function Header() {
                     isActive("/signin") ? "active" : ""
                   }`}
                 >
-                  Login
+                  Sign in
                 </Button>
               </NavLink>
             )}

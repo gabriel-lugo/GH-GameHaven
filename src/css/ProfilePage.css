@@ -15,12 +15,29 @@
 
 .profile-settings-image {
   display: flex;
-
   flex: 2;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+}
+
+.profile-settings-image > img {
+  border-radius: 50%;
+}
+
+.profile-settings-thumbnails {
+  display: flex;
+  gap: 1rem;
+}
+
+.profile-thumbnail {
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.profile-thumbnail:hover {
+  transform: scale(1.1);
 }
 
 .profile-settings-form {

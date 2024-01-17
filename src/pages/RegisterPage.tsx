@@ -16,8 +16,11 @@ import {
 import { useForm } from "@mantine/form";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghRegister from "../assets/gh-register.png";
+import { ProfileImageContext } from "../context/ProfileImageContext";
+import { UserContext } from "../context/UserContext";
 import "../css/SigninPage.css";
 import { auth, db } from "../firebase";
 
@@ -30,6 +33,8 @@ interface FormValues {
 
 function RegisterPage() {
   const navigate = useNavigate();
+  const { updateUser } = useContext(UserContext);
+  const { updateSelectedProfileImage } = useContext(ProfileImageContext);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -72,11 +77,19 @@ function RegisterPage() {
       // Create a reference to the specific document in the 'users' collection
       const userRef = doc(db, "users", userCredential.user.uid);
 
-      // Set the username in this document
       await setDoc(userRef, {
         username: values.name,
+        profileImageId: 1,
+        favorites: [],
       });
-      console.log("Username saved to Firestore");
+
+      updateUser({
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        displayName: values.name,
+      });
+
+      updateSelectedProfileImage(0);
 
       navigate("/");
     } catch (error) {

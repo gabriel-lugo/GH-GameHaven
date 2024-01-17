@@ -9,42 +9,103 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
 import {
   EmailAuthProvider,
   User,
   reauthenticateWithCredential,
+  updatePassword,
   updateProfile,
 } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import logo from "../assets/GH-logo.png";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
+import { MdOutlineError, MdThumbUp } from "react-icons/md";
+import { TfiFaceSad } from "react-icons/tfi";
+import { NavLink, useNavigate } from "react-router-dom";
+import DeleteAccountModal from "../components/DeleteAccountModal";
+import { ProfileImageContext } from "../context/ProfileImageContext";
+import { UserContext } from "../context/UserContext";
 import "../css/ProfilePage.css";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { getProfileImage, profileImages } from "../util/ProfileImageUtility";
+
+interface FormValues {
+  name: string;
+  newPassword: string;
+  currentPassword: string;
+}
 
 function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
-  const [newUsername, setNewUsername] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [error, setError] = useState<string | null>(null);
+  const [selectedProfileImage, setSelectedProfileImage] = useState<number>(1);
+  const [error, setError] = useState<string>("");
+  const { updateUser } = useContext(UserContext);
+  const { updateSelectedProfileImage } = useContext(ProfileImageContext);
+  const [modalOpened, { open: openModal, close: closeModal }] =
+    useDisclosure(false);
+
+  const navigate = useNavigate();
+
+  const form = useForm<FormValues>({
+    initialValues: {
+      name: "",
+      newPassword: "",
+      currentPassword: "",
+    },
+
+    validate: {
+      name: (val) =>
+        val && val.length <= 1
+          ? "Username should include at least 2 characters"
+          : null,
+      newPassword: (val) => {
+        if (form.values.newPassword.trim() === "") {
+          return null;
+        }
+
+        return val.length <= 6
+          ? "Password should include at least 7 characters"
+          : null;
+      },
+      currentPassword: (val) =>
+        val.length === 0 ? "Please enter your current password." : null,
+    },
+  });
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser: User | null) => {
       setUser(authUser);
-      if (authUser && authUser.displayName) {
-        setNewUsername(authUser.displayName);
-      }
     });
-
     return () => unsubscribe();
   }, []);
 
-  const handleSaveChanges = async () => {
-    setError(null);
+  useEffect(() => {
+    const fetchProfileImageId = async () => {
+      try {
+        if (user) {
+          const userRef = doc(db, "users", user.uid);
+          const userSnapshot = await getDoc(userRef);
+          const userData = userSnapshot.data();
+          if (userData && userData.profileImageId !== undefined) {
+            setSelectedProfileImage(userData.profileImageId - 1);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching profile image id:", error);
+      }
+    };
 
+    fetchProfileImageId();
+    // if (user) {
+    //   document.title = `GH: Gamehaven - ${user.displayName}`;
+    // }
+  }, [user]);
+
+  const onSubmit = async () => {
     try {
-      if (!currentPassword) {
-        setError("Please enter your current password.");
+      if (!form.values.currentPassword) {
         return;
       }
 
@@ -52,27 +113,130 @@ function ProfilePage() {
         console.log("Attempting to reauthenticate...");
         const credential = EmailAuthProvider.credential(
           user.email,
-          currentPassword
+          form.values.currentPassword
         );
 
         await reauthenticateWithCredential(user, credential);
 
         console.log("Reauthentication successful. Updating profile...");
-        await updateProfile(user, {
-          displayName: newUsername || user.displayName,
+
+        if (form.values.name && form.values.name.length >= 2) {
+          await updateProfile(user, {
+            displayName: form.values.name,
+          });
+
+          const userRef = doc(db, "users", user.uid);
+          await updateDoc(userRef, {
+            username: form.values.name,
+          });
+
+          updateUser({
+            uid: user?.uid || "",
+            email: user?.email || null,
+            displayName: form.values.name || "",
+          });
+
+          console.log(
+            "Updated display name and Firestore document:",
+            form.values.name
+          );
+        }
+
+        if (form.values.newPassword) {
+          console.log("Updating password...");
+          await updatePassword(user, form.values.newPassword);
+          console.log("Password updated successfully!");
+        }
+
+        form.setFieldValue("currentPassword", "");
+
+        showNotification({
+          title: "Profile updated successfully!",
+          message: "Your profile has been updated successfully.",
+          color: "green",
+          icon: <MdThumbUp />,
         });
 
         console.log("Profile updated successfully!");
       }
     } catch (error) {
-      setError("Failed to update profile. Please check your current password");
+      showNotification({
+        title: "Failed to update profile!",
+        message: "Please check your current password.",
+        color: "red",
+        icon: <MdOutlineError />,
+      });
       console.error(error);
     }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    handleSaveChanges();
+  const handleSaveProfileImage = async () => {
+    try {
+      if (user) {
+        console.log("Updating profile image...");
+
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          profileImageId: selectedProfileImage + 1,
+        });
+
+        updateSelectedProfileImage(selectedProfileImage);
+
+        showNotification({
+          title: "Profile image updated successfully!",
+          message: "Your profile image has been updated successfully.",
+          color: "green",
+          icon: <MdThumbUp />,
+        });
+
+        console.log("Profile image updated successfully!");
+      }
+    } catch (error) {
+      setError("Failed to update profile image. Please try again.");
+      showNotification({
+        title: "Failed to update profile image!",
+        message: "Please try again.",
+        color: "red",
+        icon: <MdOutlineError />,
+      });
+      console.error(error);
+    }
+  };
+
+  const handleSelectProfileImage = (index: number) => {
+    setSelectedProfileImage(index);
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+
+        await deleteDoc(userRef);
+
+        // Delete the user account from authentication
+        await user.delete();
+
+        auth.signOut();
+
+        showNotification({
+          title: "Account Deleted",
+          message: "Your account has been deleted successfully.",
+          color: "green",
+          icon: <TfiFaceSad />,
+        });
+
+        navigate("/");
+      }
+    } catch (error) {
+      showNotification({
+        title: "Failed to Delete Account",
+        message: "Please try again.",
+        color: "red",
+        icon: <MdOutlineError />,
+      });
+      console.error("Error deleting account:", error);
+    }
   };
 
   if (!user) {
@@ -87,55 +251,106 @@ function ProfilePage() {
   }
 
   return (
-    <Container size={"lg"}>
-      <Paper
-        className="profile-settings-paper"
-        style={{ background: "#f9f6ee" }}
-        radius="md"
-        p="xl"
-        shadow="md"
-        mt={"xl"}
-        mb={"lg"}
-        withBorder
-      >
-        <Box className="profile-settings-wrapper">
-          <Box className="profile-settings-image">
-            <Title order={3}>{user.displayName || "Username"}</Title>
-            <Image src={logo} w={200} />
-            <Button className="button-style">Change Profile Image</Button>
-          </Box>
-          <Box className="profile-settings-form">
-            <form onSubmit={handleSubmit}>
-              <Stack>
-                <TextInput label="Email" value={user?.email || ""} disabled />
-                <TextInput
-                  label="Username"
-                  value={newUsername}
-                  onChange={(event) =>
-                    setNewUsername(event.currentTarget.value)
-                  }
-                />
-                <PasswordInput label="New Password" placeholder="●●●●●●●●●●" />
-                <PasswordInput
-                  required
-                  label="Current Password"
-                  placeholder="●●●●●●●●●●"
-                  value={currentPassword}
-                  onChange={(event) =>
-                    setCurrentPassword(event.currentTarget.value)
-                  }
-                />
+    <>
+      <DeleteAccountModal
+        opened={modalOpened}
+        onClose={closeModal}
+        onDeleteAccount={handleDeleteAccount}
+      />
 
-                <Button className="button-style" fullWidth type="submit">
-                  Save Changes
-                </Button>
-              </Stack>
-            </form>
-            {error && <div style={{ color: "red" }}>{error}</div>}
+      <Container size={"lg"}>
+        <Paper
+          className="profile-settings-paper"
+          style={{ background: "#f9f6ee" }}
+          radius="md"
+          p="xl"
+          shadow="md"
+          mt={"xl"}
+          mb={"lg"}
+          withBorder
+        >
+          <Box className="profile-settings-wrapper">
+            <Box className="profile-settings-image">
+              <Title order={3}>{user.displayName || "Username"}</Title>
+              <Image src={getProfileImage(selectedProfileImage)} w={200} />
+              <Box className="profile-settings-thumbnails">
+                {Array.from({ length: profileImages.length }).map(
+                  (_, index) => (
+                    <Image
+                      key={index}
+                      src={getProfileImage(index)}
+                      w={65}
+                      className="profile-thumbnail"
+                      onClick={() => handleSelectProfileImage(index)}
+                    />
+                  )
+                )}
+              </Box>
+              <Button
+                className="button-style"
+                fullWidth
+                onClick={handleSaveProfileImage}
+              >
+                Save Profile Image
+              </Button>
+              {error && <div style={{ color: "red" }}>{error}</div>}
+            </Box>
+            <Box className="profile-settings-form">
+              <form onSubmit={form.onSubmit(onSubmit)}>
+                <Stack>
+                  <TextInput label="Email" value={user?.email || ""} disabled />
+                  <TextInput
+                    label="Username"
+                    name="name"
+                    placeholder={user?.displayName || "Your name"}
+                    value={form.values.name}
+                    onChange={(event) =>
+                      form.setFieldValue("name", event.currentTarget.value)
+                    }
+                    error={form.errors.name}
+                  />
+
+                  <PasswordInput
+                    label="New Password"
+                    placeholder="●●●●●●●●●●"
+                    value={form.values.newPassword}
+                    onChange={(event) =>
+                      form.setFieldValue(
+                        "newPassword",
+                        event.currentTarget.value
+                      )
+                    }
+                    error={form.errors.newPassword}
+                    radius="md"
+                  />
+                  <PasswordInput
+                    label="Current Password"
+                    placeholder="●●●●●●●●●●"
+                    withAsterisk
+                    value={form.values.currentPassword}
+                    onChange={(event) =>
+                      form.setFieldValue(
+                        "currentPassword",
+                        event.currentTarget.value
+                      )
+                    }
+                    error={form.errors.currentPassword}
+                    radius="md"
+                  />
+
+                  <Button className="button-style" fullWidth type="submit">
+                    Save Changes
+                  </Button>
+                </Stack>
+              </form>
+              <Button mt={"lg"} color="red" fullWidth onClick={openModal}>
+                Delete My Account
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </Paper>
-    </Container>
+        </Paper>
+      </Container>
+    </>
   );
 }
 

@@ -2,6 +2,7 @@ import {
   Box,
   Divider,
   Image,
+  Loader,
   Pagination,
   Paper,
   Text,
@@ -18,6 +19,7 @@ function SearchResultsPage() {
   const { query } = useParams();
   const [searchResults, setSearchResults] = useState<Game[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGameSelect = () => {
     setSearchResults([]);
@@ -34,6 +36,7 @@ function SearchResultsPage() {
 
   useEffect(() => {
     const fetchSearchResults = async () => {
+      setIsLoading(true);
       if (query) {
         try {
           const results = await searchForGames(
@@ -53,7 +56,11 @@ function SearchResultsPage() {
           setSearchResults(results);
         } catch (error) {
           console.error("Error fetching search results:", error);
+        } finally {
+          setIsLoading(false);
         }
+      } else {
+        setIsLoading(false);
       }
     };
 
@@ -74,7 +81,14 @@ function SearchResultsPage() {
       <Title pl={10} mt="md" mb="md" order={3}>
         Search Results for: {query}
       </Title>
-      {searchResults.length > 0 ? (
+      {isLoading ? (
+        <Box className="loader-style">
+          <Loader color="orange" size="xl" type="dots" />
+          <Text fw={500} size="md">
+            Loading...
+          </Text>
+        </Box>
+      ) : searchResults.length > 0 ? (
         <Paper
           style={{ background: "#F9F6EE" }}
           withBorder

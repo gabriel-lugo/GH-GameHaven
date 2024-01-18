@@ -1,4 +1,5 @@
 import { Button, Container, Image, Title } from "@mantine/core";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import img404_1 from "../assets/404-1.png";
 import img404_2 from "../assets/404-2.png";
@@ -11,6 +12,11 @@ const images = [img404_1, img404_2, img404_3, img404_4];
 function ErrorPage() {
   const randomIndex = Math.floor(Math.random() * images.length);
   const random404Image = images[randomIndex];
+
+  useEffect(() => {
+    document.title = "GH: Gamehaven - 404 Page Not Found";
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <Container size={"xl"} ta={"center"} className="error-container" mb={"xl"}>

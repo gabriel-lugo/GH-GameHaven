@@ -26,6 +26,11 @@ function GamesPage() {
   const limitPerPage = 24;
 
   useEffect(() => {
+    document.title = "GH: Gamehaven - Games";
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const fetchGames = async () => {
       const platformFilter = selectedPlatform
         ? [{ name: selectedPlatform }]

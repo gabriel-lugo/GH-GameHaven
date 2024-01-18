@@ -7,7 +7,7 @@ import {
   SimpleGrid,
   Title,
 } from "@mantine/core";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import nofavorites1 from "../assets/no_favorites1.png";
 import nofavorites2 from "../assets/no_favorites2.png";
@@ -20,6 +20,11 @@ import "../css/FavoritesPage.css";
 const images = [nofavorites1, nofavorites2, nofavorites3, nofavorites4];
 
 function FavoritesPage() {
+  useEffect(() => {
+    document.title = "GH: Gamehaven - Favorites";
+    window.scrollTo(0, 0);
+  }, []);
+
   const randomIndex = Math.floor(Math.random() * images.length);
   const random404Image = images[randomIndex];
   const { bookmarks } = useContext(BookmarkContext);

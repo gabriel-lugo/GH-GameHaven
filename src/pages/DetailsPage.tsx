@@ -51,11 +51,6 @@ interface GameDetails {
 
 function DetailsPage() {
   const params = useParams();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [params.id]);
-
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [showVideo, setShowVideo] = useState(true);
@@ -70,6 +65,11 @@ function DetailsPage() {
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.title = `GH: Gamehaven - ${gameDetails?.name || "Loading..."}`;
+  }, [gameDetails]);
 
   const isBookmarked = bookmarks.some(
     (bookmark) => bookmark.id === gameDetails?.id

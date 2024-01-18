@@ -68,8 +68,8 @@ function DetailsPage() {
   const [showVideo, setShowVideo] = useState(true);
   const { bookmarks, addBookmark, removeBookmark } =
     useContext(BookmarkContext);
-
   const [userId, setUserId] = useState("");
+  const shareUrl = `https://ghgamehaven.netlify.app/game/${params.id}`;
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user: any) => {
@@ -476,28 +476,25 @@ function DetailsPage() {
                   </Title>
                   <Box mb={"xl"} className="share-buttons-container">
                     <FacebookShareButton
-                      url={window.location.href}
+                      url={shareUrl}
                       title={gameDetails.name}
                     >
                       <FacebookIcon size={32} round />
                     </FacebookShareButton>
                     <FacebookMessengerShareButton
-                      url={window.location.href}
+                      url={shareUrl}
                       appId="YOUR_APP_ID"
                     >
                       <FacebookMessengerIcon size={32} round />
                     </FacebookMessengerShareButton>
-                    <TwitterShareButton
-                      url={window.location.href}
-                      title={gameDetails.name}
-                    >
+                    <TwitterShareButton url={shareUrl} title={gameDetails.name}>
                       <XIcon size={32} round />
                     </TwitterShareButton>
-                    <LinkedinShareButton url={window.location.href}>
+                    <LinkedinShareButton url={shareUrl}>
                       <LinkedinIcon size={32} round />
                     </LinkedinShareButton>
                     <EmailShareButton
-                      url={window.location.href}
+                      url={shareUrl}
                       subject={gameDetails.name}
                       body="Check out this game!"
                     >

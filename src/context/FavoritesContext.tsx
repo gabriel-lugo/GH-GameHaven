@@ -1,12 +1,5 @@
 import { User, onAuthStateChanged } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { createContext, useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 
@@ -58,35 +51,48 @@ export const BookmarkProvider = ({ children }: Props) => {
     }
 
     try {
-      await addDoc(collection(db, "favorites"), {
-        ...gameData,
-        userId: currentUser.uid,
-      });
-      setBookmarks([...bookmarks, gameData]);
+      const userRef = doc(db, "users", currentUser.uid);
+      const userSnapshot = await getDoc(userRef);
+      const userData = userSnapshot.data();
+
+      if (userData) {
+        const updatedFavorites = [...userData.favorites, gameData];
+
+        await setDoc(userRef, {
+          ...userData,
+          favorites: updatedFavorites,
+        });
+
+        setBookmarks(updatedFavorites);
+      }
     } catch (error) {
       console.error("Error adding bookmark to Firestore: ", error);
     }
   };
 
   const removeBookmark = async (bookmark: GameData) => {
-    if (!bookmark.userId || !bookmark.id) {
+    if (!currentUser || !bookmark.userId || !bookmark.id) {
       console.error("Bookmark data is incomplete");
       return;
     }
 
     try {
-      const q = query(
-        collection(db, "favorites"),
-        where("userId", "==", bookmark.userId),
-        where("id", "==", bookmark.id)
-      );
-      const querySnapshot = await getDocs(q);
-      console.log("Documents found for removal:", querySnapshot.docs.length);
+      const userRef = doc(db, "users", currentUser.uid);
+      const userSnapshot = await getDoc(userRef);
+      const userData = userSnapshot.data();
 
-      querySnapshot.forEach((doc) => {
-        deleteDoc(doc.ref);
-      });
-      setBookmarks(bookmarks.filter((b) => b.id !== bookmark.id));
+      if (userData) {
+        const updatedFavorites = userData.favorites.filter(
+          (b: any) => b.id !== bookmark.id
+        );
+
+        await setDoc(userRef, {
+          ...userData,
+          favorites: updatedFavorites,
+        });
+
+        setBookmarks(updatedFavorites);
+      }
     } catch (error) {
       console.error("Error removing bookmark from Firestore: ", error);
     }
@@ -96,17 +102,15 @@ export const BookmarkProvider = ({ children }: Props) => {
     if (!userId) return;
 
     try {
-      const q = query(
-        collection(db, "favorites"),
-        where("userId", "==", userId)
-      );
-      const querySnapshot = await getDocs(q);
-      const fetchedBookmarks = querySnapshot.docs.map((doc) => ({
-        ...(doc.data() as GameData),
-        firestoreId: doc.id,
-      }));
-      setBookmarks(fetchedBookmarks);
-      console.log("success");
+      const userRef = doc(db, "users", userId);
+      const userSnapshot = await getDoc(userRef);
+      const userData = userSnapshot.data();
+
+      if (userData) {
+        const fetchedBookmarks = userData.favorites || [];
+        setBookmarks(fetchedBookmarks);
+        console.log("success");
+      }
     } catch (error) {
       console.error("Error fetching bookmarks: ", error);
     }

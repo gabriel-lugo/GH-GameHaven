@@ -19,6 +19,18 @@ import { IoHeartOutline } from "react-icons/io5";
 import { LuScroll } from "react-icons/lu";
 import { MdOutlineError } from "react-icons/md";
 import { useParams } from "react-router-dom";
+import {
+  EmailIcon,
+  EmailShareButton,
+  FacebookIcon,
+  FacebookShareButton,
+  LinkedinIcon,
+  LinkedinShareButton,
+  RedditIcon,
+  RedditShareButton,
+  TwitterShareButton,
+  XIcon,
+} from "react-share";
 import { getGameDetails } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
@@ -56,8 +68,8 @@ function DetailsPage() {
   const [showVideo, setShowVideo] = useState(true);
   const { bookmarks, addBookmark, removeBookmark } =
     useContext(BookmarkContext);
-
   const [userId, setUserId] = useState("");
+  const shareUrl = `https://ghgamehaven.netlify.app/game/${params.id}`;
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user: any) => {
@@ -459,11 +471,39 @@ function DetailsPage() {
 
               <Box className="website-img-layout">
                 <Box className="margin-box" mt="xl">
+                  <Title mb={"xs"} order={4}>
+                    Share
+                  </Title>
+                  <Box mb={"xl"} className="share-buttons-container">
+                    <FacebookShareButton
+                      url={shareUrl}
+                      title={gameDetails.name}
+                    >
+                      <FacebookIcon size={32} round />
+                    </FacebookShareButton>
+                    <RedditShareButton url={shareUrl} title={gameDetails.name}>
+                      <RedditIcon size={32} round />
+                    </RedditShareButton>
+                    <TwitterShareButton url={shareUrl} title={gameDetails.name}>
+                      <XIcon size={32} round />
+                    </TwitterShareButton>
+                    <LinkedinShareButton url={shareUrl}>
+                      <LinkedinIcon size={32} round />
+                    </LinkedinShareButton>
+                    <EmailShareButton
+                      url={shareUrl}
+                      subject={gameDetails.name}
+                      body="Check out this game!"
+                    >
+                      <EmailIcon size={32} round />
+                    </EmailShareButton>
+                  </Box>
                   <Title mb="xs" order={4}>
                     Websites
                   </Title>
                   {renderWebsites(gameDetails.websites)}
                 </Box>
+
                 <Image
                   src="../../src/assets/gh_details.png"
                   alt="A mascot of Gamehaven presenting information about a game."

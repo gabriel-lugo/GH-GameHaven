@@ -23,11 +23,11 @@ import {
   EmailIcon,
   EmailShareButton,
   FacebookIcon,
-  FacebookMessengerIcon,
-  FacebookMessengerShareButton,
   FacebookShareButton,
   LinkedinIcon,
   LinkedinShareButton,
+  RedditIcon,
+  RedditShareButton,
   TwitterShareButton,
   XIcon,
 } from "react-share";
@@ -481,12 +481,9 @@ function DetailsPage() {
                     >
                       <FacebookIcon size={32} round />
                     </FacebookShareButton>
-                    <FacebookMessengerShareButton
-                      url={shareUrl}
-                      appId="YOUR_APP_ID"
-                    >
-                      <FacebookMessengerIcon size={32} round />
-                    </FacebookMessengerShareButton>
+                    <RedditShareButton url={shareUrl} title={gameDetails.name}>
+                      <RedditIcon size={32} round />
+                    </RedditShareButton>
                     <TwitterShareButton url={shareUrl} title={gameDetails.name}>
                       <XIcon size={32} round />
                     </TwitterShareButton>

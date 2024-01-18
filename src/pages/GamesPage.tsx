@@ -11,7 +11,14 @@ import {
   Title,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { BsNintendoSwitch } from "react-icons/bs";
+import { FaPlaystation, FaXbox } from "react-icons/fa";
+import { PiDesktopTowerFill } from "react-icons/pi";
+import { SiNintendogamecube } from "react-icons/si";
 import { fetchFilteredGames } from "../api/igdbApi";
+import n64 from "../assets/N64-logo.png";
+import nes from "../assets/NES-logo.png";
+import snes from "../assets/SNES-logo.png";
 import nogames from "../assets/no-games-available.png";
 import Thumbnail from "../components/Thumbnail";
 import "../css/GamesPage.css";
@@ -90,6 +97,29 @@ function GamesPage() {
     }
   };
 
+  type PlatformIconType = {
+    [key: string]: JSX.Element;
+  };
+
+  const platformIcons: PlatformIconType = {
+    pc: <PiDesktopTowerFill color="grey" />,
+    playstation: <FaPlaystation color="blue" />,
+    xbox: <FaXbox color="green" />,
+    "nintendo switch": <BsNintendoSwitch color="red" />,
+    n64: <Image maw={45} src={n64} alt="Logo of Nintendo 64" />,
+    nes: (
+      <Image maw={70} src={nes} alt="Logo of Nintendo Entertainment System" />
+    ),
+    snes: (
+      <Image
+        maw={80}
+        src={snes}
+        alt="Logo of Super Nintendo Entertainment System"
+      />
+    ),
+    gamecube: <SiNintendogamecube color="indigo" />,
+  };
+
   return (
     <Container mb={"xl"} className="games-buttons" size="xl">
       <Box>
@@ -105,7 +135,7 @@ function GamesPage() {
             "n64",
             "nes",
             "snes",
-            "gcn",
+            "gamecube",
           ].map((platform) => (
             <Button
               color="#f2c341"
@@ -162,7 +192,22 @@ function GamesPage() {
       </Box>
 
       <Title mt={"lg"} ta="center" order={3}>
-        {selectedPlatform.toUpperCase() || "None"}
+        {selectedPlatform ? (
+          <Box
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {platformIcons[selectedPlatform.toLowerCase()]}{" "}
+            <span style={{ marginRight: "", marginLeft: "0.5rem" }}>
+              {selectedPlatform.toUpperCase()}
+            </span>
+          </Box>
+        ) : (
+          "None"
+        )}
       </Title>
       <Text size="lg" ta="center">
         {selectedGenre || "None"}

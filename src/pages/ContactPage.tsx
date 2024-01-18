@@ -40,7 +40,7 @@ function ContactPage() {
   });
 
   return (
-    <Container style={{ marginTop: "10rem", marginBottom: "5rem" }}>
+    <Container style={{ marginTop: "5rem", marginBottom: "5rem" }}>
       <Paper shadow="md" radius="lg">
         <Box className="wrapper">
           <Box className="contacts">

@@ -9,6 +9,18 @@
   margin-right: 1rem;
 }
 
+.search-icon {
+  background: var(--button-primary-background-color);
+  color: var(--body-text-color);
+  border-radius: 2rem;
+  padding: 0.37rem;
+  cursor: pointer;
+}
+
+.search-icon:hover {
+  filter: brightness(90%);
+}
+
 .dropdown-search {
   position: absolute;
   background: #f1f3f5;

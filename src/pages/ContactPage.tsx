@@ -10,12 +10,18 @@ import {
   Textarea,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useEffect } from "react";
 import { GrLocation } from "react-icons/gr";
 import { MdOutlineAlternateEmail } from "react-icons/md";
 import contactUs from "../assets/gh-contact.png";
 import "../css/ContactPage.css";
 
 function ContactPage() {
+  useEffect(() => {
+    document.title = "GH: Gamehaven - Contact";
+    window.scrollTo(0, 0);
+  }, []);
+
   const form = useForm({
     initialValues: { name: "", email: "", subject: "", message: "" },
 
@@ -34,7 +40,7 @@ function ContactPage() {
   });
 
   return (
-    <Container style={{ marginTop: "10rem", marginBottom: "5rem" }}>
+    <Container style={{ marginTop: "5rem", marginBottom: "5rem" }}>
       <Paper shadow="md" radius="lg">
         <Box className="wrapper">
           <Box className="contacts">

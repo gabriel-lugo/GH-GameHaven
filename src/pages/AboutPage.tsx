@@ -6,6 +6,7 @@ import "../css/AboutPage.css";
 
 function AboutPage() {
   useEffect(() => {
+    document.title = "GH: Gamehaven - About";
     window.scrollTo(0, 0);
   }, []);
 

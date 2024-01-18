@@ -84,7 +84,7 @@ function RegisterPage() {
 
       await setDoc(userRef, {
         username: values.name,
-        profileImageId: 1,
+        profileImageId: 0,
         favorites: [],
       });
 

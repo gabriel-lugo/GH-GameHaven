@@ -49,7 +49,7 @@ function SearchResultsPage() {
               "n64",
               "nes",
               "snes",
-              "gcn",
+              "gamecube",
             ],
             currentPage
           );

@@ -54,6 +54,9 @@ function Search() {
 
       if (query.length > 0) {
         navigate(`/search-results/${query}`);
+        if (isScreenWidthSmall) {
+          setIsInputVisible(false);
+        }
       }
     } else if (query.length > 1) {
       try {
@@ -81,11 +84,21 @@ function Search() {
       navigate(`/search-results/${searchTerm}`);
       setSearchResults([]);
       setSearchTerm("");
+      setIsInputVisible(false);
     }
   };
 
   const toggleInputVisibility = () => {
     setIsInputVisible(!isInputVisible);
+  };
+
+  const handleSearchIconClick = async () => {
+    if (searchTerm.length > 0) {
+      setIsEnterPressed(true);
+      setSearchResults([]);
+      navigate(`/search-results/${searchTerm}`);
+      setSearchTerm("");
+    }
   };
 
   return (
@@ -108,14 +121,18 @@ function Search() {
                   </Button>
                 </Box>
               ) : (
-                <IoIosSearch size={25} />
+                <IoIosSearch
+                  className="search-icon"
+                  onClick={handleSearchIconClick}
+                  size={28}
+                />
               )
             }
             type="search"
             placeholder="Search for a game.."
             value={searchTerm}
             onChange={handleInputChange}
-            onKeyPress={handleInputChange}
+            onKeyDown={handleInputChange}
           />
           {!isEnterPressed && searchResults.length > 0 && (
             <Paper

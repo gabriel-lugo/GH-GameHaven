@@ -100,7 +100,7 @@ function GamesPage() {
             "n64",
             "nes",
             "snes",
-            "gcn",
+            "gamecube",
           ].map((platform) => (
             <Button
               color="#f2c341"

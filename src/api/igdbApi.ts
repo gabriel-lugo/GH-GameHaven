@@ -8,7 +8,7 @@ const platformIds: { [key: string]: number } = {
   n64: 4,
   nes: 18,
   snes: 19,
-  gcn: 21,
+  gamecube: 21,
   // Add more platforms as needed
 };
 

@@ -44,6 +44,10 @@ function HomePage() {
   // }, []);
 
   useEffect(() => {
+    document.title = "GH: Gamehaven";
+  }, []);
+
+  useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = user.uid;

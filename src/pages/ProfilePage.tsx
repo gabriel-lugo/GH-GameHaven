@@ -82,6 +82,14 @@ function ProfilePage() {
   }, []);
 
   useEffect(() => {
+    if (user) {
+      document.title = `GH: Gamehaven - ${user.displayName || "Profile"}`;
+    } else {
+      document.title = "GH: Gamehaven - Profile";
+    }
+  }, [user]);
+
+  useEffect(() => {
     const fetchProfileImageId = async () => {
       try {
         if (user) {
@@ -98,9 +106,9 @@ function ProfilePage() {
     };
 
     fetchProfileImageId();
-    // if (user) {
-    //   document.title = `GH: Gamehaven - ${user.displayName}`;
-    // }
+    if (user) {
+      document.title = `GH: Gamehaven - ${user.displayName}`;
+    }
   }, [user]);
 
   const onSubmit = async () => {
@@ -214,7 +222,6 @@ function ProfilePage() {
 
         await deleteDoc(userRef);
 
-        // Delete the user account from authentication
         await user.delete();
 
         auth.signOut();

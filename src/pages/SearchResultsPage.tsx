@@ -19,6 +19,11 @@ function SearchResultsPage() {
   const [searchResults, setSearchResults] = useState<Game[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
+  useEffect(() => {
+    document.title = `GH: Gamehaven - Search Results for ${query || ""}`;
+    window.scrollTo(0, 0);
+  }, [query]);
+
   const handleGameSelect = () => {
     setSearchResults([]);
   };

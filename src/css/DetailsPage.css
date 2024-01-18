@@ -61,6 +61,11 @@
   filter: drop-shadow(0 0 2px rgba(117, 87, 6, 0.8));
 }
 
+.share-buttons-container {
+  display: flex;
+  gap: 10px;
+}
+
 .video-container {
   display: flex;
   justify-content: center;

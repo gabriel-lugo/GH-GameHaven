@@ -68,7 +68,7 @@ function Search() {
           "n64",
           "nes",
           "snes",
-          "gcn",
+          "gamecube",
         ]);
         setSearchResults(results);
       } catch (error) {

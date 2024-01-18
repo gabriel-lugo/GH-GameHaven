@@ -11,6 +11,10 @@ import {
   Title,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { BsNintendoSwitch } from "react-icons/bs";
+import { FaPlaystation, FaXbox } from "react-icons/fa";
+import { PiDesktopTowerFill } from "react-icons/pi";
+import { SiNintendogamecube, SiNintendonetwork } from "react-icons/si";
 import { fetchFilteredGames } from "../api/igdbApi";
 import nogames from "../assets/no-games-available.png";
 import Thumbnail from "../components/Thumbnail";
@@ -85,6 +89,21 @@ function GamesPage() {
     }
   };
 
+  type PlatformIconType = {
+    [key: string]: JSX.Element;
+  };
+
+  const platformIcons: PlatformIconType = {
+    pc: <PiDesktopTowerFill />,
+    playstation: <FaPlaystation />,
+    xbox: <FaXbox />,
+    "nintendo switch": <BsNintendoSwitch />,
+    n64: <SiNintendonetwork />,
+    nes: <SiNintendonetwork />,
+    snes: <SiNintendonetwork />,
+    gamecube: <SiNintendogamecube />,
+  };
+
   return (
     <Container mb={"xl"} className="games-buttons" size="xl">
       <Box>
@@ -157,7 +176,16 @@ function GamesPage() {
       </Box>
 
       <Title mt={"lg"} ta="center" order={3}>
-        {selectedPlatform.toUpperCase() || "None"}
+        {selectedPlatform ? (
+          <>
+            {platformIcons[selectedPlatform.toLowerCase()]}{" "}
+            <span style={{ marginRight: "4px", marginLeft: "2px" }}>
+              {selectedPlatform.toUpperCase()}
+            </span>
+          </>
+        ) : (
+          "None"
+        )}
       </Title>
       <Text size="lg" ta="center">
         {selectedGenre || "None"}

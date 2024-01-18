@@ -97,7 +97,7 @@ function ProfilePage() {
           const userSnapshot = await getDoc(userRef);
           const userData = userSnapshot.data();
           if (userData && userData.profileImageId !== undefined) {
-            setSelectedProfileImage(userData.profileImageId - 1);
+            setSelectedProfileImage(userData.profileImageId);
           }
         }
       } catch (error) {
@@ -185,7 +185,7 @@ function ProfilePage() {
 
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, {
-          profileImageId: selectedProfileImage + 1,
+          profileImageId: selectedProfileImage,
         });
 
         updateSelectedProfileImage(selectedProfileImage);

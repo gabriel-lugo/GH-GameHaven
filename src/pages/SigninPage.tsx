@@ -86,7 +86,7 @@ function SigninPage() {
         displayName: user.displayName || "",
       });
 
-      updateSelectedProfileImage(userData?.profileImageId - 1 || 0);
+      updateSelectedProfileImage(userData?.profileImageId);
 
       navigate("/");
       console.log(user);

@@ -12,6 +12,7 @@ interface GameRatingProps {
 
 function GameRating({ gameId }: GameRatingProps) {
   const [rating, setRating] = useState<number>(0);
+  const [ratingCount, setRatingCount] = useState<number>(0);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ function GameRating({ gameId }: GameRatingProps) {
     });
     const averageRating = count > 0 ? totalRating / count : 0;
     setRating(averageRating);
+    setRatingCount(count);
   };
 
   const handleRatingChange = async (value: number) => {
@@ -60,6 +62,9 @@ function GameRating({ gameId }: GameRatingProps) {
         {rating > 0
           ? `Average Rating: ${rating.toFixed(1)} out of 5`
           : "No ratings yet"}
+      </Text>
+      <Text size="xs" mt="xs">
+        Based on {ratingCount} ratings from the GH community
       </Text>
     </Box>
   );

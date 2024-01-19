@@ -458,11 +458,8 @@ function DetailsPage() {
                   p="sm"
                   shadow="sm"
                 >
-                  <Text mb="sm" size="sm">
+                  <Text fw={500} mb="sm" size="sm">
                     Rate {gameDetails.name}
-                  </Text>
-                  <Text mb="xs" size="xs">
-                    Gamehaven users' ratings:
                   </Text>
                   <GameRating gameId={gameDetails.id.toString()} />
                 </Paper>

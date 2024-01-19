@@ -16,7 +16,7 @@ import {
 import { useForm } from "@mantine/form";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghRegister from "../assets/gh-register.png";
 import { ProfileImageContext } from "../context/ProfileImageContext";
@@ -35,6 +35,11 @@ function RegisterPage() {
   const navigate = useNavigate();
   const { updateUser } = useContext(UserContext);
   const { updateSelectedProfileImage } = useContext(ProfileImageContext);
+
+  useEffect(() => {
+    document.title = "GH: Gamehaven - Register";
+    window.scrollTo(0, 0);
+  }, []);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -79,7 +84,7 @@ function RegisterPage() {
 
       await setDoc(userRef, {
         username: values.name,
-        profileImageId: 1,
+        profileImageId: 0,
         favorites: [],
       });
 

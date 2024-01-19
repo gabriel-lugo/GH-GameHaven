@@ -34,7 +34,7 @@ import {
 import { getGameDetails } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
-import { BookmarkContext, GameData } from "../context/FavoritesContext";
+import { FavoritesContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
 import { auth } from "../firebase";
 import { Game } from "./HomePage";
@@ -66,8 +66,8 @@ function DetailsPage() {
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [showVideo, setShowVideo] = useState(true);
-  const { bookmarks, addBookmark, removeBookmark } =
-    useContext(BookmarkContext);
+  const { favorites, addFavorite, removeFavorite } =
+    useContext(FavoritesContext);
   const [userId, setUserId] = useState("");
   const shareUrl = `https://ghgamehaven.netlify.app/game/${params.id}`;
 
@@ -83,11 +83,11 @@ function DetailsPage() {
     document.title = `GH: Gamehaven - ${gameDetails?.name || "Loading..."}`;
   }, [gameDetails]);
 
-  const isBookmarked = bookmarks.some(
-    (bookmark) => bookmark.id === gameDetails?.id
+  const isFavorited = favorites.some(
+    (favorite) => favorite.id === gameDetails?.id
   );
 
-  const handleBookmarkClick = () => {
+  const handleFavoriteClick = () => {
     if (!gameDetails) return;
 
     const gameData: GameData = {
@@ -96,10 +96,10 @@ function DetailsPage() {
     };
 
     if (userId) {
-      if (isBookmarked) {
-        removeBookmark(gameData);
+      if (isFavorited) {
+        removeFavorite(gameData);
       } else {
-        addBookmark(gameData);
+        addFavorite(gameData);
       }
     } else {
       showNotification({
@@ -297,13 +297,13 @@ function DetailsPage() {
               />
               <Button
                 className="cover-img-btn"
-                onClick={handleBookmarkClick}
+                onClick={handleFavoriteClick}
                 style={{
-                  backgroundColor: isBookmarked ? "#E3735E" : "#f2c341",
-                  color: isBookmarked ? "#FFF" : "#262626",
+                  backgroundColor: isFavorited ? "#E3735E" : "#f2c341",
+                  color: isFavorited ? "#FFF" : "#262626",
                 }}
               >
-                {isBookmarked ? (
+                {isFavorited ? (
                   <>
                     <GiCrownedHeart style={{ marginRight: "8px" }} /> Unfavorite
                   </>

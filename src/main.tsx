@@ -6,7 +6,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
-import { BookmarkProvider } from "./context/FavoritesContext.tsx";
+import { FavoritesProvider } from "./context/FavoritesContext.tsx";
 import { ProfileImageProvider } from "./context/ProfileImageContext.tsx";
 import { UserProvider } from "./context/UserContext.tsx";
 import "./css/main.css";
@@ -53,10 +53,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <MantineProvider theme={theme}>
       <UserProvider>
         <ProfileImageProvider>
-          <BookmarkProvider>
+          <FavoritesProvider>
             <Notifications limit={5} />
             <RouterProvider router={router} />
-          </BookmarkProvider>
+          </FavoritesProvider>
         </ProfileImageProvider>
       </UserProvider>
     </MantineProvider>

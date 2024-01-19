@@ -22,9 +22,9 @@ const genreNameToId: { [key: string]: number } = {
 };
 
 const gameModeNameToId: { [key: string]: number } = {
- Singleplayer: 1,
- Multiplayer: 2,
- Coop: 3
+  Singleplayer: 1,
+  Multiplayer: 2,
+  Coop: 3,
 };
 
 const defaultMinRating = 85;
@@ -141,9 +141,16 @@ const fetchSimilarGamesCoversAndScreenshots = async (
   return Promise.all(promises);
 };
 
-export const searchForGames = async (query: string, platforms: string[], currentPage = 1, limit = 20) => {
+export const searchForGames = async (
+  query: string,
+  platforms: string[],
+  currentPage = 1,
+  limit = 20
+) => {
   // Generate a unique cache key based on query, platforms, current page, and limit
-  const cacheKey = `searchForGames-${query}-${platforms.join("-")}-${currentPage}-${limit}`;
+  const cacheKey = `searchForGames-${query}-${platforms.join(
+    "-"
+  )}-${currentPage}-${limit}`;
   const cachedData = sessionStorage.getItem(cacheKey);
 
   // Use cached data if available
@@ -209,8 +216,11 @@ export const fetchFilteredGames = async (
   currentPage: number = 1,
   limit: number = 42
 ) => {
-
-  const cacheKey = `fetchFilteredGames-${platforms.map(p => p.name).join(',')}-${genres.map(g => g.name).join(',')}-${gameModes.map(gm => gm.name).join(',')}-${currentPage}-${limit}`;
+  const cacheKey = `fetchFilteredGames-${platforms
+    .map((p) => p.name)
+    .join(",")}-${genres.map((g) => g.name).join(",")}-${gameModes
+    .map((gm) => gm.name)
+    .join(",")}-${currentPage}-${limit}`;
 
   const cachedData = sessionStorage.getItem(cacheKey);
   if (cachedData) {
@@ -219,60 +229,63 @@ export const fetchFilteredGames = async (
   }
 
   const platformIdsArray = platforms
-    .map(platform => platformIds[platform.name.toLowerCase()])
-    .filter(id => id !== undefined);
-    const genreIdsArray = genres.map(genre => genreNameToId[genre.name]);
-    const gameModeIdsArray = gameModes.map(gameMode => gameModeNameToId[gameMode.name]);
+    .map((platform) => platformIds[platform.name.toLowerCase()])
+    .filter((id) => id !== undefined);
+  const genreIdsArray = genres.map((genre) => genreNameToId[genre.name]);
+  const gameModeIdsArray = gameModes.map(
+    (gameMode) => gameModeNameToId[gameMode.name]
+  );
 
   const offset = (currentPage - 1) * limit;
 
   let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name; limit ${limit}; offset ${offset};`;
 
   if (platformIdsArray.length > 0) {
-    query += ` where platforms = (${platformIdsArray.join(',')})`;
+    query += ` where platforms = (${platformIdsArray.join(",")})`;
   }
 
   if (genreIdsArray.length > 0) {
-    query += ` & genres = [${genreIdsArray.join(',')}]`;
+    query += ` & genres = [${genreIdsArray.join(",")}]`;
   }
   if (gameModeIdsArray.length > 0) {
-    query += ` & game_modes = [${gameModeIdsArray.join(',')}]`;
+    query += ` & game_modes = [${gameModeIdsArray.join(",")}]`;
   }
-  query += ';';
-
+  query += ";";
 
   try {
-    const response = await axiosClient.post('games/', query);
+    const response = await axiosClient.post("games/", query);
     const data = response.data;
-    
-      const processedGames = data.map((game: any) => {
-        return {
-            ...game,
-            cover: game.cover ? getGameCoverUrl(game.cover.image_id) : "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6",
-            total_rating: game.total_rating !== undefined ? game.total_rating : null
-        };
-    });
-      console.log("Genres", processedGames);
 
-      try {
-        sessionStorage.setItem(cacheKey, JSON.stringify(processedGames));
-      } catch (e) {
-        if (
-          e instanceof DOMException &&
-          e.code === DOMException.QUOTA_EXCEEDED_ERR
-        ) {
-          console.warn("Session storage is full, unable to cache the results");
-        } else {
-          console.error("Error during caching:", e);
-        }
+    const processedGames = data.map((game: any) => {
+      return {
+        ...game,
+        cover: game.cover
+          ? getGameCoverUrl(game.cover.image_id)
+          : "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6",
+        total_rating:
+          game.total_rating !== undefined ? game.total_rating : null,
+      };
+    });
+    console.log("Genres", processedGames);
+
+    try {
+      sessionStorage.setItem(cacheKey, JSON.stringify(processedGames));
+    } catch (e) {
+      if (
+        e instanceof DOMException &&
+        e.code === DOMException.QUOTA_EXCEEDED_ERR
+      ) {
+        console.warn("Session storage is full, unable to cache the results");
+      } else {
+        console.error("Error during caching:", e);
       }
-      return processedGames;
-      
-    } catch (error) {
-    console.error('Error fetching filtered games:', error);
-    throw error;
     }
-    };
+    return processedGames;
+  } catch (error) {
+    console.error("Error fetching filtered games:", error);
+    throw error;
+  }
+};
 
 export const getGameDetails = async (query: number, platform: string) => {
   // Generate a unique cache key
@@ -293,18 +306,20 @@ export const getGameDetails = async (query: number, platform: string) => {
     throw new Error(`Unsupported platform: ${platform}`);
   }
 
-  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, cover.image_id, involved_companies.company.name, game_modes.name, artworks.*, screenshots.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*, similar_games.cover.image_id, similar_games.screenshots.*; where id = ${query};`;
+  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, cover.image_id, involved_companies.company.name, game_modes.name, artworks.*, screenshots.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*, similar_games.cover.image_id, similar_games.screenshots.*, age_ratings; where id = ${query};`;
 
   try {
     const response = await axiosClient.post(url, requestBody);
     const gameDetails = response.data;
+
+    // console.log("Game Details:", gameDetails);
+    // console.log("Age Ratings:", gameDetails[0].age_ratings);
 
     const gameWithCover = await fetchGameCoversAndScreenshots(
       gameDetails,
       platform
     );
 
-    // Process similar games' cover data
     let similarGamesWithCovers = [];
 
     if (
@@ -317,8 +332,32 @@ export const getGameDetails = async (query: number, platform: string) => {
       );
     }
 
+    const ageRatingDetailsPromises = gameDetails[0].age_ratings.map(
+      async (ageRatingId: number) => {
+        try {
+          const ageRatingDetails = await getAgeRatingDetails(ageRatingId);
+          console.log("Age Rating Category:", ageRatingDetails.category);
+          return ageRatingDetails;
+        } catch (error) {
+          console.error("Error getting age rating details:", error);
+          return null;
+        }
+      }
+    );
+
+    const ageRatingDetailsResults = await Promise.all(ageRatingDetailsPromises);
+
+    // Filter out null values (age ratings with category other than 2)
+    const validAgeRatingDetails = ageRatingDetailsResults.filter(
+      (details) => details !== null
+    );
+
     const result = [
-      { ...gameWithCover[0], similar_games: similarGamesWithCovers },
+      {
+        ...gameWithCover[0],
+        similar_games: similarGamesWithCovers,
+        age_rating_details: validAgeRatingDetails,
+      },
     ];
 
     // Attempt to cache the result in sessionStorage
@@ -343,6 +382,37 @@ export const getGameDetails = async (query: number, platform: string) => {
     throw error;
   }
 };
+
+const getAgeRatingDetails = async (ageRatingId: number) => {
+  const ageRatingEndpoint = "age_ratings/";
+  const requestBody = `fields category, rating; where id = ${ageRatingId};`;
+
+  try {
+    const response = await axiosClient.post(ageRatingEndpoint, requestBody);
+    return response.data[0]; // Return the first element, assuming there's only one result
+  } catch (error) {
+    console.error("Error getting age rating details:", error);
+    throw error;
+  }
+};
+
+// const translateRatingToPEGI = (rating: number): string => {
+//   console.log("Rating received:", rating);
+//   switch (rating) {
+//     case 1:
+//       return "PEGI 3";
+//     case 2:
+//       return "PEGI 7";
+//     case 3:
+//       return "PEGI 12";
+//     case 4:
+//       return "PEGI 16";
+//     case 5:
+//       return "PEGI 18";
+//     default:
+//       return "Unknown PEGI category";
+//   }
+// };
 
 export const getTopRatedGames = async (
   platform: string,

@@ -39,10 +39,12 @@ import GameRating from "../components/RateGame";
 import { BookmarkContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
 import { auth } from "../firebase";
+import { getPegiImage } from "../util/PegiUtility";
 import { Game } from "./HomePage";
 
 interface GameDetails {
   name: string;
+  age_ratings: string;
   summary: string;
   themes: Array<{ name: string }>;
   franchises: Array<{ name: string }>;
@@ -291,6 +293,14 @@ function DetailsPage() {
       {gameDetails ? (
         <Box>
           <Box className="details-hero">
+            {gameDetails.age_ratings && (
+              <Box className="age-rating-box">
+                <Image
+                  src={getPegiImage(gameDetails.age_ratings)}
+                  alt={`PEGI Rating: ${gameDetails.age_ratings}`}
+                />
+              </Box>
+            )}
             <Box className="cover-image-container">
               <Image
                 src={gameDetails.cover}

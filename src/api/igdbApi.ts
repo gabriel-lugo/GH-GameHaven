@@ -329,29 +329,29 @@ export const getGameDetails = async (query: number, platform: string) => {
       );
     }
 
-    const ageRatingDetailsPromises = gameDetails[0].age_ratings.map(
-      async (ageRatingId: number) => {
-        try {
-          const ageRatingDetails = await getAgeRatingDetails(ageRatingId);
+    let ageRatingDetailsResults = [];
 
-          // Check if the age rating has category 2
-          if (ageRatingDetails.category === 2) {
-            const translatedRating = translateRatingToPEGI(
-              ageRatingDetails.rating
-            );
-
-            return translatedRating;
-          } else {
-            return null; // Skip age ratings with other categories
+    if (Array.isArray(gameDetails[0].age_ratings)) {
+      const ageRatingDetailsPromises = gameDetails[0].age_ratings.map(
+        async (ageRatingId: number) => {
+          try {
+            const ageRatingDetails = await getAgeRatingDetails(ageRatingId);
+            if (ageRatingDetails.category === 2) {
+              return translateRatingToPEGI(ageRatingDetails.rating);
+            } else {
+              return null;
+            }
+          } catch (error) {
+            console.error("Error getting age rating details:", error);
+            return null;
           }
-        } catch (error) {
-          console.error("Error getting age rating details:", error);
-          return null;
         }
-      }
-    );
+      );
 
-    const ageRatingDetailsResults = await Promise.all(ageRatingDetailsPromises);
+      ageRatingDetailsResults = await Promise.all(ageRatingDetailsPromises);
+    } else {
+      console.warn("age_ratings field is not an array or is undefined");
+    }
 
     const firstValidAgeRating = ageRatingDetailsResults.find(
       (rating) => rating !== null
@@ -364,7 +364,6 @@ export const getGameDetails = async (query: number, platform: string) => {
         age_ratings: firstValidAgeRating || "Unknown PEGI rating",
       },
     ];
-
     // Attempt to cache the result in sessionStorage
     try {
       sessionStorage.setItem(cacheKey, JSON.stringify(result));

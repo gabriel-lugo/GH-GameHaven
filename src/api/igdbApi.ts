@@ -312,9 +312,6 @@ export const getGameDetails = async (query: number, platform: string) => {
     const response = await axiosClient.post(url, requestBody);
     const gameDetails = response.data;
 
-    // console.log("Game Details:", gameDetails);
-    // console.log("Age Ratings:", gameDetails[0].age_ratings);
-
     const gameWithCover = await fetchGameCoversAndScreenshots(
       gameDetails,
       platform
@@ -336,14 +333,12 @@ export const getGameDetails = async (query: number, platform: string) => {
       async (ageRatingId: number) => {
         try {
           const ageRatingDetails = await getAgeRatingDetails(ageRatingId);
-          console.log("Age Rating Category:", ageRatingDetails.category);
 
           // Check if the age rating has category 2
           if (ageRatingDetails.category === 2) {
             const translatedRating = translateRatingToPEGI(
               ageRatingDetails.rating
             );
-            console.log("Translated PEGI Rating:", translatedRating);
 
             return translatedRating;
           } else {
@@ -407,7 +402,6 @@ const getAgeRatingDetails = async (ageRatingId: number) => {
 };
 
 const translateRatingToPEGI = (rating: number): string => {
-  console.log("Rating received:", rating);
   switch (rating) {
     case 1:
       return "PEGI 3";

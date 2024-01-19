@@ -20,9 +20,9 @@ function AboutPage() {
       </Title>
       <Text mb={"lg"}>
         Greetings, gaming enthusiasts! We are thrilled to introduce you to
-        GH-GameHaven, your go-to hub for discovering, connecting, and
-        bookmarking your favorite video games. Let's embark on a journey into
-        the world of gaming like never before!
+        GH-GameHaven, your go-to hub for discovering, connecting, and favoriting
+        your favorite video games. Let's embark on a journey into the world of
+        gaming like never before!
       </Text>
       <Title order={4} mb={"xs"}>
         Explore the Vast Gaming Universe
@@ -47,11 +47,11 @@ function AboutPage() {
         is your portal to connect.
       </Text>
       <Title order={4} mb={"xs"}>
-        Bookmark Your Favorites
+        Save Your Favorites
       </Title>
       <Text mb={"lg"}>
         Found a game that resonates with you? Never lose track of your favorites
-        again. With GH-GameHaven, you can effortlessly bookmark and organize
+        again. With GH-GameHaven, you can effortlessly favorite and organize
         your most-loved games. Whether it's a nostalgic classic, an upcoming
         release, or a hidden gem, our platform ensures that your gaming wishlist
         is always just a click away.
@@ -73,7 +73,7 @@ function AboutPage() {
           share experiences, and be a part of the ever-expanding gaming network.
         </li>
         <li>
-          Bookmarking Feature: Personalize your gaming experience by bookmarking
+          Favoriting Feature: Personalize your gaming experience by favoriting
           and organizing your favorite titles effortlessly.
         </li>
       </ul>

@@ -29,6 +29,7 @@
 .profile-settings-thumbnails {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .profile-thumbnail {

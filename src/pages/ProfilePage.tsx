@@ -82,6 +82,14 @@ function ProfilePage() {
   }, []);
 
   useEffect(() => {
+    if (user) {
+      document.title = `GH: Gamehaven - ${user.displayName || "Profile"}`;
+    } else {
+      document.title = "GH: Gamehaven - Profile";
+    }
+  }, [user]);
+
+  useEffect(() => {
     const fetchProfileImageId = async () => {
       try {
         if (user) {
@@ -89,7 +97,7 @@ function ProfilePage() {
           const userSnapshot = await getDoc(userRef);
           const userData = userSnapshot.data();
           if (userData && userData.profileImageId !== undefined) {
-            setSelectedProfileImage(userData.profileImageId - 1);
+            setSelectedProfileImage(userData.profileImageId);
           }
         }
       } catch (error) {
@@ -98,9 +106,9 @@ function ProfilePage() {
     };
 
     fetchProfileImageId();
-    // if (user) {
-    //   document.title = `GH: Gamehaven - ${user.displayName}`;
-    // }
+    if (user) {
+      document.title = `GH: Gamehaven - ${user.displayName}`;
+    }
   }, [user]);
 
   const onSubmit = async () => {
@@ -177,7 +185,7 @@ function ProfilePage() {
 
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, {
-          profileImageId: selectedProfileImage + 1,
+          profileImageId: selectedProfileImage,
         });
 
         updateSelectedProfileImage(selectedProfileImage);
@@ -214,7 +222,6 @@ function ProfilePage() {
 
         await deleteDoc(userRef);
 
-        // Delete the user account from authentication
         await user.delete();
 
         auth.signOut();
@@ -241,8 +248,10 @@ function ProfilePage() {
 
   if (!user) {
     return (
-      <Box>
-        <Title order={2}>User not logged in</Title>
+      <Box className="loader-style">
+        <Title mb={"xl"} order={2}>
+          User not logged in
+        </Title>
         <NavLink to="/signin">
           <Button className="button-style">Sign In</Button>
         </NavLink>

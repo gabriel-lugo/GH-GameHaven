@@ -1,12 +1,5 @@
 import { User, onAuthStateChanged } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { createContext, useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 
@@ -27,20 +20,20 @@ interface Props {
   children: React.ReactNode;
 }
 
-interface BookmarksContextValue {
-  bookmarks: GameData[];
-  addBookmark: (bookmark: GameData) => void;
-  removeBookmark: (bookmark: GameData) => void;
+interface FavoritesContextValue {
+  favorites: GameData[];
+  addFavorite: (favorite: GameData) => void;
+  removeFavorite: (favorite: GameData) => void;
 }
 
-export const BookmarkContext = createContext<BookmarksContextValue>({
-  bookmarks: [],
-  addBookmark: () => {},
-  removeBookmark: () => {},
+export const FavoritesContext = createContext<FavoritesContextValue>({
+  favorites: [],
+  addFavorite: () => {},
+  removeFavorite: () => {},
 });
 
-export const BookmarkProvider = ({ children }: Props) => {
-  const [bookmarks, setBookmarks] = useState<GameData[]>([]);
+export const FavoritesProvider = ({ children }: Props) => {
+  const [favorites, setFavorites] = useState<GameData[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -51,73 +44,84 @@ export const BookmarkProvider = ({ children }: Props) => {
     return () => unsubscribe();
   }, []);
 
-  const addBookmark = async (gameData: GameData) => {
+  const addFavorite = async (gameData: GameData) => {
     if (!currentUser) {
       console.error("No user logged in");
       return;
     }
 
     try {
-      await addDoc(collection(db, "favorites"), {
-        ...gameData,
-        userId: currentUser.uid,
-      });
-      setBookmarks([...bookmarks, gameData]);
+      const userRef = doc(db, "users", currentUser.uid);
+      const userSnapshot = await getDoc(userRef);
+      const userData = userSnapshot.data();
+
+      if (userData) {
+        const updatedFavorites = [...userData.favorites, gameData];
+
+        await setDoc(userRef, {
+          ...userData,
+          favorites: updatedFavorites,
+        });
+
+        setFavorites(updatedFavorites);
+      }
     } catch (error) {
-      console.error("Error adding bookmark to Firestore: ", error);
+      console.error("Error adding favorite to Firestore: ", error);
     }
   };
 
-  const removeBookmark = async (bookmark: GameData) => {
-    if (!bookmark.userId || !bookmark.id) {
-      console.error("Bookmark data is incomplete");
+  const removeFavorite = async (favorite: GameData) => {
+    if (!currentUser || !favorite.userId || !favorite.id) {
+      console.error("Favorite data is incomplete");
       return;
     }
 
     try {
-      const q = query(
-        collection(db, "favorites"),
-        where("userId", "==", bookmark.userId),
-        where("id", "==", bookmark.id)
-      );
-      const querySnapshot = await getDocs(q);
-      console.log("Documents found for removal:", querySnapshot.docs.length);
+      const userRef = doc(db, "users", currentUser.uid);
+      const userSnapshot = await getDoc(userRef);
+      const userData = userSnapshot.data();
 
-      querySnapshot.forEach((doc) => {
-        deleteDoc(doc.ref);
-      });
-      setBookmarks(bookmarks.filter((b) => b.id !== bookmark.id));
+      if (userData) {
+        const updatedFavorites = userData.favorites.filter(
+          (b: any) => b.id !== favorite.id
+        );
+
+        await setDoc(userRef, {
+          ...userData,
+          favorites: updatedFavorites,
+        });
+
+        setFavorites(updatedFavorites);
+      }
     } catch (error) {
-      console.error("Error removing bookmark from Firestore: ", error);
+      console.error("Error removing favorite from Firestore: ", error);
     }
   };
 
-  const fetchBookmarks = async (userId: string) => {
+  const fetchFavorites = async (userId: string) => {
     if (!userId) return;
 
     try {
-      const q = query(
-        collection(db, "favorites"),
-        where("userId", "==", userId)
-      );
-      const querySnapshot = await getDocs(q);
-      const fetchedBookmarks = querySnapshot.docs.map((doc) => ({
-        ...(doc.data() as GameData),
-        firestoreId: doc.id,
-      }));
-      setBookmarks(fetchedBookmarks);
-      console.log("success");
+      const userRef = doc(db, "users", userId);
+      const userSnapshot = await getDoc(userRef);
+      const userData = userSnapshot.data();
+
+      if (userData) {
+        const fetchedFavorites = userData.favorites || [];
+        setFavorites(fetchedFavorites);
+        console.log("success");
+      }
     } catch (error) {
-      console.error("Error fetching bookmarks: ", error);
+      console.error("Error fetching favorites: ", error);
     }
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        fetchBookmarks(user.uid);
+        fetchFavorites(user.uid);
       } else {
-        setBookmarks([]);
+        setFavorites([]);
       }
     });
 
@@ -125,14 +129,14 @@ export const BookmarkProvider = ({ children }: Props) => {
   }, []);
 
   return (
-    <BookmarkContext.Provider
+    <FavoritesContext.Provider
       value={{
-        bookmarks,
-        addBookmark,
-        removeBookmark,
+        favorites,
+        addFavorite,
+        removeFavorite,
       }}
     >
       {children}
-    </BookmarkContext.Provider>
+    </FavoritesContext.Provider>
   );
 };

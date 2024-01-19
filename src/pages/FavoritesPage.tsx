@@ -7,22 +7,27 @@ import {
   SimpleGrid,
   Title,
 } from "@mantine/core";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import nofavorites1 from "../assets/no_favorites1.png";
 import nofavorites2 from "../assets/no_favorites2.png";
 import nofavorites3 from "../assets/no_favorites3.png";
 import nofavorites4 from "../assets/no_favorites4.png";
 import Thumbnail from "../components/Thumbnail";
-import { BookmarkContext } from "../context/FavoritesContext";
+import { FavoritesContext } from "../context/FavoritesContext";
 import "../css/FavoritesPage.css";
 
 const images = [nofavorites1, nofavorites2, nofavorites3, nofavorites4];
 
 function FavoritesPage() {
+  useEffect(() => {
+    document.title = "GH: Gamehaven - Favorites";
+    window.scrollTo(0, 0);
+  }, []);
+
   const randomIndex = Math.floor(Math.random() * images.length);
   const random404Image = images[randomIndex];
-  const { bookmarks } = useContext(BookmarkContext);
+  const { favorites } = useContext(FavoritesContext);
 
   const navigate = useNavigate();
 
@@ -36,7 +41,7 @@ function FavoritesPage() {
         Favorites
       </Title>
       <Divider color="#262626" mt={"md"} />
-      {bookmarks.length === 0 ? (
+      {favorites.length === 0 ? (
         <Container className="favorites-container">
           <Center style={{ flexDirection: "column" }}>
             <Title order={2} mt={"xl"}>
@@ -62,7 +67,7 @@ function FavoritesPage() {
             verticalSpacing={"lg"}
             mt="md"
           >
-            {bookmarks.map((game) => (
+            {favorites.map((game) => (
               <Thumbnail key={game.id} game={game} />
             ))}
           </SimpleGrid>

@@ -19,7 +19,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MdOutlineError } from "react-icons/md";
 import { NavLink, useNavigate } from "react-router-dom";
 import ghSignin from "../assets/gh-signin.png";
@@ -38,6 +38,11 @@ function SigninPage() {
   const { updateUser } = useContext(UserContext);
   const { updateSelectedProfileImage } = useContext(ProfileImageContext);
   const [isForgotPasswordMode, setIsForgotPasswordMode] = useState(false);
+
+  useEffect(() => {
+    document.title = "GH: Gamehaven - Sign in";
+    window.scrollTo(0, 0);
+  }, []);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -81,7 +86,7 @@ function SigninPage() {
         displayName: user.displayName || "",
       });
 
-      updateSelectedProfileImage(userData?.profileImageId - 1 || 0);
+      updateSelectedProfileImage(userData?.profileImageId);
 
       navigate("/");
       console.log(user);

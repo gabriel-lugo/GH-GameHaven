@@ -19,10 +19,22 @@ import { IoHeartOutline } from "react-icons/io5";
 import { LuScroll } from "react-icons/lu";
 import { MdOutlineError } from "react-icons/md";
 import { useParams } from "react-router-dom";
+import {
+  EmailIcon,
+  EmailShareButton,
+  FacebookIcon,
+  FacebookShareButton,
+  LinkedinIcon,
+  LinkedinShareButton,
+  RedditIcon,
+  RedditShareButton,
+  TwitterShareButton,
+  XIcon,
+} from "react-share";
 import { getGameDetails } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
-import { BookmarkContext, GameData } from "../context/FavoritesContext";
+import { FavoritesContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
 import { auth } from "../firebase";
 import { Game } from "./HomePage";
@@ -51,18 +63,13 @@ interface GameDetails {
 
 function DetailsPage() {
   const params = useParams();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [params.id]);
-
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [showVideo, setShowVideo] = useState(true);
-  const { bookmarks, addBookmark, removeBookmark } =
-    useContext(BookmarkContext);
-
+  const { favorites, addFavorite, removeFavorite } =
+    useContext(FavoritesContext);
   const [userId, setUserId] = useState("");
+  const shareUrl = `https://ghgamehaven.netlify.app/game/${params.id}`;
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user: any) => {
@@ -71,11 +78,16 @@ function DetailsPage() {
     return () => unsubscribe();
   }, []);
 
-  const isBookmarked = bookmarks.some(
-    (bookmark) => bookmark.id === gameDetails?.id
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.title = `GH: Gamehaven - ${gameDetails?.name || "Loading..."}`;
+  }, [gameDetails]);
+
+  const isFavorited = favorites.some(
+    (favorite) => favorite.id === gameDetails?.id
   );
 
-  const handleBookmarkClick = () => {
+  const handleFavoriteClick = () => {
     if (!gameDetails) return;
 
     const gameData: GameData = {
@@ -84,10 +96,10 @@ function DetailsPage() {
     };
 
     if (userId) {
-      if (isBookmarked) {
-        removeBookmark(gameData);
+      if (isFavorited) {
+        removeFavorite(gameData);
       } else {
-        addBookmark(gameData);
+        addFavorite(gameData);
       }
     } else {
       showNotification({
@@ -285,13 +297,13 @@ function DetailsPage() {
               />
               <Button
                 className="cover-img-btn"
-                onClick={handleBookmarkClick}
+                onClick={handleFavoriteClick}
                 style={{
-                  backgroundColor: isBookmarked ? "#E3735E" : "#f2c341",
-                  color: isBookmarked ? "#FFF" : "#262626",
+                  backgroundColor: isFavorited ? "#E3735E" : "#f2c341",
+                  color: isFavorited ? "#FFF" : "#262626",
                 }}
               >
-                {isBookmarked ? (
+                {isFavorited ? (
                   <>
                     <GiCrownedHeart style={{ marginRight: "8px" }} /> Unfavorite
                   </>
@@ -459,11 +471,39 @@ function DetailsPage() {
 
               <Box className="website-img-layout">
                 <Box className="margin-box" mt="xl">
+                  <Title mb={"xs"} order={4}>
+                    Share
+                  </Title>
+                  <Box mb={"xl"} className="share-buttons-container">
+                    <FacebookShareButton
+                      url={shareUrl}
+                      title={gameDetails.name}
+                    >
+                      <FacebookIcon size={32} round />
+                    </FacebookShareButton>
+                    <RedditShareButton url={shareUrl} title={gameDetails.name}>
+                      <RedditIcon size={32} round />
+                    </RedditShareButton>
+                    <TwitterShareButton url={shareUrl} title={gameDetails.name}>
+                      <XIcon size={32} round />
+                    </TwitterShareButton>
+                    <LinkedinShareButton url={shareUrl}>
+                      <LinkedinIcon size={32} round />
+                    </LinkedinShareButton>
+                    <EmailShareButton
+                      url={shareUrl}
+                      subject={gameDetails.name}
+                      body="Check out this game!"
+                    >
+                      <EmailIcon size={32} round />
+                    </EmailShareButton>
+                  </Box>
                   <Title mb="xs" order={4}>
                     Websites
                   </Title>
                   {renderWebsites(gameDetails.websites)}
                 </Box>
+
                 <Image
                   src="../../src/assets/gh_details.png"
                   alt="A mascot of Gamehaven presenting information about a game."

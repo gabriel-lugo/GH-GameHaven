@@ -5,6 +5,7 @@ import {
   Divider,
   Image,
   Loader,
+  Paper,
   Spoiler,
   Text,
   Title,
@@ -34,6 +35,7 @@ import {
 import { getGameDetails } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
+import GameRating from "../components/RateGame";
 import { BookmarkContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
 import { auth } from "../firebase";
@@ -450,6 +452,21 @@ function DetailsPage() {
                   No ratings yet
                 </Text>
               )}
+              <Box style={{ marginTop: "1.5rem" }}>
+                <Paper
+                  style={{ background: "#F9F6EE", width: "15rem" }}
+                  p="sm"
+                  shadow="sm"
+                >
+                  <Text mb="sm" size="sm">
+                    Rate {gameDetails.name}
+                  </Text>
+                  <Text mb="xs" size="xs">
+                    Gamehaven users' ratings:
+                  </Text>
+                  <GameRating gameId={gameDetails.id.toString()} />
+                </Paper>
+              </Box>
             </Box>
           </Box>
           <Container>
@@ -559,7 +576,7 @@ function DetailsPage() {
               <Container size={"xl"}>
                 <Divider color="#262626" />
               </Container>
-              <Text pl={10} mb={"lg"}>
+              <Text pl={10} mb={"lg"} mt={"sm"}>
                 No Similar Games Available
               </Text>
             </Box>

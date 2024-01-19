@@ -337,7 +337,18 @@ export const getGameDetails = async (query: number, platform: string) => {
         try {
           const ageRatingDetails = await getAgeRatingDetails(ageRatingId);
           console.log("Age Rating Category:", ageRatingDetails.category);
-          return ageRatingDetails;
+
+          // Check if the age rating has category 2
+          if (ageRatingDetails.category === 2) {
+            const translatedRating = translateRatingToPEGI(
+              ageRatingDetails.rating
+            );
+            console.log("Translated PEGI Rating:", translatedRating);
+
+            return translatedRating;
+          } else {
+            return null; // Skip age ratings with other categories
+          }
         } catch (error) {
           console.error("Error getting age rating details:", error);
           return null;
@@ -347,16 +358,15 @@ export const getGameDetails = async (query: number, platform: string) => {
 
     const ageRatingDetailsResults = await Promise.all(ageRatingDetailsPromises);
 
-    // Filter out null values (age ratings with category other than 2)
-    const validAgeRatingDetails = ageRatingDetailsResults.filter(
-      (details) => details !== null
+    const firstValidAgeRating = ageRatingDetailsResults.find(
+      (rating) => rating !== null
     );
 
     const result = [
       {
         ...gameWithCover[0],
         similar_games: similarGamesWithCovers,
-        age_rating_details: validAgeRatingDetails,
+        age_ratings: firstValidAgeRating || "Unknown PEGI rating",
       },
     ];
 
@@ -396,23 +406,23 @@ const getAgeRatingDetails = async (ageRatingId: number) => {
   }
 };
 
-// const translateRatingToPEGI = (rating: number): string => {
-//   console.log("Rating received:", rating);
-//   switch (rating) {
-//     case 1:
-//       return "PEGI 3";
-//     case 2:
-//       return "PEGI 7";
-//     case 3:
-//       return "PEGI 12";
-//     case 4:
-//       return "PEGI 16";
-//     case 5:
-//       return "PEGI 18";
-//     default:
-//       return "Unknown PEGI category";
-//   }
-// };
+const translateRatingToPEGI = (rating: number): string => {
+  console.log("Rating received:", rating);
+  switch (rating) {
+    case 1:
+      return "PEGI 3";
+    case 2:
+      return "PEGI 7";
+    case 3:
+      return "PEGI 12";
+    case 4:
+      return "PEGI 16";
+    case 5:
+      return "PEGI 18";
+    default:
+      return "Unknown PEGI category";
+  }
+};
 
 export const getTopRatedGames = async (
   platform: string,

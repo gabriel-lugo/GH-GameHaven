@@ -35,15 +35,12 @@ import {
 import { getGameDetails } from "../api/igdbApi";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
-import {
-  FavoritesContext,
-  FavoritesContext,
-  GameData,
-} from "../context/FavoritesContext";
+import { FavoritesContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
 import { auth } from "../firebase";
 import { getPegiImage } from "../util/PegiUtility";
 import { Game } from "./HomePage";
+import GameRating from "../components/RateGame";
 
 interface GameDetails {
   name: string;

@@ -21,6 +21,7 @@ export interface Game {
   summary: string;
   artworks: string[];
   release_dates: Array<{ date: string }>;
+  platforms: Array<{ name: string }>;
 }
 
 function HomePage() {

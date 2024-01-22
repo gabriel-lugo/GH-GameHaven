@@ -33,14 +33,15 @@ import {
   XIcon,
 } from "react-share";
 import { getGameDetails } from "../api/igdbApi";
+import GHMascot from "../assets/gh_details.png";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
+import GameRating from "../components/RateGame";
 import { FavoritesContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
 import { auth } from "../firebase";
 import { getPegiImage } from "../util/PegiUtility";
 import { Game } from "./HomePage";
-import GameRating from "../components/RateGame";
 
 interface GameDetails {
   name: string;
@@ -529,7 +530,7 @@ function DetailsPage() {
                 </Box>
 
                 <Image
-                  src="../../src/assets/gh_details.png"
+                  src={GHMascot}
                   alt="A mascot of Gamehaven presenting information about a game."
                   className="gh-mascot-img"
                 />

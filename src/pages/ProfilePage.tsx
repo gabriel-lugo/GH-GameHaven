@@ -306,7 +306,7 @@ function ProfilePage() {
             </Box>
             <Box className="profile-settings-form">
               <form onSubmit={form.onSubmit(onSubmit)}>
-                <Stack>
+                <Stack gap="lg">
                   <TextInput label="Email" value={user?.email || ""} disabled />
                   <TextInput
                     label="Username"
@@ -347,7 +347,12 @@ function ProfilePage() {
                     radius="md"
                   />
 
-                  <Button className="button-style" fullWidth type="submit">
+                  <Button
+                    className="button-style"
+                    fullWidth
+                    type="submit"
+                    mt={"lg"}
+                  >
                     Save Changes
                   </Button>
                 </Stack>

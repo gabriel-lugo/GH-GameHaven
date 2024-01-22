@@ -42,5 +42,8 @@
 }
 
 .profile-settings-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   flex: 3;
 }

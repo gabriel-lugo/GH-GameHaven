@@ -8,9 +8,10 @@ import { auth, db } from "../firebase";
 
 interface GameRatingProps {
   gameId: string;
+  showText?: boolean;
 }
 
-function GameRating({ gameId }: GameRatingProps) {
+function GameRating({ gameId, showText = true }: GameRatingProps) {
   const [rating, setRating] = useState<number>(0);
   const [ratingCount, setRatingCount] = useState<number>(0);
   const [user, setUser] = useState<User | null>(null);
@@ -58,14 +59,18 @@ function GameRating({ gameId }: GameRatingProps) {
   return (
     <Box>
       <Rating size="lg" value={rating} onChange={handleRatingChange} />
-      <Text size="sm" mt="xs">
-        {rating > 0
-          ? `Average Rating: ${rating.toFixed(1)} out of 5`
-          : "No ratings yet"}
-      </Text>
-      <Text size="xs" mt="xs">
-        Based on {ratingCount} ratings from the GH community
-      </Text>
+      {showText && (
+        <>
+          <Text size="sm" mt="xs">
+            {rating > 0
+              ? `Average Rating: ${rating.toFixed(1)} out of 5`
+              : "No ratings yet"}
+          </Text>
+          <Text size="xs" mt="xs">
+            Based on {ratingCount} ratings from the GH community
+          </Text>
+        </>
+      )}
     </Box>
   );
 }

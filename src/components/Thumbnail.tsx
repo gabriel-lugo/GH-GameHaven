@@ -8,6 +8,7 @@ import { NavLink } from "react-router-dom";
 import { FavoritesContext, GameData } from "../context/FavoritesContext";
 import "../css/Thumbnail.css";
 import { auth } from "../firebase";
+import GameRating from "./RateGame";
 
 interface Game {
   name: string;
@@ -113,6 +114,9 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
         </Title>
       </Box>
       <Box className="rating-content">
+        <Box style={{ marginBottom: "1rem" }}>
+          <GameRating gameId={game.id.toString()} showText={false} />
+        </Box>
         <Text className={`rating ${getRatingClass(game.total_rating)}`}>
           {game.total_rating === null || game.total_rating === undefined
             ? "TBD"

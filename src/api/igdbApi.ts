@@ -174,14 +174,18 @@ export const searchForGames = async (
 
   const offset = (currentPage - 1) * limit;
 
-  const requestBody = `fields name, summary, themes.name, franchises.name, release_dates.date, cover.image_id, involved_companies.company.name, game_modes.name, artworks.*, screenshots.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*, similar_games.cover.image_id; 
+  const requestBody = `fields name, summary, themes, franchises.name, release_dates.date, cover.image_id, involved_companies.company.name, game_modes.name, artworks.*, screenshots.*, genres.name, websites.*, videos.*, total_rating, total_rating_count, platforms.name, similar_games.*, similar_games.cover.image_id; 
   search "${query}"; where platforms = (${platformIdsArray}); limit ${limit}; offset ${offset};`;
 
   try {
     const response = await axiosClient.post(url, requestBody);
     const searchResults = response.data;
+    
+    const filteredGames = searchResults.filter((game: any) => 
+      !game.themes || !game.themes.includes(42)
+    );
 
-    const processedResults = searchResults.map((game: any) => ({
+    const processedResults = filteredGames.map((game: any) => ({
       ...game,
       cover: game.cover
         ? getGameCoverUrl(game.cover.image_id)
@@ -519,11 +523,15 @@ export const getNewGames = async (platform: any, limit: number = 15) => {
     const gamesResponse = await axiosClient.get(
       `games/${gameIds.join(
         ","
-      )}?fields=name,summary,cover.image_id,screenshots.image_id,artworks.*,websites`
+      )}?fields=name,summary,cover.image_id,themes,screenshots.image_id,artworks.*,websites`
+    );
+
+    const filteredGames = gamesResponse.data.filter((game: any) => 
+      !game.themes || !game.themes.includes(42)
     );
 
     const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(
-      gamesResponse.data,
+      filteredGames,
       platform
     );
 
@@ -585,9 +593,13 @@ export const getUpcomingGames = async (platform: any, limit: number = 15) => {
       )}?fields=name,summary,cover.image_id,screenshots.image_id,artworks.*,websites`
     );
 
+    const filteredGames = gamesResponse.data.filter((game: any) => 
+    !game.themes || !game.themes.includes(42)
+  );
+
     const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(
-      gamesResponse.data,
-      platform
+     filteredGames,
+     platform
     );
 
     try {

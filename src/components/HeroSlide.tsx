@@ -33,32 +33,38 @@ function HeroSlide({ games }: HeroSlideProps) {
       autoplay={{ delay: 4500 }}
     >
       {games.map((game) => {
-        const firstScreenshot = game.screenshots[0];
-        return (
-          <SwiperSlide key={`${game.id}`}>
-            <NavLink to={`/game/${game.id}`} className="game-link">
-              <Box className="hero-slide-container">
-                <Box aria-label="new games" className="is-new-label">
-                  <Text size="sm">
-                    Screenshot from: <b>{game.name}</b>
-                  </Text>
-                  <Badge
-                    size="sm"
-                    bg="dark"
-                    variant="dot"
-                    color="orange"
-                    mt={"sm"}
-                    mb={"xs"}
-                    style={{ color: "#fffcfc" }}
-                  >
-                    Upcoming release
-                  </Badge>
+        if (game.screenshots && game.screenshots.length > 0) {
+          const firstScreenshot = game.screenshots[0];
+          return (
+            <SwiperSlide key={`${game.id}`}>
+              <NavLink to={`/game/${game.id}`} className="game-link">
+                <Box className="hero-slide-container">
+                  <Box aria-label="new games" className="is-new-label">
+                    <Text size="sm">
+                      Screenshot from: <b>{game.name}</b>
+                    </Text>
+                    <Badge
+                      size="sm"
+                      bg="dark"
+                      variant="dot"
+                      color="orange"
+                      mt={"sm"}
+                      mb={"xs"}
+                      style={{ color: "#fffcfc" }}
+                    >
+                      Upcoming release
+                    </Badge>
+                  </Box>
+                  <Image
+                    src={firstScreenshot}
+                    alt={`Artwork of ${game.name}`}
+                  />
                 </Box>
-                <Image src={firstScreenshot} alt={`Artwork of ${game.name}`} />
-              </Box>
-            </NavLink>
-          </SwiperSlide>
-        );
+              </NavLink>
+            </SwiperSlide>
+          );
+        }
+        return null;
       })}
     </Swiper>
   );

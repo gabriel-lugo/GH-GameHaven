@@ -136,6 +136,15 @@ function SearchResultsPage() {
                     </Text>
                   </Box>
                 </Box>
+                {game.platforms && game.platforms.length > 0 ? (
+                  game.platforms.map((platform, index) => (
+                    <Text size="xs" key={index}>
+                      {platform.name}
+                    </Text>
+                  ))
+                ) : (
+                  <Text fs="italic">Not available</Text>
+                )}
               </NavLink>
               {index < searchResults.length - 1 && <Divider my="sm" />}
             </React.Fragment>

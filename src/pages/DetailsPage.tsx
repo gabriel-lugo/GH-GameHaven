@@ -5,6 +5,7 @@ import {
   Divider,
   Image,
   Loader,
+  Paper,
   Spoiler,
   Text,
   Title,
@@ -37,10 +38,13 @@ import Gallery from "../components/Gallery";
 import { FavoritesContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
 import { auth } from "../firebase";
+import { getPegiImage } from "../util/PegiUtility";
 import { Game } from "./HomePage";
+import GameRating from "../components/RateGame";
 
 interface GameDetails {
   name: string;
+  age_ratings: string;
   summary: string;
   themes: Array<{ name: string }>;
   franchises: Array<{ name: string }>;
@@ -289,6 +293,14 @@ function DetailsPage() {
       {gameDetails ? (
         <Box>
           <Box className="details-hero">
+            {gameDetails.age_ratings && (
+              <Box className="age-rating-box">
+                <Image
+                  src={getPegiImage(gameDetails.age_ratings)}
+                  alt={`PEGI Rating: ${gameDetails.age_ratings}`}
+                />
+              </Box>
+            )}
             <Box className="cover-image-container">
               <Image
                 src={gameDetails.cover}
@@ -450,6 +462,18 @@ function DetailsPage() {
                   No ratings yet
                 </Text>
               )}
+              <Box style={{ marginTop: "1.5rem" }}>
+                <Paper
+                  style={{ background: "#F9F6EE", width: "15rem" }}
+                  p="sm"
+                  shadow="sm"
+                >
+                  <Text fw={500} mb="sm" size="sm">
+                    Rate {gameDetails.name}
+                  </Text>
+                  <GameRating gameId={gameDetails.id.toString()} />
+                </Paper>
+              </Box>
             </Box>
           </Box>
           <Container>
@@ -559,7 +583,7 @@ function DetailsPage() {
               <Container size={"xl"}>
                 <Divider color="#262626" />
               </Container>
-              <Text pl={10} mb={"lg"}>
+              <Text pl={10} mb={"lg"} mt={"sm"}>
                 No Similar Games Available
               </Text>
             </Box>

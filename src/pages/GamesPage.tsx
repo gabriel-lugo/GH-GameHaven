@@ -106,13 +106,13 @@ function GamesPage() {
     playstation: <FaPlaystation color="blue" />,
     xbox: <FaXbox color="green" />,
     "nintendo switch": <BsNintendoSwitch color="red" />,
-    n64: <Image maw={45} src={n64} alt="Logo of Nintendo 64" />,
+    n64: <Image maw={32} src={n64} alt="Logo of Nintendo 64" />,
     nes: (
-      <Image maw={70} src={nes} alt="Logo of Nintendo Entertainment System" />
+      <Image maw={55} src={nes} alt="Logo of Nintendo Entertainment System" />
     ),
     snes: (
       <Image
-        maw={80}
+        maw={55}
         src={snes}
         alt="Logo of Super Nintendo Entertainment System"
       />

@@ -46,6 +46,14 @@
   justify-content: space-between;
 }
 
+.age-rating-box {
+  width: 3rem;
+  position: absolute;
+  z-index: 5;
+  right: 1%;
+  top: 1%;
+}
+
 .cover-img-btn {
   width: 14rem;
   position: absolute;

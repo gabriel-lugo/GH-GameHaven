@@ -1,3 +1,4 @@
+import logo from "../assets/GH-logo.png";
 import axiosClient from "./axiosClient";
 
 const platformIds: { [key: string]: number } = {
@@ -29,8 +30,7 @@ const gameModeNameToId: { [key: string]: number } = {
 
 const defaultMinRating = 85;
 const defaultMinRatingCount = 20;
-const defaultCoverUrl =
-  "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6";
+const defaultCoverUrl = {logo};
 
 export const getGameScreenshotUrl = (imageId: string) => {
   return `https://images.igdb.com/igdb/image/upload/t_screenshot_big/${imageId}.png`;
@@ -265,7 +265,7 @@ export const fetchFilteredGames = async (
         ...game,
         cover: game.cover
           ? getGameCoverUrl(game.cover.image_id)
-          : "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6",
+          : "../assets/GH-logo.png",
         total_rating:
           game.total_rating !== undefined ? game.total_rating : null,
       };

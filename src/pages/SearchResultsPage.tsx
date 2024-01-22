@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { searchForGames } from "../api/igdbApi";
+import logo from "../assets/GH-logo.png";
 import nogames from "../assets/no-games-available.png";
 import "../css/SearchResultsPage.css";
 import { Game } from "./HomePage";
@@ -116,7 +117,7 @@ function SearchResultsPage() {
                       mb="md"
                       src={game.cover}
                       alt={game.name}
-                      fallbackSrc="https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03250a04-e515-4fd2-901d-89f4951b75a6"
+                      fallbackSrc={logo}
                       style={{
                         width: "50px",
                         height: "auto",

@@ -3,7 +3,7 @@ import pegi16 from "../assets/PEGI/PEGI_16.svg";
 import pegi18 from "../assets/PEGI/PEGI_18.svg";
 import pegi3 from "../assets/PEGI/PEGI_3.svg";
 import pegi7 from "../assets/PEGI/PEGI_7.svg";
-import unknown from "../assets/PEGI/Pegi_unknown.png";
+import unknown from "../assets/PEGI/PEGI_unknown.png";
 
 export const pegiImages = [pegi3, pegi7, pegi12, pegi16, pegi18, unknown];
 

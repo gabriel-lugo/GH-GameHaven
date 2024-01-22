@@ -5,6 +5,7 @@ import { GiCrownedHeart, GiStabbedNote } from "react-icons/gi";
 import { IoHeartOutline } from "react-icons/io5";
 import { MdOutlineError } from "react-icons/md";
 import { NavLink } from "react-router-dom";
+import logo from "../assets/GH-logo.png";
 import { FavoritesContext, GameData } from "../context/FavoritesContext";
 import "../css/Thumbnail.css";
 import { auth } from "../firebase";
@@ -87,7 +88,7 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
     <Box className="thumbnail-card-container">
       <NavLink to={`/game/${game.id}`} className="game-link">
         <Box className="thumbnail-image">
-          <Image src={game.cover} alt={game.name} />
+          <Image src={game.cover} fallbackSrc={logo} alt={game.name} />
           <Box className="hover-content">
             <Spoiler maxHeight={200} showLabel="" hideLabel="">
               <GiStabbedNote

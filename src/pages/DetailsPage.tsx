@@ -34,6 +34,7 @@ import {
 } from "react-share";
 import { getGameDetails } from "../api/igdbApi";
 import GHMascot from "../assets/gh_details.png";
+import NoPreview from "../assets/no-preview.png";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
 import GameRating from "../components/RateGame";
@@ -238,9 +239,7 @@ function DetailsPage() {
       );
     } else {
       const imageUrl =
-        gameDetails.screenshots?.[0] ||
-        gameDetails.artworks?.[0] ||
-        "https://github.com/gabriel-lugo/GH-GameHaven/assets/117975295/03761a65-0542-4764-8997-9b5b705c45b3";
+        gameDetails.screenshots?.[0] || gameDetails.artworks?.[0] || NoPreview;
       return (
         <Image
           src={imageUrl}

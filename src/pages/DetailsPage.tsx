@@ -11,14 +11,12 @@ import {
   Title,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { showNotification } from "@mantine/notifications";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaGoogle, FaWikipediaW } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import { GiCrownedHeart } from "react-icons/gi";
 import { IoHeartOutline } from "react-icons/io5";
 import { LuScroll } from "react-icons/lu";
-import { MdOutlineError } from "react-icons/md";
 import { useParams } from "react-router-dom";
 import {
   EmailIcon,
@@ -37,61 +35,23 @@ import NoPreview from "../assets/no-preview.png";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
 import GameRating from "../components/RateGame";
-import { FavoritesContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
-import { auth } from "../firebase";
+import { useFavorites } from "../utils/FavoritesUtils";
 import { useGameDetails } from "../utils/GameUtils";
 import { getPegiImage } from "../utils/PegiUtility";
 
 function DetailsPage() {
   const params = useParams();
   const { gameDetails, fetchGameDetails } = useGameDetails();
+  const { handleFavoriteClick, isFavorited } = useFavorites(gameDetails);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [showVideo, setShowVideo] = useState(true);
-  const { favorites, addFavorite, removeFavorite } =
-    useContext(FavoritesContext);
-  const [userId, setUserId] = useState("");
   const shareUrl = `https://ghgamehaven.netlify.app/game/${params.id}`;
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user: any) => {
-      setUserId(user ? user.uid : "");
-    });
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     document.title = `GH: Gamehaven - ${gameDetails?.name || "Loading..."}`;
   }, [gameDetails]);
-
-  const isFavorited = favorites.some(
-    (favorite) => favorite.id === gameDetails?.id
-  );
-
-  const handleFavoriteClick = () => {
-    if (!gameDetails) return;
-
-    const gameData: GameData = {
-      ...gameDetails,
-      userId: userId,
-    };
-
-    if (userId) {
-      if (isFavorited) {
-        removeFavorite(gameData);
-      } else {
-        addFavorite(gameData);
-      }
-    } else {
-      showNotification({
-        title: "Sign In Needed",
-        message: "You need to sign in to favorite a game",
-        color: "red",
-        icon: <MdOutlineError />,
-      });
-    }
-  };
 
   useEffect(() => {
     setShowVideo(true);

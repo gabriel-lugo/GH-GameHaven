@@ -145,6 +145,7 @@ function Search() {
             >
               {searchResults.map((game, index) => (
                 <NavLink
+                  key={game.id}
                   onClick={handleGameSelect}
                   to={`/game/${game.id}`}
                   className="game-link"

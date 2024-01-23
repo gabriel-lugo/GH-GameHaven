@@ -32,7 +32,6 @@ import {
   TwitterShareButton,
   XIcon,
 } from "react-share";
-import { getGameDetails } from "../api/igdbApi";
 import GHMascot from "../assets/gh_details.png";
 import NoPreview from "../assets/no-preview.png";
 import Carousel from "../components/Carousel";
@@ -41,35 +40,12 @@ import GameRating from "../components/RateGame";
 import { FavoritesContext, GameData } from "../context/FavoritesContext";
 import "../css/DetailsPage.css";
 import { auth } from "../firebase";
-import { getPegiImage } from "../util/PegiUtility";
-import { Game } from "./HomePage";
-
-interface GameDetails {
-  name: string;
-  age_ratings: string;
-  summary: string;
-  themes: Array<{ name: string }>;
-  franchises: Array<{ name: string }>;
-  release_dates: Array<{ date: string }>;
-  involved_companies: Array<{ company: { name: string } }>;
-  game_modes: Array<{ name: string }>;
-  artworks: Array<any>;
-  genres: Array<{ name: string }>;
-  websites: Array<any>;
-  videos: Array<any>;
-  total_rating: number;
-  total_rating_count: number;
-  platforms: Array<{ name: string }>;
-  similar_games: Array<Game>;
-  cover: string;
-  screenshots: Array<{ url: string }>;
-  id: any;
-  rating: any;
-}
+import { useGameDetails } from "../utils/GameUtils";
+import { getPegiImage } from "../utils/PegiUtility";
 
 function DetailsPage() {
   const params = useParams();
-  const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
+  const { gameDetails, fetchGameDetails } = useGameDetails();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [showVideo, setShowVideo] = useState(true);
   const { favorites, addFavorite, removeFavorite } =
@@ -268,20 +244,10 @@ function DetailsPage() {
 
   useEffect(() => {
     if (params.id) {
-      const query = parseInt(params.id, 10); // Convert the ID to a number
-      const platform = "pc";
-
-      getGameDetails(query, platform)
-        .then((gameData) => {
-          const game = gameData[0];
-          setGameDetails(game);
-          console.log("Game Information:", game);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      const query = parseInt(params.id, 10);
+      fetchGameDetails(query);
     }
-  }, [params.id]);
+  }, [params.id, fetchGameDetails]);
 
   function convertTimestampToDate(timestamp: any) {
     const date = new Date(timestamp * 1000);

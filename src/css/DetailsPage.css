@@ -38,6 +38,7 @@
 
 .gh-mascot-img {
   max-width: 20rem;
+  flex: 1;
 }
 
 .website-img-layout {

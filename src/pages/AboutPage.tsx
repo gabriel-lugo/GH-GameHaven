@@ -1,5 +1,6 @@
-import { Container, Flex, Image, Text, Title } from "@mantine/core";
+import { Box, Container, Image, Text, Title } from "@mantine/core";
 import { useEffect } from "react";
+import { NavLink } from "react-router-dom";
 import getInTouch from "../assets/GH-GetInTouch.png";
 import logo from "../assets/GH-logo.png";
 import "../css/AboutPage.css";
@@ -12,9 +13,9 @@ function AboutPage() {
 
   return (
     <Container size={"md"} className="about-container">
-      <Flex justify="center" align="center" mb={"xl"}>
+      <Box className="about-image-container" mb={"xl"}>
         <Image src={logo} alt="GameHaven Logo" maw={500} />
-      </Flex>
+      </Box>
       <Title order={2} mb={"lg"}>
         Our Story
       </Title>
@@ -113,9 +114,11 @@ function AboutPage() {
           for the latest updates and announcements.
         </li>
       </ul>
-      <Flex justify="center" align="center">
-        <Image src={getInTouch} maw={450} />
-      </Flex>
+      <Box className="about-image-container">
+        <NavLink to={"/contact"}>
+          <Image src={getInTouch} maw={450} />
+        </NavLink>
+      </Box>
     </Container>
   );
 }

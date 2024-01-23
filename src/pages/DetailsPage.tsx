@@ -42,7 +42,7 @@ import { getPegiImage } from "../utils/PegiUtility";
 
 function DetailsPage() {
   const params = useParams();
-  const { gameDetails, fetchGameDetails } = useGameDetails();
+  const { gameDetails, fetchGameDetails, getRatingClass } = useGameDetails();
   const { handleFavoriteClick, isFavorited } = useFavorites(gameDetails);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [showVideo, setShowVideo] = useState(true);
@@ -185,18 +185,6 @@ function DetailsPage() {
       );
     }
   }
-
-  const getRatingClass = (rating: number) => {
-    if (rating === null || rating === undefined) {
-      return "rating-color-tbd";
-    } else if (rating >= 75) {
-      return "rating-color-high";
-    } else if (rating >= 50) {
-      return "rating-color-medium";
-    } else {
-      return "rating-color-low";
-    }
-  };
 
   function isValidDate(d: any) {
     return d && !isNaN(new Date(d).getTime());

@@ -195,7 +195,8 @@ function DetailsPage() {
       const query = parseInt(params.id, 10);
       fetchGameDetails(query);
     }
-  }, [params.id, fetchGameDetails]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
 
   function convertTimestampToDate(timestamp: any) {
     const date = new Date(timestamp * 1000);

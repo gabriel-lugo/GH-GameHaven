@@ -242,7 +242,7 @@ export const fetchFilteredGames = async (
 
   const offset = (currentPage - 1) * limit;
 
-  let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name; limit ${limit}; offset ${offset};`;
+  let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name, themes; limit ${limit}; offset ${offset};`;
 
   if (platformIdsArray.length > 0) {
     query += ` where platforms = (${platformIdsArray.join(",")})`;
@@ -258,7 +258,10 @@ export const fetchFilteredGames = async (
 
   try {
     const response = await axiosClient.post("games/", query);
-    const data = response.data;
+    let data = response.data;
+
+    
+    data = data.filter((game: any) => !game.themes || !game.themes.includes(42));
 
     const processedGames = data.map((game: any) => {
       return {

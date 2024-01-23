@@ -26,3 +26,13 @@ h4 {
 .about-container a:hover {
   text-decoration: underline;
 }
+
+.about-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-image-container img {
+  flex: 1;
+}

@@ -47,3 +47,9 @@
   justify-content: space-between;
   flex: 3;
 }
+
+@media (max-width: 341px) {
+  .profile-settings-thumbnails {
+    justify-content: center;
+  }
+}

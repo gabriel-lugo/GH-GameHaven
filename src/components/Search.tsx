@@ -135,29 +135,32 @@ function Search() {
             onChange={handleInputChange}
             onKeyDown={handleInputChange}
           />
-          {!isEnterPressed && searchResults.length > 0 && (
-            <Paper
-              withBorder
-              className="dropdown-search"
-              shadow="lg"
-              radius="xs"
-              pl="sm"
-            >
-              {searchResults.map((game, index) => (
-                <NavLink
-                  onClick={handleGameSelect}
-                  to={`/game/${game.id}`}
-                  className="game-link"
-                >
-                  <Box style={{ height: "auto" }}>
-                    <Text mt="xs" mb="xs" className="text-hover" key={index}>
-                      {game.name}
-                    </Text>
-                  </Box>
-                </NavLink>
-              ))}
-            </Paper>
-          )}
+          {!isEnterPressed &&
+            searchTerm.length > 0 &&
+            searchResults.length > 0 && (
+              <Paper
+                withBorder
+                className="dropdown-search"
+                shadow="lg"
+                radius="xs"
+                pl="sm"
+              >
+                {searchResults.map((game, index) => (
+                  <NavLink
+                    key={game.id}
+                    onClick={handleGameSelect}
+                    to={`/game/${game.id}`}
+                    className="game-link"
+                  >
+                    <Box style={{ height: "auto" }}>
+                      <Text mt="xs" mb="xs" className="text-hover" key={index}>
+                        {game.name}
+                      </Text>
+                    </Box>
+                  </NavLink>
+                ))}
+              </Paper>
+            )}
         </>
       ) : (
         <Box className="icon-only" onClick={toggleInputVisibility}>

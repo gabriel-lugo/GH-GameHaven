@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Container,
   Divider,
   Image,
@@ -12,8 +11,6 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect } from "react";
-import { GiCrownedHeart } from "react-icons/gi";
-import { IoHeartOutline } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import {
   EmailIcon,
@@ -29,6 +26,7 @@ import {
 } from "react-share";
 import GHMascot from "../assets/gh_details.png";
 import Carousel from "../components/Carousel";
+import CoverImage from "../components/CoverImage";
 import Gallery from "../components/Gallery";
 import GameRating from "../components/RateGame";
 import "../css/DetailsPage.css";
@@ -49,7 +47,6 @@ function DetailsPage() {
   } = useGameDetails();
   const { handleFavoriteClick, isFavorited } = useFavorites(gameDetails);
   const isMobile = useMediaQuery("(max-width: 768px)");
-  // const [showVideo, setShowVideo] = useState(true);
   const shareUrl = `https://ghgamehaven.netlify.app/game/${params.id}`;
 
   useEffect(() => {
@@ -78,31 +75,12 @@ function DetailsPage() {
                 />
               </Box>
             )}
-            <Box className="cover-image-container">
-              <Image
-                src={gameDetails.cover}
-                alt={`Cover of ${gameDetails.name}`}
-                className="game-cover-img"
-              />
-              <Button
-                className="cover-img-btn"
-                onClick={handleFavoriteClick}
-                style={{
-                  backgroundColor: isFavorited ? "#E3735E" : "#f2c341",
-                  color: isFavorited ? "#FFF" : "#262626",
-                }}
-              >
-                {isFavorited ? (
-                  <>
-                    <GiCrownedHeart style={{ marginRight: "8px" }} /> Unfavorite
-                  </>
-                ) : (
-                  <>
-                    <IoHeartOutline style={{ marginRight: "8px" }} /> Favorite
-                  </>
-                )}
-              </Button>
-            </Box>
+            <CoverImage
+              gameDetails={gameDetails}
+              handleFavoriteClick={handleFavoriteClick}
+              isFavorited={isFavorited}
+            />
+
             <Box className="details-title">
               <Title className="title-size" pl={10} order={2}>
                 {gameDetails.name}

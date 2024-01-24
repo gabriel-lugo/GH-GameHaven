@@ -27,7 +27,7 @@ import { ProfileImageContext } from "../context/ProfileImageContext";
 import { UserContext } from "../context/UserContext";
 import "../css/Header.css";
 import { auth } from "../firebase";
-import { getProfileImage } from "../util/ProfileImageUtility";
+import { getProfileImage } from "../utils/ProfileImageUtility";
 import Search from "./Search";
 
 const links = [

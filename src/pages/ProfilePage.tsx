@@ -29,7 +29,7 @@ import { ProfileImageContext } from "../context/ProfileImageContext";
 import { UserContext } from "../context/UserContext";
 import "../css/ProfilePage.css";
 import { auth, db } from "../firebase";
-import { getProfileImage, profileImages } from "../util/ProfileImageUtility";
+import { getProfileImage, profileImages } from "../utils/ProfileImageUtility";
 
 interface FormValues {
   name: string;

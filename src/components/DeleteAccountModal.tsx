@@ -1,5 +1,4 @@
 import { Button, Modal, Text } from "@mantine/core";
-import React from "react";
 
 interface DeleteAccountModalProps {
   opened: boolean;

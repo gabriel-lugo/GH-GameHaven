@@ -1,5 +1,4 @@
 import { Box, Text, Title } from "@mantine/core";
-import React from "react";
 
 interface ThemesProps {
   themes: Array<{ name: string }> | undefined;

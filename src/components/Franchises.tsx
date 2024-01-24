@@ -1,5 +1,4 @@
 import { Box, Text, Title } from "@mantine/core";
-import React from "react";
 
 interface FranchisesProps {
   franchises: Array<{ name: string }> | undefined;

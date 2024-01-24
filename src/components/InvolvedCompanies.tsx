@@ -1,5 +1,4 @@
 import { Box, Text } from "@mantine/core";
-import React from "react";
 
 interface InvolvedCompaniesProps {
   involvedCompanies: Array<{ company: { name: string } }> | undefined;

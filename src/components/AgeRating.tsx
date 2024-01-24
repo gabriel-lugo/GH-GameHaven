@@ -1,5 +1,4 @@
 import { Box, Image } from "@mantine/core";
-import React from "react";
 import { getPegiImage } from "../utils/PegiUtility";
 
 interface AgeRatingProps {

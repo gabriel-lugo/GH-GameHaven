@@ -1,6 +1,4 @@
-// RatingSection.tsx
 import { Box, Paper, Text } from "@mantine/core";
-import React from "react";
 import GameRating from "./RateGame";
 
 interface RatingSectionProps {

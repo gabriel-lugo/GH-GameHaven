@@ -1,3 +1,7 @@
 .games-buttons .mantine-Button-inner {
   color: var(--body-text-color);
 }
+
+.platform-icon {
+  flex: 1;
+}

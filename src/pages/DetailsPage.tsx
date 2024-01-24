@@ -4,7 +4,6 @@ import {
   Divider,
   Image,
   Loader,
-  Paper,
   Spoiler,
   Text,
   Title,
@@ -29,7 +28,7 @@ import AgeRating from "../components/AgeRating";
 import Carousel from "../components/Carousel";
 import CoverImage from "../components/CoverImage";
 import Gallery from "../components/Gallery";
-import GameRating from "../components/RateGame";
+import RatingSection from "../components/RatingSection";
 import "../css/DetailsPage.css";
 import { useGameDetails } from "../utils/DetailsPageUtils";
 import { useFavorites } from "../utils/FavoritesUtils";
@@ -39,7 +38,6 @@ function DetailsPage() {
   const {
     gameDetails,
     fetchGameDetails,
-    getRatingClass,
     isValidDate,
     convertTimestampToDate,
     renderWebsites,
@@ -191,40 +189,14 @@ function DetailsPage() {
               color="var(--nav-text-color)"
             />
 
-            <Box className="rating-section">
-              <Text
-                className={`rating-color ${getRatingClass(
-                  gameDetails.total_rating
-                )}`}
-              >
-                {gameDetails.total_rating === null ||
-                gameDetails.total_rating === undefined
-                  ? "TBD"
-                  : Math.round(gameDetails.total_rating)}
-              </Text>
-              {gameDetails.total_rating_count !== undefined &&
-              gameDetails.total_rating_count > 0 ? (
-                <Text mt="sm" size="sm">
-                  Based on {gameDetails.total_rating_count} ratings
-                </Text>
-              ) : (
-                <Text mt="sm" size="sm" fs="italic">
-                  No ratings yet
-                </Text>
-              )}
-              <Box style={{ marginTop: "1.5rem" }}>
-                <Paper
-                  style={{ background: "#F9F6EE", width: "15rem" }}
-                  p="sm"
-                  shadow="sm"
-                >
-                  <Text fw={500} mb="sm" size="sm">
-                    Rate {gameDetails.name}
-                  </Text>
-                  <GameRating gameId={gameDetails.id.toString()} />
-                </Paper>
-              </Box>
-            </Box>
+            {gameDetails && (
+              <RatingSection
+                totalRating={gameDetails.total_rating}
+                totalRatingCount={gameDetails.total_rating_count}
+                gameName={gameDetails.name}
+                gameId={gameDetails.id.toString()}
+              />
+            )}
           </Box>
           <Container>
             <Box className="centered-content" mt="md">

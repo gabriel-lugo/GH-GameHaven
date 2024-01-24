@@ -50,18 +50,6 @@ export function useGameDetails() {
     setShowVideo(true);
   }, [gameDetails]);
 
-  const getRatingClass = (rating: number) => {
-    if (rating === null || rating === undefined) {
-      return "rating-color-tbd";
-    } else if (rating >= 75) {
-      return "rating-color-high";
-    } else if (rating >= 50) {
-      return "rating-color-medium";
-    } else {
-      return "rating-color-low";
-    }
-  };
-
   function isValidDate(d: any) {
     return d && !isNaN(new Date(d).getTime());
   }
@@ -203,7 +191,6 @@ export function useGameDetails() {
   return {
     gameDetails,
     fetchGameDetails,
-    getRatingClass,
     isValidDate,
     convertTimestampToDate,
     renderWebsites,

@@ -218,13 +218,13 @@ export const fetchFilteredGames = async (
   genres: Array<{ name: string }> = [],
   gameModes: Array<{ name: string }> = [],
   currentPage: number = 1,
-  limit: number = 42
+  displayLimit: number = 24  
 ) => {
   const cacheKey = `fetchFilteredGames-${platforms
     .map((p) => p.name)
     .join(",")}-${genres.map((g) => g.name).join(",")}-${gameModes
     .map((gm) => gm.name)
-    .join(",")}-${currentPage}-${limit}`;
+    .join(",")}-${currentPage}-${displayLimit}`;
 
   const cachedData = sessionStorage.getItem(cacheKey);
   if (cachedData) {
@@ -240,55 +240,69 @@ export const fetchFilteredGames = async (
     (gameMode) => gameModeNameToId[gameMode.name]
   );
 
-  const offset = (currentPage - 1) * limit;
+  let allFetchedGames: any = [];
+  let offset = (currentPage - 1) * displayLimit;
+  let extraFetchLimit = displayLimit * 2; 
 
-  let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name; limit ${limit}; offset ${offset};`;
+  while (allFetchedGames.length < displayLimit) {
+    let query = `fields name, cover.image_id, total_rating, summary, platforms.name, genres.name, game_modes.name, themes; limit ${extraFetchLimit}; offset ${offset};`;
 
-  if (platformIdsArray.length > 0) {
-    query += ` where platforms = (${platformIdsArray.join(",")})`;
-  }
-
-  if (genreIdsArray.length > 0) {
-    query += ` & genres = [${genreIdsArray.join(",")}]`;
-  }
-  if (gameModeIdsArray.length > 0) {
-    query += ` & game_modes = [${gameModeIdsArray.join(",")}]`;
-  }
-  query += ";";
-
-  try {
-    const response = await axiosClient.post("games/", query);
-    const data = response.data;
-
-    const processedGames = data.map((game: any) => {
-      return {
-        ...game,
-        cover: game.cover
-          ? getGameCoverUrl(game.cover.image_id)
-          : "../assets/GH-logo.png",
-        total_rating:
-          game.total_rating !== undefined ? game.total_rating : null,
-      };
-    });
-    console.log("Genres", processedGames);
+    if (platformIdsArray.length > 0) {
+      query += ` where platforms = (${platformIdsArray.join(",")})`;
+    }
+    if (genreIdsArray.length > 0) {
+      query += ` & genres = [${genreIdsArray.join(",")}]`;
+    }
+    if (gameModeIdsArray.length > 0) {
+      query += ` & game_modes = [${gameModeIdsArray.join(",")}]`;
+    }
+    query += ";";
 
     try {
-      sessionStorage.setItem(cacheKey, JSON.stringify(processedGames));
-    } catch (e) {
-      if (
-        e instanceof DOMException &&
-        e.code === DOMException.QUOTA_EXCEEDED_ERR
-      ) {
-        console.warn("Session storage is full, unable to cache the results");
-      } else {
-        console.error("Error during caching:", e);
-      }
+      const response = await axiosClient.post("games/", query);
+      let data = response.data;
+
+      // Filter out games with theme ID 42
+      let filteredData = data.filter(
+        (game: any) => !game.themes || !game.themes.includes(42)
+      );
+
+      allFetchedGames = allFetchedGames.concat(filteredData);
+      allFetchedGames = allFetchedGames.slice(0, displayLimit); // Limit to the desired number of games
+
+      offset += extraFetchLimit; // Increase offset for additional fetches
+      if (data.length < extraFetchLimit) break; // Break if no more games to fetch
+    } catch (error) {
+      console.error("Error fetching filtered games:", error);
+      throw error;
     }
-    return processedGames;
-  } catch (error) {
-    console.error("Error fetching filtered games:", error);
-    throw error;
   }
+
+  // Process and cache only the required number of games
+  const processedGames = allFetchedGames.map((game: any) => {
+    return {
+      ...game,
+      cover: game.cover
+        ? getGameCoverUrl(game.cover.image_id)
+        : "../assets/GH-logo.png",
+      total_rating:
+        game.total_rating !== undefined ? game.total_rating : null,
+    };
+  });
+
+  try {
+    sessionStorage.setItem(cacheKey, JSON.stringify(processedGames));
+  } catch (e) {
+    if (
+      e instanceof DOMException &&
+      e.code === DOMException.QUOTA_EXCEEDED_ERR
+    ) {
+      console.warn("Session storage is full, unable to cache the results");
+    } else {
+      console.error("Error during caching:", e);
+    }
+  }
+  return processedGames;
 };
 
 export const getGameDetails = async (query: number, platform: string) => {

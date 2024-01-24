@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Divider,
   Image,
@@ -78,8 +79,15 @@ function SearchResultsPage() {
     return date.toLocaleDateString();
   }
 
-  function isValidDate(d: any) {
-    return d && !isNaN(new Date(d).getTime());
+  function getReleaseDate(game: any) {
+    if (
+      game.release_dates &&
+      game.release_dates.length > 0 &&
+      game.release_dates[0].date
+    ) {
+      return convertTimestampToDate(game.release_dates[0].date);
+    }
+    return "No Date Available";
   }
 
   return (
@@ -129,19 +137,20 @@ function SearchResultsPage() {
                     <Text className="text-underline-hover" mb="xs">
                       {game.name}
                     </Text>
-                    <Text size="xs">
-                      Release Date:{" "}
-                      {isValidDate(game.release_dates[0].date)
-                        ? convertTimestampToDate(game.release_dates[0].date)
-                        : "No Date Available"}
-                    </Text>
+                    <Text size="xs">Release Date: {getReleaseDate(game)}</Text>
                   </Box>
                 </Box>
                 {game.platforms && game.platforms.length > 0 ? (
                   game.platforms.map((platform, index) => (
-                    <Text size="xs" key={index}>
+                    <Badge
+                      color="#f2c341"
+                      autoContrast
+                      mr="sm"
+                      size="xs"
+                      key={index}
+                    >
                       {platform.name}
-                    </Text>
+                    </Badge>
                   ))
                 ) : (
                   <Text fs="italic">Not available</Text>

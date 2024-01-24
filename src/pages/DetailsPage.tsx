@@ -29,6 +29,7 @@ import Carousel from "../components/Carousel";
 import CoverImage from "../components/CoverImage";
 import Gallery from "../components/Gallery";
 import RatingSection from "../components/RatingSection";
+import ReleaseDate from "../components/ReleaseDate";
 import "../css/DetailsPage.css";
 import { useGameDetails } from "../utils/DetailsPageUtils";
 import { useFavorites } from "../utils/FavoritesUtils";
@@ -83,20 +84,9 @@ function DetailsPage() {
               {gameDetails ? renderVideoOrImage(gameDetails) : <Loader />}
               <Box className="video-overlay"></Box>
             </Box>
-            {gameDetails.release_dates &&
-            gameDetails.release_dates.length > 0 ? (
-              <Box className="game-release-date">
-                <Text size="lg">
-                  Release Date:{" "}
-                  {isValidDate(gameDetails.release_dates[0].date)
-                    ? convertTimestampToDate(gameDetails.release_dates[0].date)
-                    : "No Date Available"}
-                </Text>
-              </Box>
-            ) : (
-              <Box className="game-release-date">
-                <Text size="lg">Release Date: Not available</Text>
-              </Box>
+
+            {gameDetails && (
+              <ReleaseDate releaseDates={gameDetails.release_dates} />
             )}
 
             {gameDetails.involved_companies &&

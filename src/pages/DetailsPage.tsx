@@ -28,6 +28,7 @@ import AgeRating from "../components/AgeRating";
 import Carousel from "../components/Carousel";
 import CoverImage from "../components/CoverImage";
 import Gallery from "../components/Gallery";
+import GameModes from "../components/GameModes";
 import InvolvedCompanies from "../components/InvolvedCompanies";
 import RatingSection from "../components/RatingSection";
 import ReleaseDate from "../components/ReleaseDate";
@@ -93,17 +94,9 @@ function DetailsPage() {
           <Box className="top-game-content">
             <Box className="game-modes-section">
               <Box className="detail-section">
-                <Box mb="sm" className="left-margin" pl={10}>
-                  <Title order={4}>Game Modes</Title>
-                  {gameDetails.game_modes &&
-                  gameDetails.game_modes.length > 0 ? (
-                    gameDetails.game_modes.map((mode, index) => (
-                      <Text key={index}>{mode.name}</Text>
-                    ))
-                  ) : (
-                    <Text fs="italic">Not available</Text>
-                  )}
-                </Box>
+                {gameDetails && (
+                  <GameModes gameModes={gameDetails.game_modes} />
+                )}
 
                 <Box mb="sm" className="left-margin" pl={10}>
                   <Title order={4}>Themes</Title>

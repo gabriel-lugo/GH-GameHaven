@@ -12,11 +12,8 @@ import {
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { FaGoogle, FaWikipediaW } from "react-icons/fa";
-import { FiExternalLink } from "react-icons/fi";
 import { GiCrownedHeart } from "react-icons/gi";
 import { IoHeartOutline } from "react-icons/io5";
-import { LuScroll } from "react-icons/lu";
 import { useParams } from "react-router-dom";
 import {
   EmailIcon,
@@ -42,7 +39,14 @@ import { getPegiImage } from "../utils/PegiUtility";
 
 function DetailsPage() {
   const params = useParams();
-  const { gameDetails, fetchGameDetails, getRatingClass } = useGameDetails();
+  const {
+    gameDetails,
+    fetchGameDetails,
+    getRatingClass,
+    isValidDate,
+    convertTimestampToDate,
+    renderWebsites,
+  } = useGameDetails();
   const { handleFavoriteClick, isFavorited } = useFavorites(gameDetails);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [showVideo, setShowVideo] = useState(true);
@@ -57,93 +61,13 @@ function DetailsPage() {
     setShowVideo(true);
   }, [gameDetails]);
 
-  function renderWebsites(websites: any) {
-    if (!websites || websites.length === 0) {
-      return (
-        <a
-          href={`https://www.google.com/search?q=${encodeURIComponent(
-            gameDetails?.name || ""
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="website-link"
-        >
-          <div className="website-links-container">
-            <Box className="website-icon-container">
-              <FaGoogle />
-            </Box>
-            <Text>See Google results</Text>
-          </div>
-        </a>
-      );
+  useEffect(() => {
+    if (params.id) {
+      const query = parseInt(params.id, 10);
+      fetchGameDetails(query);
     }
-
-    const filteredWebsites = websites.filter((website: any) => {
-      const category = website.category;
-      return category === 1 || category === 2 || category === 3;
-    });
-
-    if (!filteredWebsites || filteredWebsites.length === 0) {
-      return (
-        <a
-          href={`https://www.google.com/search?q=${encodeURIComponent(
-            gameDetails?.name || ""
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="website-link"
-        >
-          <div className="website-links-container">
-            <Box className="website-icon-container">
-              <FaGoogle />
-            </Box>
-            <Text>See Google results</Text>
-          </div>
-        </a>
-      );
-    }
-
-    return (
-      <div className="website-links-container">
-        {filteredWebsites.map((website: any, index: any) => {
-          let label = "";
-          let IconComponent;
-          const iconClass = "website-icon";
-
-          switch (website.category) {
-            case 1:
-              label = "Official Website";
-              IconComponent = <FiExternalLink className={iconClass} />;
-              break;
-            case 2:
-              label = "Community Wiki";
-              IconComponent = <LuScroll className={iconClass} />;
-              break;
-            case 3:
-              label = "Wikipedia";
-              IconComponent = <FaWikipediaW className={iconClass} />;
-              break;
-            default:
-              label = "Unknown Category";
-              IconComponent = <FaWikipediaW className={iconClass} />;
-          }
-
-          return (
-            <a
-              href={website.url}
-              key={index}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="website-link"
-            >
-              <Box className="website-icon-container">{IconComponent}</Box>
-              <Text>{label}</Text>
-            </a>
-          );
-        })}
-      </div>
-    );
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
 
   function renderVideoOrImage(gameDetails: any) {
     const handleFallbackClick = () => {
@@ -184,23 +108,6 @@ function DetailsPage() {
         />
       );
     }
-  }
-
-  function isValidDate(d: any) {
-    return d && !isNaN(new Date(d).getTime());
-  }
-
-  useEffect(() => {
-    if (params.id) {
-      const query = parseInt(params.id, 10);
-      fetchGameDetails(query);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.id]);
-
-  function convertTimestampToDate(timestamp: any) {
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleDateString();
   }
 
   return (

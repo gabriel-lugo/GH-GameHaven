@@ -142,7 +142,13 @@ function SearchResultsPage() {
                 </Box>
                 {game.platforms && game.platforms.length > 0 ? (
                   game.platforms.map((platform, index) => (
-                    <Badge mr="sm" size="xs" key={index}>
+                    <Badge
+                      color="#f2c341"
+                      autoContrast
+                      mr="sm"
+                      size="xs"
+                      key={index}
+                    >
                       {platform.name}
                     </Badge>
                   ))

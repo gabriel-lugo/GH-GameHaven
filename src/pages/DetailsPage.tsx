@@ -11,7 +11,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { GiCrownedHeart } from "react-icons/gi";
 import { IoHeartOutline } from "react-icons/io5";
 import { useParams } from "react-router-dom";
@@ -28,13 +28,12 @@ import {
   XIcon,
 } from "react-share";
 import GHMascot from "../assets/gh_details.png";
-import NoPreview from "../assets/no-preview.png";
 import Carousel from "../components/Carousel";
 import Gallery from "../components/Gallery";
 import GameRating from "../components/RateGame";
 import "../css/DetailsPage.css";
+import { useGameDetails } from "../utils/DetailsPageUtils";
 import { useFavorites } from "../utils/FavoritesUtils";
-import { useGameDetails } from "../utils/GameUtils";
 import { getPegiImage } from "../utils/PegiUtility";
 
 function DetailsPage() {
@@ -46,19 +45,16 @@ function DetailsPage() {
     isValidDate,
     convertTimestampToDate,
     renderWebsites,
+    renderVideoOrImage,
   } = useGameDetails();
   const { handleFavoriteClick, isFavorited } = useFavorites(gameDetails);
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const [showVideo, setShowVideo] = useState(true);
+  // const [showVideo, setShowVideo] = useState(true);
   const shareUrl = `https://ghgamehaven.netlify.app/game/${params.id}`;
 
   useEffect(() => {
     window.scrollTo(0, 0);
     document.title = `GH: Gamehaven - ${gameDetails?.name || "Loading..."}`;
-  }, [gameDetails]);
-
-  useEffect(() => {
-    setShowVideo(true);
   }, [gameDetails]);
 
   useEffect(() => {
@@ -68,47 +64,6 @@ function DetailsPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
-
-  function renderVideoOrImage(gameDetails: any) {
-    const handleFallbackClick = () => {
-      setShowVideo(false);
-    };
-
-    if (showVideo && gameDetails.videos && gameDetails.videos.length > 0) {
-      const videoId = gameDetails.videos[0].video_id;
-      return (
-        <Box>
-          <iframe
-            width="100%"
-            height="100%"
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&cc_load_policy=0&playlist=${videoId}`}
-            title="Gameplay Video"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-          <Button
-            variant="light"
-            style={{ zIndex: "5" }}
-            onClick={handleFallbackClick}
-            className="fallback-button"
-          >
-            Switch to image background
-          </Button>
-        </Box>
-      );
-    } else {
-      const imageUrl =
-        gameDetails.screenshots?.[0] || gameDetails.artworks?.[0] || NoPreview;
-      return (
-        <Image
-          src={imageUrl}
-          alt={`Image of ${gameDetails.name}`}
-          className="game-image-overlay"
-        />
-      );
-    }
-  }
 
   return (
     <Container className="details-container" p={0} size="xl">

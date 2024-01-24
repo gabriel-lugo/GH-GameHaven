@@ -1,9 +1,10 @@
-import { Box, Text } from "@mantine/core";
-import { useState } from "react";
+import { Box, Button, Image, Text } from "@mantine/core";
+import { useEffect, useState } from "react";
 import { FaGoogle, FaWikipediaW } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import { LuScroll } from "react-icons/lu";
 import { getGameDetails } from "../api/igdbApi";
+import NoPreview from "../assets/no-preview.png";
 import { Game } from "../pages/HomePage";
 
 export interface GameDetails {
@@ -31,6 +32,7 @@ export interface GameDetails {
 
 export function useGameDetails() {
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
+  const [showVideo, setShowVideo] = useState(true);
 
   const fetchGameDetails = (gameId: number) => {
     getGameDetails(gameId, "pc")
@@ -43,6 +45,10 @@ export function useGameDetails() {
         console.error("Error:", error);
       });
   };
+
+  useEffect(() => {
+    setShowVideo(true);
+  }, [gameDetails]);
 
   const getRatingClass = (rating: number) => {
     if (rating === null || rating === undefined) {
@@ -153,6 +159,47 @@ export function useGameDetails() {
     );
   }
 
+  function renderVideoOrImage(gameDetails: any) {
+    const handleFallbackClick = () => {
+      setShowVideo(false);
+    };
+
+    if (showVideo && gameDetails.videos && gameDetails.videos.length > 0) {
+      const videoId = gameDetails.videos[0].video_id;
+      return (
+        <Box>
+          <iframe
+            width="100%"
+            height="100%"
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&cc_load_policy=0&playlist=${videoId}`}
+            title="Gameplay Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+          <Button
+            variant="light"
+            style={{ zIndex: "5" }}
+            onClick={handleFallbackClick}
+            className="fallback-button"
+          >
+            Switch to image background
+          </Button>
+        </Box>
+      );
+    } else {
+      const imageUrl =
+        gameDetails.screenshots?.[0] || gameDetails.artworks?.[0] || NoPreview;
+      return (
+        <Image
+          src={imageUrl}
+          alt={`Image of ${gameDetails.name}`}
+          className="game-image-overlay"
+        />
+      );
+    }
+  }
+
   return {
     gameDetails,
     fetchGameDetails,
@@ -160,5 +207,6 @@ export function useGameDetails() {
     isValidDate,
     convertTimestampToDate,
     renderWebsites,
+    renderVideoOrImage,
   };
 }

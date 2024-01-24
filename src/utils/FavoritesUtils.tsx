@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { MdOutlineError } from "react-icons/md";
 import { FavoritesContext, GameData } from "../context/FavoritesContext";
 import { auth } from "../firebase";
-import { GameDetails } from "./GameUtils";
+import { GameDetails } from "./DetailsPageUtils";
 
 export function useFavorites(gameDetails: GameDetails | null) {
   const { favorites, addFavorite, removeFavorite } =

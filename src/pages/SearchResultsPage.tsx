@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Divider,
   Image,
@@ -141,9 +142,9 @@ function SearchResultsPage() {
                 </Box>
                 {game.platforms && game.platforms.length > 0 ? (
                   game.platforms.map((platform, index) => (
-                    <Text size="xs" key={index}>
+                    <Badge mr="sm" size="xs" key={index}>
                       {platform.name}
-                    </Text>
+                    </Badge>
                   ))
                 ) : (
                   <Text fs="italic">Not available</Text>

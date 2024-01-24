@@ -27,11 +27,13 @@ import GHMascot from "../assets/gh_details.png";
 import AgeRating from "../components/AgeRating";
 import Carousel from "../components/Carousel";
 import CoverImage from "../components/CoverImage";
+import Franchises from "../components/Franchises";
 import Gallery from "../components/Gallery";
 import GameModes from "../components/GameModes";
 import InvolvedCompanies from "../components/InvolvedCompanies";
 import RatingSection from "../components/RatingSection";
 import ReleaseDate from "../components/ReleaseDate";
+import Themes from "../components/Themes";
 import "../css/DetailsPage.css";
 import { useGameDetails } from "../utils/DetailsPageUtils";
 import { useFavorites } from "../utils/FavoritesUtils";
@@ -98,28 +100,11 @@ function DetailsPage() {
                   <GameModes gameModes={gameDetails.game_modes} />
                 )}
 
-                <Box mb="sm" className="left-margin" pl={10}>
-                  <Title order={4}>Themes</Title>
-                  {gameDetails.themes && gameDetails.themes.length > 0 ? (
-                    gameDetails.themes.map((theme, index) => (
-                      <Text key={index}>{theme.name}</Text>
-                    ))
-                  ) : (
-                    <Text fs="italic">Not available</Text>
-                  )}
-                </Box>
+                {gameDetails && <Themes themes={gameDetails.themes} />}
 
-                <Box className="left-margin" pl={10}>
-                  <Title order={4}>Franchises</Title>
-                  {gameDetails.franchises &&
-                  gameDetails.franchises.length > 0 ? (
-                    gameDetails.franchises.map((franchise, index) => (
-                      <Text key={index}>{franchise.name}</Text>
-                    ))
-                  ) : (
-                    <Text fs="italic">Not available</Text>
-                  )}
-                </Box>
+                {gameDetails && (
+                  <Franchises franchises={gameDetails.franchises} />
+                )}
               </Box>
             </Box>
 

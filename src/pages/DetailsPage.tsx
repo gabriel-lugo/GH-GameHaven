@@ -25,6 +25,7 @@ import {
   XIcon,
 } from "react-share";
 import GHMascot from "../assets/gh_details.png";
+import AgeRating from "../components/AgeRating";
 import Carousel from "../components/Carousel";
 import CoverImage from "../components/CoverImage";
 import Gallery from "../components/Gallery";
@@ -32,7 +33,6 @@ import GameRating from "../components/RateGame";
 import "../css/DetailsPage.css";
 import { useGameDetails } from "../utils/DetailsPageUtils";
 import { useFavorites } from "../utils/FavoritesUtils";
-import { getPegiImage } from "../utils/PegiUtility";
 
 function DetailsPage() {
   const params = useParams();
@@ -68,12 +68,7 @@ function DetailsPage() {
         <Box>
           <Box className="details-hero">
             {gameDetails.age_ratings && (
-              <Box className="age-rating-box">
-                <Image
-                  src={getPegiImage(gameDetails.age_ratings)}
-                  alt={`PEGI Rating: ${gameDetails.age_ratings}`}
-                />
-              </Box>
+              <AgeRating ageRating={gameDetails.age_ratings} />
             )}
             <CoverImage
               gameDetails={gameDetails}

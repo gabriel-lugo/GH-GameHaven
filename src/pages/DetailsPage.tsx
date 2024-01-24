@@ -28,6 +28,7 @@ import AgeRating from "../components/AgeRating";
 import Carousel from "../components/Carousel";
 import CoverImage from "../components/CoverImage";
 import Gallery from "../components/Gallery";
+import InvolvedCompanies from "../components/InvolvedCompanies";
 import RatingSection from "../components/RatingSection";
 import ReleaseDate from "../components/ReleaseDate";
 import "../css/DetailsPage.css";
@@ -83,15 +84,10 @@ function DetailsPage() {
               <ReleaseDate releaseDates={gameDetails.release_dates} />
             )}
 
-            {gameDetails.involved_companies &&
-            gameDetails.involved_companies.length > 0 ? (
-              <Box className="game-companies">
-                <Text>{gameDetails.involved_companies[0].company.name}</Text>
-              </Box>
-            ) : (
-              <Box className="game-companies">
-                <Text>No involved companies available</Text>
-              </Box>
+            {gameDetails && (
+              <InvolvedCompanies
+                involvedCompanies={gameDetails.involved_companies}
+              />
             )}
           </Box>
           <Box className="top-game-content">

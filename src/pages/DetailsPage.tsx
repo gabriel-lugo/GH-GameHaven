@@ -55,40 +55,29 @@ function DetailsPage() {
       {gameDetails ? (
         <Box>
           <Box className="details-hero">
-            {gameDetails.age_ratings && (
-              <AgeRating ageRating={gameDetails.age_ratings} />
-            )}
+            <AgeRating ageRating={gameDetails.age_ratings} />
             <CoverImage
               gameDetails={gameDetails}
               handleFavoriteClick={handleFavoriteClick}
               isFavorited={isFavorited}
             />
             <GameTitle title={gameDetails.name} />
-
             <Box className="video-container">
               {gameDetails ? renderVideoOrImage(gameDetails) : <Loader />}
               <Box className="video-overlay"></Box>
             </Box>
-            {gameDetails && (
-              <ReleaseDate releaseDates={gameDetails.release_dates} />
-            )}
-            {gameDetails && (
-              <InvolvedCompanies
-                involvedCompanies={gameDetails.involved_companies}
-              />
-            )}
+            <ReleaseDate releaseDates={gameDetails.release_dates} />
+            <InvolvedCompanies
+              involvedCompanies={gameDetails.involved_companies}
+            />
           </Box>
 
           <Box className="top-game-content">
             <Box className="game-modes-section">
               <Box className="detail-section">
-                {gameDetails && (
-                  <GameModes gameModes={gameDetails.game_modes} />
-                )}
-                {gameDetails && <Themes themes={gameDetails.themes} />}
-                {gameDetails && (
-                  <Franchises franchises={gameDetails.franchises} />
-                )}
+                <GameModes gameModes={gameDetails.game_modes} />
+                <Themes themes={gameDetails.themes} />
+                <Franchises franchises={gameDetails.franchises} />
               </Box>
             </Box>
             <Divider
@@ -99,8 +88,8 @@ function DetailsPage() {
               color="var(--nav-text-color)"
             />
             <Box className="detail-section">
-              {gameDetails && <Genres genres={gameDetails.genres} />}
-              {gameDetails && <Platforms platforms={gameDetails.platforms} />}
+              <Genres genres={gameDetails.genres} />
+              <Platforms platforms={gameDetails.platforms} />
             </Box>
             <Divider
               mt="sm"
@@ -109,27 +98,23 @@ function DetailsPage() {
               orientation={isMobile ? "horizontal" : "vertical"}
               color="var(--nav-text-color)"
             />
-            {gameDetails && (
-              <RatingSection
-                totalRating={gameDetails.total_rating}
-                totalRatingCount={gameDetails.total_rating_count}
-                gameName={gameDetails.name}
-                gameId={gameDetails.id.toString()}
-              />
-            )}
+            <RatingSection
+              totalRating={gameDetails.total_rating}
+              totalRatingCount={gameDetails.total_rating_count}
+              gameName={gameDetails.name}
+              gameId={gameDetails.id.toString()}
+            />
           </Box>
 
           <Container>
             <Box className="centered-content" mt="md">
-              {gameDetails && <GameSummary summary={gameDetails.summary} />}
+              <GameSummary summary={gameDetails.summary} />
               <Box className="website-img-layout">
                 <Box className="margin-box" mt="xl">
-                  {gameDetails && (
-                    <ShareButtons
-                      shareUrl={`https://ghgamehaven.netlify.app/game/${params.id}`}
-                      gameName={gameDetails.name}
-                    />
-                  )}
+                  <ShareButtons
+                    shareUrl={`https://ghgamehaven.netlify.app/game/${params.id}`}
+                    gameName={gameDetails.name}
+                  />
                   <Title mb="xs" order={4}>
                     Websites
                   </Title>
@@ -144,7 +129,7 @@ function DetailsPage() {
             </Box>
           </Container>
 
-          {gameDetails && <GallerySection gameDetails={gameDetails} />}
+          <GallerySection gameDetails={gameDetails} />
           <SimilarGamesSection similarGames={gameDetails.similar_games} />
         </Box>
       ) : (

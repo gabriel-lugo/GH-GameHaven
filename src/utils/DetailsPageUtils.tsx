@@ -50,15 +50,6 @@ export function useGameDetails() {
     setShowVideo(true);
   }, [gameDetails]);
 
-  function isValidDate(d: any) {
-    return d && !isNaN(new Date(d).getTime());
-  }
-
-  function convertTimestampToDate(timestamp: any) {
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleDateString();
-  }
-
   function renderWebsites(websites: any) {
     if (!websites || websites.length === 0) {
       return (
@@ -191,8 +182,6 @@ export function useGameDetails() {
   return {
     gameDetails,
     fetchGameDetails,
-    isValidDate,
-    convertTimestampToDate,
     renderWebsites,
     renderVideoOrImage,
   };

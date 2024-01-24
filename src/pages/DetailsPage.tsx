@@ -36,14 +36,8 @@ import { useFavorites } from "../utils/FavoritesUtils";
 
 function DetailsPage() {
   const params = useParams();
-  const {
-    gameDetails,
-    fetchGameDetails,
-    isValidDate,
-    convertTimestampToDate,
-    renderWebsites,
-    renderVideoOrImage,
-  } = useGameDetails();
+  const { gameDetails, fetchGameDetails, renderWebsites, renderVideoOrImage } =
+    useGameDetails();
   const { handleFavoriteClick, isFavorited } = useFavorites(gameDetails);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const shareUrl = `https://ghgamehaven.netlify.app/game/${params.id}`;

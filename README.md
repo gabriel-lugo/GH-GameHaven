@@ -21,14 +21,28 @@ To run the project on your own, follow these steps:
 
    ```
 
-3. Run the development server:
+3. Create a .env-file in the root-directory with the following content:
+
+   ```sh
+   VITE_IGDB_CLIENT_ID=your_igdb_client_id
+   VITE_IGDB_AUTHORIZATION=your_igdb_authorization
+   VITE_API=your_firebase_api_key
+   VITE_AUTH=your_firebase_auth_key
+   VITE_PROJECT_ID=your_firebase_project_id
+   VITE_STORAGEBUCKET=your_firebase_storage_bucket
+   VITE_SENDERID=your_firebase_sender_id
+   VITE_APPID=your_firebase_app_id
+
+   ```
+
+4. Run the development server:
 
    ```sh
    npm run dev
 
    ```
 
-4. Open your browser and navigate to [http://localhost:5173](http://localhost:5173)
+5. Open your browser and navigate to [http://localhost:5173](http://localhost:5173)
 
 ## Dependencies
 

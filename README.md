@@ -30,6 +30,21 @@ To run the project on your own, follow these steps:
 
 4. Open your browser and navigate to [http://localhost:5173](http://localhost:5173)
 
+## Dependencies
+
+Here follows a list of dependecies used in this project
+
+- **React**: [Documentation](https://reactjs.org/)
+- **React-dom**: [Documentation](https://reactjs.org/docs/react-dom.html)
+- **React-icons**: [Documentation](https://react-icons.github.io/react-icons/)
+- **React-router-dom**: [Documentation](https://reactrouter.com/en/6.21.2)
+- **Mantine**: [Documentation](https://mantine.dev/getting-started/)
+- **Dotenv**: [Documentation](https://www.dotenv.org/docs)
+- **React-share**: [Documentation](https://github.com/nygardk/react-share)
+- **Swiper**: [Documentation](https://swiperjs.com/get-started)
+- **Axios**: [Documentation](https://axios-http.com/docs/intro)
+- **Firebase**: [Documentation](https://firebase.google.com/docs)
+
 ## Explore the Vast Gaming Universe
 
 At GH-GameHaven, we understand the thrill of exploring new gaming worlds. Our powerful search feature allows you to effortlessly discover a vast array of games across different genres, platforms, and themes. Whether you're into action-packed adventures, immersive RPGs, or fast-paced shooters, GH-GameHaven is your compass to navigate the gaming universe.

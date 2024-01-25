@@ -32,7 +32,7 @@ To run the project on your own, follow these steps:
 
 ## Dependencies
 
-Here follows a list of dependecies used in this project
+Here follows a list of dependencies used in this project
 
 - **React**: [Documentation](https://reactjs.org/)
 - **React-dom**: [Documentation](https://reactjs.org/docs/react-dom.html)

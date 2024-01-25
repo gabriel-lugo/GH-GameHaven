@@ -9,6 +9,7 @@ import {
   Title,
 } from "@mantine/core";
 import { NavLink } from "react-router-dom";
+import GhImg from "../assets/gh-info.png";
 import "../css/GhInfo.css";
 
 function GhInfo() {
@@ -17,7 +18,8 @@ function GhInfo() {
       <Box className="content-container">
         <Image
           className="image-style"
-          src="https://github.com/gabriel-lugo/GH-GameHaven/assets/116897452/c4b61101-6768-4665-a7bc-fced866bd6ea"
+          src={GhImg}
+          alt="a cartoon wizard browsing a webpage"
         />
         <Card p="lg" className="card-style" radius="sm">
           <Title order={3}>Gamehaven aims to..</Title>

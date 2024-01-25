@@ -165,6 +165,7 @@ function Header() {
               </NavLink>
             )}
             <Burger
+              aria-label="Toggle navigation"
               color="#F2C341"
               opened={opened}
               onClick={toggle}

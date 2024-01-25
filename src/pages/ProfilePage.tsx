@@ -118,15 +118,12 @@ function ProfilePage() {
       }
 
       if (user && user.email) {
-        console.log("Attempting to reauthenticate...");
         const credential = EmailAuthProvider.credential(
           user.email,
           form.values.currentPassword
         );
 
         await reauthenticateWithCredential(user, credential);
-
-        console.log("Reauthentication successful. Updating profile...");
 
         if (form.values.name && form.values.name.length >= 2) {
           await updateProfile(user, {
@@ -143,17 +140,10 @@ function ProfilePage() {
             email: user?.email || null,
             displayName: form.values.name || "",
           });
-
-          console.log(
-            "Updated display name and Firestore document:",
-            form.values.name
-          );
         }
 
         if (form.values.newPassword) {
-          console.log("Updating password...");
           await updatePassword(user, form.values.newPassword);
-          console.log("Password updated successfully!");
         }
 
         form.setFieldValue("currentPassword", "");
@@ -164,8 +154,6 @@ function ProfilePage() {
           color: "green",
           icon: <MdThumbUp />,
         });
-
-        console.log("Profile updated successfully!");
       }
     } catch (error) {
       showNotification({
@@ -181,8 +169,6 @@ function ProfilePage() {
   const handleSaveProfileImage = async () => {
     try {
       if (user) {
-        console.log("Updating profile image...");
-
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, {
           profileImageId: selectedProfileImage,
@@ -196,8 +182,6 @@ function ProfilePage() {
           color: "green",
           icon: <MdThumbUp />,
         });
-
-        console.log("Profile image updated successfully!");
       }
     } catch (error) {
       setError("Failed to update profile image. Please try again.");

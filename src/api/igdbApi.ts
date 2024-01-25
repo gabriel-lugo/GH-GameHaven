@@ -46,7 +46,7 @@ export const getArtworkUrl = (imageID: string) => {
 
 const fetchGameCoversAndScreenshots = async (
   games: any[],
-  platform: string
+  // platform: string
 ) => {
   const promises = games.map(async (game: any) => {
     let cover,
@@ -68,8 +68,6 @@ const fetchGameCoversAndScreenshots = async (
       cover = defaultCoverUrl;
     }
 
-    console.log(`Fetching cover for game on platform ${platform}:`, game);
-
     if (game.screenshots && game.screenshots.length > 0) {
       screenshots = game.screenshots.map((ss: any) =>
         getGameScreenshotUrl(ss.image_id)
@@ -82,11 +80,6 @@ const fetchGameCoversAndScreenshots = async (
       );
     }
 
-    console.log(
-      `Fetching cover, screenshots, and artworks for game on platform ${platform}:`,
-      game
-    );
-
     return { ...game, cover, screenshots, artworks };
   });
 
@@ -95,7 +88,7 @@ const fetchGameCoversAndScreenshots = async (
 
 const fetchSimilarGamesCoversAndScreenshots = async (
   similarGames: any[],
-  platform: string
+
 ) => {
   const promises = similarGames.map(async (similarGame: any) => {
     let cover,
@@ -113,11 +106,6 @@ const fetchSimilarGamesCoversAndScreenshots = async (
       cover = defaultCoverUrl;
     }
 
-    console.log(
-      `Fetching cover for similar game on platform ${platform}:`,
-      similarGame
-    );
-
     if (similarGame.screenshots && similarGame.screenshots.length > 0) {
       screenshots = similarGame.screenshots.map((ss: any) =>
         getGameScreenshotUrl(ss.image_id)
@@ -129,11 +117,6 @@ const fetchSimilarGamesCoversAndScreenshots = async (
         getArtworkUrl(artwork.image_id)
       );
     }
-
-    console.log(
-      `Fetching cover, screenshots, and artworks for similar game on platform ${platform}:`,
-      similarGame
-    );
 
     return { ...similarGame, cover, screenshots, artworks };
   });
@@ -155,7 +138,6 @@ export const searchForGames = async (
 
   // Use cached data if available
   if (cachedData) {
-    console.log("Using cached data for search query:", query);
     return JSON.parse(cachedData);
   }
 
@@ -228,7 +210,6 @@ export const fetchFilteredGames = async (
 
   const cachedData = sessionStorage.getItem(cacheKey);
   if (cachedData) {
-    console.log("Using cached data for fetchFilteredGames:", cacheKey);
     return JSON.parse(cachedData);
   }
 
@@ -312,7 +293,6 @@ export const getGameDetails = async (query: number, platform: string) => {
 
   // Use cached data if available
   if (cachedData) {
-    console.log("Using cached data for game details:", cacheKey);
     return JSON.parse(cachedData);
   }
 
@@ -332,7 +312,7 @@ export const getGameDetails = async (query: number, platform: string) => {
 
     const gameWithCover = await fetchGameCoversAndScreenshots(
       gameDetails,
-      platform
+
     );
 
     let similarGamesWithCovers = [];
@@ -343,7 +323,7 @@ export const getGameDetails = async (query: number, platform: string) => {
     ) {
       similarGamesWithCovers = await fetchSimilarGamesCoversAndScreenshots(
         gameWithCover[0].similar_games,
-        platform
+     
       );
     }
 
@@ -445,7 +425,6 @@ export const getTopRatedGames = async (
   const cachedData = sessionStorage.getItem(cacheKey);
 
   if (cachedData) {
-    console.log("Using cached data for top rated games");
     return JSON.parse(cachedData);
   }
 
@@ -460,12 +439,7 @@ export const getTopRatedGames = async (
 
     const gamesWithCovers = await fetchGameCoversAndScreenshots(
       topRatedGames,
-      platform
-    );
-
-    console.log(
-      `Top Rated Games with Covers (Rating > ${minRating}, Rating Count > ${minRatingCount}):`,
-      gamesWithCovers
+   
     );
 
     // Attempt to cache the results in sessionStorage
@@ -513,7 +487,6 @@ export const getNewGames = async (platform: any, limit: number = 15) => {
   const cachedData = sessionStorage.getItem(cacheKey);
 
   if (cachedData) {
-    console.log("Using cached data for new games:", cacheKey);
     return JSON.parse(cachedData);
   }
 
@@ -523,7 +496,6 @@ export const getNewGames = async (platform: any, limit: number = 15) => {
   try {
     const response = await axiosClient.post(endpoint, query);
     const newGames = response.data;
-    console.log("New Games:", newGames);
 
     if (!newGames || newGames.length === 0) {
       console.warn("No new games found in the response.");
@@ -546,7 +518,7 @@ export const getNewGames = async (platform: any, limit: number = 15) => {
 
     const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(
       filteredGames,
-      platform
+  
     );
 
     // Attempt to cache the results in sessionStorage
@@ -582,7 +554,6 @@ export const getUpcomingGames = async (platform: any, limit: number = 15) => {
   const cachedData = sessionStorage.getItem(cacheKey);
 
   if (cachedData) {
-    console.log("Using cached data for upcoming games:", cacheKey);
     return JSON.parse(cachedData);
   }
 
@@ -592,7 +563,6 @@ export const getUpcomingGames = async (platform: any, limit: number = 15) => {
   try {
     const response = await axiosClient.post(endpoint, query);
     const upcomingGames = response.data;
-    console.log("Upcoming Games:", upcomingGames);
 
     if (!upcomingGames || upcomingGames.length === 0) {
       console.warn("No upcoming games found in the response.");
@@ -613,7 +583,7 @@ export const getUpcomingGames = async (platform: any, limit: number = 15) => {
 
     const gamesWithCoversAndScreenshots = await fetchGameCoversAndScreenshots(
      filteredGames,
-     platform
+
     );
 
     try {

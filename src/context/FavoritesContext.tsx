@@ -109,7 +109,6 @@ export const FavoritesProvider = ({ children }: Props) => {
       if (userData) {
         const fetchedFavorites = userData.favorites || [];
         setFavorites(fetchedFavorites);
-        console.log("success");
       }
     } catch (error) {
       console.error("Error fetching favorites: ", error);

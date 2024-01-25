@@ -63,9 +63,6 @@ function SigninPage() {
   });
 
   const onLogin = async (values: any) => {
-    console.log(values);
-    console.log("Email:", values.email);
-    console.log("Password:", values.password);
     const { email, password } = values;
 
     try {
@@ -89,7 +86,6 @@ function SigninPage() {
       updateSelectedProfileImage(userData?.profileImageId);
 
       navigate("/");
-      console.log(user);
     } catch (error) {
       showNotification({
         title: "Authentication Failed",

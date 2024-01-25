@@ -20,7 +20,6 @@ export const ProfileImageProvider = ({ children }: Props) => {
   const [selectedProfileImage, setSelectedProfileImage] = useState<number>(0);
 
   const updateSelectedProfileImage = (index: number) => {
-    console.log("Updating selected profile image with context: ", index);
     setSelectedProfileImage(index);
   };
 
@@ -44,8 +43,6 @@ export const ProfileImageProvider = ({ children }: Props) => {
 
     fetchProfileImageIndex();
   }, []);
-
-  console.log("Selected profile image in context: ", selectedProfileImage);
 
   return (
     <ProfileImageContext.Provider

@@ -25,11 +25,8 @@ export const UserProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null);
 
   const updateUser = (newUser: User | null) => {
-    console.log("Updating user with context: ", newUser);
     setUser((prevUser) => (newUser ? { ...prevUser, ...newUser } : null));
   };
-
-  console.log("User in context: ", user);
 
   return (
     <UserContext.Provider value={{ user, updateUser }}>

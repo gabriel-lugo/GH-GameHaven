@@ -117,7 +117,7 @@ export function Footer() {
         />
       </Container>
       <Text size="xs" mb={"md"} mt={"md"}>
-        © 2023 GH: GameHaven, INC. ALL RIGHTS RESERVED.
+        © 2024 GH: GameHaven, INC. ALL RIGHTS RESERVED.
       </Text>
     </footer>
   );

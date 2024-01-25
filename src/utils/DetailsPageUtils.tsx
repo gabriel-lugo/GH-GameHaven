@@ -39,7 +39,6 @@ export function useGameDetails() {
       .then((gameData) => {
         const game: GameDetails = gameData[0];
         setGameDetails(game);
-        console.log("Game Information:", game);
       })
       .catch((error) => {
         console.error("Error:", error);

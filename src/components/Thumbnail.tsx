@@ -62,7 +62,6 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
   };
 
   const handleHeartClick = () => {
-    console.log("clicked");
     const gameData: GameData = {
       ...game,
       userId: userId,

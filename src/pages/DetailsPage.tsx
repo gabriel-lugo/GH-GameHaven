@@ -32,8 +32,14 @@ import { useFavorites } from "../utils/FavoritesUtils";
 
 function DetailsPage() {
   const params = useParams();
-  const { gameDetails, fetchGameDetails, renderWebsites, renderVideoOrImage } =
-    useGameDetails();
+  const {
+    gameDetails,
+    fetchGameDetails,
+    renderWebsites,
+    renderVideoOrImage,
+    isLoading,
+  } = useGameDetails();
+
   const { handleFavoriteClick, isFavorited } = useFavorites(gameDetails);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -52,7 +58,14 @@ function DetailsPage() {
 
   return (
     <Container className="details-container" p={0} size="xl">
-      {gameDetails ? (
+      {isLoading ? (
+        <Box className="loader-style">
+          <Loader color="orange" size="xl" type="dots" />
+          <Text fw={500} size="md">
+            Loading...
+          </Text>
+        </Box>
+      ) : gameDetails ? (
         <Box>
           <Box className="details-hero">
             <AgeRating ageRating={gameDetails.age_ratings} />

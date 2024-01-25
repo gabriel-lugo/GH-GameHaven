@@ -24,6 +24,9 @@ function Search() {
   const handleGameSelect = () => {
     setSearchResults([]);
     setSearchTerm("");
+    if (isScreenWidthSmall) {
+      setIsInputVisible(false);
+    }
   };
 
   useEffect(() => {

@@ -101,7 +101,7 @@ header {
   right: 0;
   background-color: var(--tertiary-background-color);
   width: 100%;
-  z-index: 10;
+  z-index: 5;
   height: auto;
 }
 

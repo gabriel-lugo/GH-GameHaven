@@ -33,15 +33,19 @@ export interface GameDetails {
 export function useGameDetails() {
   const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
   const [showVideo, setShowVideo] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchGameDetails = (gameId: number) => {
+    setIsLoading(true); // Set loading to true when fetch starts
     getGameDetails(gameId, "pc")
       .then((gameData) => {
         const game: GameDetails = gameData[0];
         setGameDetails(game);
+        setIsLoading(false); // Reset loading to false when fetch completes
       })
       .catch((error) => {
         console.error("Error:", error);
+        setIsLoading(false); // Reset loading to false on error
       });
   };
 
@@ -186,5 +190,6 @@ export function useGameDetails() {
     fetchGameDetails,
     renderWebsites,
     renderVideoOrImage,
+    isLoading,
   };
 }

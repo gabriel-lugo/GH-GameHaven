@@ -96,19 +96,36 @@ function AboutPage() {
       <ul>
         <li>
           Customer Support Email:{" "}
-          <a href="mailto:support@ghgamehaven.com">support@ghgamehaven.com</a>
+          <a
+            aria-label="Contact Gamehaven support"
+            href="mailto:support@ghgamehaven.com"
+          >
+            support@ghgamehaven.com
+          </a>
         </li>
         <li>
           Social Media: Connect with us on{" "}
-          <a href="https://www.facebook.com" target="blank">
+          <a
+            aria-label="Visit Facebook (opens in a new tab)"
+            href="https://www.facebook.com"
+            target="blank"
+          >
             Facebook
           </a>
           ,{" "}
-          <a href="https://www.instagram.com" target="blank">
+          <a
+            aria-label="Visit Instagram (opens in a new tab)"
+            href="https://www.instagram.com"
+            target="blank"
+          >
             Instagram
           </a>{" "}
           or{" "}
-          <a href="https://www.twitter.com" target="blank">
+          <a
+            aria-label="Visit X (opens in a new tab)"
+            href="https://www.twitter.com"
+            target="blank"
+          >
             X
           </a>{" "}
           for the latest updates and announcements.

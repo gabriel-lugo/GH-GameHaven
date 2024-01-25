@@ -1,4 +1,11 @@
-import { Box, Image, Spoiler, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Image,
+  Spoiler,
+  Text,
+  Title,
+  VisuallyHidden,
+} from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useContext, useEffect, useState } from "react";
 import { GiCrownedHeart, GiStabbedNote } from "react-icons/gi";
@@ -89,7 +96,11 @@ const Thumbnail: React.FC<{ game: Game }> = ({ game }) => {
         <Box className="thumbnail-image">
           <Image src={game.cover} fallbackSrc={logo} alt={game.name} />
           <Box className="hover-content">
-            <Spoiler maxHeight={200} showLabel="" hideLabel="">
+            <Spoiler
+              maxHeight={200}
+              showLabel={<VisuallyHidden>Show more</VisuallyHidden>}
+              hideLabel={<VisuallyHidden>Show less</VisuallyHidden>}
+            >
               <GiStabbedNote
                 style={{
                   fontSize: "2rem",

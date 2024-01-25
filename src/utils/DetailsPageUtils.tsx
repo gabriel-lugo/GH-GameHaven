@@ -53,6 +53,7 @@ export function useGameDetails() {
     if (!websites || websites.length === 0) {
       return (
         <a
+          aria-label="See Google Results (opens in a new tab)"
           href={`https://www.google.com/search?q=${encodeURIComponent(
             gameDetails?.name || ""
           )}`}
@@ -78,6 +79,7 @@ export function useGameDetails() {
     if (!filteredWebsites || filteredWebsites.length === 0) {
       return (
         <a
+          aria-label="See Google Results (opens in a new tab)"
           href={`https://www.google.com/search?q=${encodeURIComponent(
             gameDetails?.name || ""
           )}`}
@@ -122,6 +124,7 @@ export function useGameDetails() {
 
           return (
             <a
+              aria-label="See chosen website (opens in a new tab)"
               href={website.url}
               key={index}
               target="_blank"

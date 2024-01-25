@@ -77,8 +77,6 @@ function RegisterPage() {
 
       await updateProfile(userCredential.user, { displayName });
 
-      console.log("User created: ", userCredential.user);
-
       // Create a reference to the specific document in the 'users' collection
       const userRef = doc(db, "users", userCredential.user.uid);
 

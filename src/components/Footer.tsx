@@ -59,13 +59,25 @@ export function Footer() {
             Follow Us
           </Title>
           <Flex>
-            <NavLink to={"https://www.facebook.com/"} target="blank">
+            <NavLink
+              aria-label="Visit Gamehaven on Facebook (opens in a new tab)"
+              to={"https://www.facebook.com/"}
+              target="blank"
+            >
               <FiFacebook />
             </NavLink>
-            <NavLink to={"https://www.instagram.com/"} target="blank">
+            <NavLink
+              aria-label="Visit Gamehaven on Instagram (opens in a new tab)"
+              to={"https://www.instagram.com/"}
+              target="blank"
+            >
               <FaInstagram />
             </NavLink>
-            <NavLink to={"https://twitter.com/"} target="blank">
+            <NavLink
+              aria-label="Visit Gamehaven on X (opens in a new tab)"
+              to={"https://twitter.com/"}
+              target="blank"
+            >
               <FaXTwitter />
             </NavLink>
           </Flex>
@@ -86,7 +98,11 @@ export function Footer() {
           <Title order={3} mb={"lg"} mt={"md"}>
             IGDB API
           </Title>
-          <NavLink to={"https://www.igdb.com/"} target="blank">
+          <NavLink
+            aria-label="Learn more about IGDB (opens in a new tab)"
+            to={"https://www.igdb.com/"}
+            target="blank"
+          >
             Learn More{" "}
             <span>
               <FaExternalLinkAlt />

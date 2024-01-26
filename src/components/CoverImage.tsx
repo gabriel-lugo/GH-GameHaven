@@ -1,6 +1,7 @@
 import { Box, Button, Image } from "@mantine/core";
 import { GiCrownedHeart } from "react-icons/gi";
 import { IoHeartOutline } from "react-icons/io5";
+import logo from "../assets/GH-logo.png";
 
 interface CoverImageProps {
   gameDetails: {
@@ -22,6 +23,7 @@ const CoverImage: React.FC<CoverImageProps> = ({
         src={gameDetails.cover}
         alt={`Cover of ${gameDetails.name}`}
         className="game-cover-img"
+        fallbackSrc={logo}
       />
       <Button
         className="cover-img-btn"

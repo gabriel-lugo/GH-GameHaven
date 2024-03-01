@@ -29,6 +29,8 @@ const overviewItems = overviewLinks.map((link) => (
 ));
 
 export function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer>
       <NavLink to={"/"}>
@@ -117,7 +119,7 @@ export function Footer() {
         />
       </Container>
       <Text size="xs" mb={"md"} mt={"md"}>
-        © 2024 GH: GameHaven, INC. ALL RIGHTS RESERVED.
+        © {currentYear} GH: GameHaven, INC. ALL RIGHTS RESERVED.
       </Text>
     </footer>
   );
